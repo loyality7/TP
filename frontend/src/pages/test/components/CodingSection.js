@@ -148,7 +148,7 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
           
           // Initialize answers only if they don't exist
           if (!answers[challenge._id]) {
-            setAnswers({
+            memoizedSetAnswers({
               ...answers,
               [challenge._id]: {
                 code: defaultCode,
@@ -162,7 +162,7 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
         }
       }
     }
-  }, [challenges, currentChallenge, memoizedSetAnswers, answers, challengeStartTime, setAnalytics]);
+  }, [challenges, currentChallenge, answers, challengeStartTime, setAnalytics, memoizedSetAnswers]);
 
   // Handle left panel resize
   const handleLeftResize = useCallback((e) => {

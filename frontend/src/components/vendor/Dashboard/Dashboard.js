@@ -1013,7 +1013,7 @@ const shimmerAnimation = {
 // Update the early return for loading state in the Dashboard component
 const Dashboard = () => {
   const auth = useAuth();
-  const { isAuthenticated, token } = auth;
+  const { user } = auth;
   const navigate = useNavigate();
   
   // Add filteredTests state
@@ -1094,7 +1094,7 @@ const Dashboard = () => {
     {
       title: 'Total Tests',
       value: metrics?.totalTests?.value ?? 0,
-      subtitle: metrics?.totalTests?.subtitle ?? 'Total tests created',
+      subtitle: metrics?.totalTests?.subtitle ?? 'Total assessments',
       trend: metrics?.totalTests?.trend ?? 0
     },
     {
@@ -1140,16 +1140,6 @@ const Dashboard = () => {
       score: performanceMetrics?.skills?.bestPractices?.score || 0 
     }
   ];
-
-  // Transform API data for assessment overview
-  const assessmentOverview = analyticsOverview?.performance?.recentActivity?.map(activity => ({
-    name: activity.testTitle,
-    tests: activity.attempts || 0,
-    passing: activity.passCount || 0,
-    avgScore: activity.averageScore || 0,
-    trend: activity.trend || 0,
-    lastActivity: new Date(activity.completedAt).toLocaleDateString()
-  })) || [];
 
   // Add these styles at the top of your file
   const styles = {
@@ -1413,39 +1403,5 @@ const Dashboard = () => {
     </Layout>
   );
 };
-
-// Add these helper functions
-const groupTestsByDate = (tests) => {
-  const grouped = {};
-  tests.forEach(test => {
-    const date = new Date(test.createdAt).toISOString().split('T')[0];
-    if (!grouped[date]) {
-      grouped[date] = [];
-    }
-    grouped[date].push(test);
-  });
-  return grouped;
-};
-
-const formatDateHeader = (dateStr) => {
-  const date = new Date(dateStr);
-  const today = new Date();
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
-
-  if (dateStr === today.toISOString().split('T')[0]) {
-    return 'Today';
-  } else if (dateStr === yesterday.toISOString().split('T')[0]) {
-    return 'Yesterday';
-  } else {
-    return new Intl.DateTimeFormat('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    }).format(date);
-  }
-};
-
 
 export default Dashboard;

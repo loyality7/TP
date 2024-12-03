@@ -1,7 +1,7 @@
 import React from 'react';
 import Layout from '../../layout/Layout';
-import { Card, CardHeader, CardTitle, CardContent } from '../../common/Card';
-import { Check, AlertCircle, CreditCard, ArrowRight } from 'lucide-react';
+import { Card, CardContent } from '../../common/Card';
+import { Check } from 'lucide-react';
 
 const Subscription = () => {
   const currentPlan = {

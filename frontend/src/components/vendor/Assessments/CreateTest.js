@@ -12,7 +12,7 @@ import CodingSection from './components/CodingSection';
 const CreateTest = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const { } = useTestManagement();
+  useTestManagement();
   
   const [activeTab, setActiveTab] = useState('details');
   

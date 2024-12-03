@@ -1,15 +1,15 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Popover } from '@headlessui/react';
 import { toast } from 'react-hot-toast';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { Tooltip } from 'react-tooltip';
 import Layout from '../../layout/Layout';
 import { Card } from '../../common/Card';
 import { 
-  Search, Filter, Plus, MoreVertical, Clock, Users, Calendar, Download,
+  Search, Filter, Plus, Clock, Users, Calendar, Download,
   Edit, Trash2, Eye, TrendingUp, Brain, Target, Copy,
   BarChart2, Settings, TrendingDown, MessageCircle, EyeOff
 } from 'lucide-react';
@@ -32,7 +32,6 @@ const AllTests = () => {
   const [searchTerm] = useState('');
   const [selectedCategory] = useState('all');
   const [tests, setTests] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [dashboardMetrics] = useState({
     totalTests: { value: 0, trend: 0, subtitle: '' },
@@ -41,46 +40,8 @@ const AllTests = () => {
     newDiscussions: { value: 0, trend: 0, subtitle: '' }
   });
 
-
-  const stats = [
-    { 
-      title: 'Total Tests', 
-      value: dashboardMetrics.totalTests.value, 
-      trend: dashboardMetrics.totalTests.trend,
-      subtext: dashboardMetrics.totalTests.subtitle,
-      icon: Brain, 
-      color: 'blue' 
-    },
-    { 
-      title: 'Active Candidates', 
-      value: dashboardMetrics.activeCandidates.value,
-      trend: dashboardMetrics.activeCandidates.trend,
-      subtext: dashboardMetrics.activeCandidates.subtitle,
-      icon: Users, 
-      color: 'orange' 
-    },
-    { 
-      title: 'Pass Rate', 
-      value: `${dashboardMetrics.passRate.value}%`,
-      trend: dashboardMetrics.passRate.trend,
-      subtext: dashboardMetrics.passRate.subtitle,
-      icon: Target, 
-      color: 'purple' 
-    },
-    { 
-      title: 'New Discussions', 
-      value: dashboardMetrics.newDiscussions.value,
-      trend: dashboardMetrics.newDiscussions.trend,
-      subtext: dashboardMetrics.newDiscussions.subtitle,
-      icon: MessageCircle, 
-      color: 'green' 
-    }
-  ];
-
   const [quickFilters] = useState([]);
-
   const [showVisibilityModal, setShowVisibilityModal] = useState(false);
-  const [selectedTestForVisibility] = useState(null);
 
   const handleVisibilityToggle = async (test) => {
     try {
@@ -384,13 +345,9 @@ const AllTests = () => {
     );
   });
 
-  const handlePreview = useCallback((testId) => {
-    navigate(`/vendor/tests/${testId}/preview`);
-  }, []);
-
   const handleEdit = useCallback((testId) => {
     navigate(`/vendor/tests/${testId}/edit`);
-  }, []);
+  }, [navigate]);
 
   const handlePublish = async (test) => {
     try {
@@ -485,9 +442,9 @@ const AllTests = () => {
     return null;
   };
 
-  const handleCreateTest = () => {
+  const handleCreateTest = useCallback(() => {
     navigate('/vendor/tests/create');
-  };
+  }, [navigate]);
 
   const getLatestTests = (tests) => {
     return tests

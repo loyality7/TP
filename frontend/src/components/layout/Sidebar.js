@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   Home, FileText, Users2, LogOut, ChevronDown, 
@@ -36,7 +36,7 @@ const Sidebar = ({ isOpen, setIsOpen, onLogout }) => {
   const [openMenus, setOpenMenus] = useState({});
   const location = useLocation();
 
-  const menuItems = [
+  const menuItems = useMemo(() => [
     {
       label: "Dashboard",
       icon: Home,
@@ -120,7 +120,7 @@ const Sidebar = ({ isOpen, setIsOpen, onLogout }) => {
         { label: "Support", path: "/vendor/resources/support" }
       ]
     }
-  ];
+  ], []);
 
   // Fix useEffect dependency
   useEffect(() => {
