@@ -32,35 +32,41 @@ const CreateTest = () => {
     }
   });
 
+  const [validationErrors, setValidationErrors] = useState({});
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     try {
       setLoading(true);
+      setValidationErrors({}); // Clear previous validation errors
       
       // Basic validation
+      const errors = {};
+      
       if (!testData.title) {
-        toast.error('Test title is required');
-        return;
+        errors.title = 'Test title is required';
       }
       if (!testData.type) {
-        toast.error('Test type is required');
-        return;
+        errors.type = 'Test type is required';
       }
       if (!testData.duration) {
-        toast.error('Test duration is required');
-        return;
+        errors.duration = 'Test duration is required';
       }
       if (!testData.difficulty) {
-        toast.error('Test difficulty is required');
-        return;
+        errors.difficulty = 'Test difficulty is required';
       }
       if (!testData.category) {
-        toast.error('Test category is required');
-        return;
+        errors.category = 'Test category is required';
       }
       if (testData.mcqs.length === 0 && testData.codingChallenges.length === 0) {
-        toast.error('Add at least one question (MCQ or Coding Challenge)');
+        errors.questions = 'Add at least one question (MCQ or Coding Challenge)';
+      }
+
+      // If there are validation errors, show them and return
+      if (Object.keys(errors).length > 0) {
+        setValidationErrors(errors);
+        Object.values(errors).forEach(error => toast.error(error));
         return;
       }
 
@@ -68,7 +74,7 @@ const CreateTest = () => {
       await testService.createTest(testData);
       
       toast.success('Test created successfully!');
-      navigate('/vendor/tests'); // Redirect to tests list
+      navigate('/vendor/tests');
     } catch (error) {
       console.error('Error creating test:', error);
       toast.error(error.message || 'Failed to create test');

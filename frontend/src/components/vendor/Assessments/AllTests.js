@@ -19,6 +19,12 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
 
+const CardContent = ({ children, className = '' }) => (
+  <div className={className}>
+    {children}
+  </div>
+);
+
 const AllTests = () => {
   const navigate = useNavigate();
   const [viewMode, setViewMode] = useState('grid');
@@ -825,6 +831,19 @@ const AllTests = () => {
     } catch (error) {
       console.error('Export error:', error);
       toast.error('Failed to export data');
+    }
+  };
+
+  const handleDelete = async (testId) => {
+    try {
+      if (window.confirm('Are you sure you want to delete this test?')) {
+        await testService.deleteTest(testId);
+        toast.success('Test deleted successfully');
+        fetchTests(); // Refresh the tests list
+      }
+    } catch (error) {
+      console.error('Error deleting test:', error);
+      toast.error('Failed to delete test');
     }
   };
 

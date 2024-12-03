@@ -1016,13 +1016,14 @@ const Dashboard = () => {
   const { isAuthenticated, token } = auth;
   const navigate = useNavigate();
   
-  // Remove unused state variables
+  // Add filteredTests state
   const [metrics, setMetrics] = useState(null);
   const [analyticsOverview, setAnalyticsOverview] = useState(null);
   const [performanceMetrics, setPerformanceMetrics] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [tests, setTests] = useState([]);
+  const [filteredTests, setFilteredTests] = useState([]);
 
   // Simplified time range state - only keep if you plan to implement the feature soon
   const [activeTimeRange] = useState('all');
@@ -1072,11 +1073,11 @@ const Dashboard = () => {
 
   // Update tests when time range changes
   useEffect(() => {
-    if (vendorTests.length > 0) {
-      const filtered = getFilteredTests(vendorTests, activeTimeRange);
+    if (tests.length > 0) {
+      const filtered = getFilteredTests(tests, activeTimeRange);
       setFilteredTests(filtered);
     }
-  }, [vendorTests, activeTimeRange]);
+  }, [tests, activeTimeRange]);
 
   // Early return for loading state
   if (loading) {

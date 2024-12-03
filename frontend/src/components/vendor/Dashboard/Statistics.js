@@ -4,7 +4,8 @@ import { Card, CardHeader, CardTitle, CardContent } from '../../common/Card';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
   PieChart, Pie, Cell, AreaChart, Area, Legend, RadarChart,
-  PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ComposedChart, Scatter
+  PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ComposedChart, Scatter,
+  Line
 } from 'recharts';
 import { 
   Download, Clock, Brain, Target, Zap, BookOpen, 
@@ -493,6 +494,9 @@ const Statistics = () => {
   useEffect(() => {
     setMetricsData(generateMetricsData(timeRanges.overview));
   }, [timeRanges.overview, generateMetricsData]);
+
+  // Add performanceDistribution constant
+  const performanceDistribution = generatePerformanceDistribution(timeRanges.performance);
 
   return (
     <Layout>
