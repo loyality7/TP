@@ -1,7 +1,7 @@
 import React from 'react';
 import Layout from '../../layout/Layout';
-import { Card, CardHeader, CardTitle, CardContent } from '../../common/Card';
-import { FileText, Download, Filter, Plus } from 'lucide-react';
+import { Card, CardContent } from '../../common/Card';
+import { FileText, Download, Plus } from 'lucide-react';
 
 const CustomReports = () => {
   const savedReports = [

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
-  Home, FileText, Users2, Settings, LogOut, ChevronDown, 
-  Code, BarChart2, Calendar,  Database, Activity,  
-  PieChart, CreditCard, WalletIcon
+  Home, FileText, Users2, LogOut, ChevronDown, 
+  Code, BarChart2, Calendar, Database, Activity,
+  CreditCard
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -122,15 +122,18 @@ const Sidebar = ({ isOpen, setIsOpen, onLogout }) => {
     }
   ];
 
-  // Auto-open menu based on current path
+  // Fix useEffect dependency
   useEffect(() => {
     const currentPath = location.pathname;
-    menuItems.forEach(item => {
-      if (item.children?.some(child => currentPath.startsWith(child.path))) {
-        setOpenMenus(prev => ({ ...prev, [item.label]: true }));
-      }
-    });
-  }, [location.pathname]);
+    const updateOpenMenus = () => {
+      menuItems.forEach(item => {
+        if (item.children?.some(child => currentPath.startsWith(child.path))) {
+          setOpenMenus(prev => ({ ...prev, [item.label]: true }));
+        }
+      });
+    };
+    updateOpenMenus();
+  }, [location.pathname, menuItems]); // Add menuItems to dependencies
 
   const toggleMenu = (menu) => {
     setOpenMenus(prev => ({...prev, [menu]: !prev[menu]}));

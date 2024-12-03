@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
 import Layout from '../../layout/Layout';
-import { Card, CardHeader, CardTitle, CardContent } from '../../common/Card';
+import { Card, CardContent } from '../../common/Card';
 import { 
-  Search, Filter, Plus, Tag, MoreVertical, Edit2, Trash2,
+  Search, Filter, Plus, Edit2, Trash2,
   Code, Database, Brain, FileText, Clock, Award, Eye,
-  CheckCircle, XCircle, AlertCircle, Book, Bookmark
+  CheckCircle, XCircle, Book, Bookmark
 } from 'lucide-react';
 
 const QuestionBank = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [selectedDifficulty, setSelectedDifficulty] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [showFilters, setShowFilters] = useState(false);
 
   const questions = [
     {

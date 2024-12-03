@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../../layout/Layout';
-import { Card, CardHeader, CardTitle, CardContent } from '../../common/Card';
-import { Download, Filter, Calendar, Search, ArrowUp, ArrowDown } from 'lucide-react';
+import { Card, CardContent } from '../../common/Card';
 import { apiService } from '../../../services/api';
 
 const Transactions = () => {

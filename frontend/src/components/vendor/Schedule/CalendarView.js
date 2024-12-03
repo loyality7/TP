@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Layout from '../../layout/Layout';
-import { Card, CardHeader, CardTitle, CardContent } from '../../common/Card';
-import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { Card, CardContent } from '../../common/Card';
+import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 
 const CalendarView = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());

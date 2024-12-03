@@ -8,14 +8,13 @@ import { ChevronDown } from 'lucide-react';
 
 const Layout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
   const navigate = useNavigate();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const storedUser = JSON.parse(localStorage.getItem('user')) || {};
   const userName = storedUser.name || 'Guest';
   const userEmail = storedUser.email || 'guest@example.com';
-  const userRole = storedUser.role || 'Guest';
   const userInitial = userName.charAt(0).toUpperCase();
 
   const handleLogout = () => {

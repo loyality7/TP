@@ -1,14 +1,13 @@
 import React from 'react';
 import Layout from '../../layout/Layout';
-import { Card, CardHeader, CardTitle, CardContent } from '../../common/Card';
-import { Search, Filter, UserPlus, Mail, MoreVertical } from 'lucide-react';
+import { Card, CardContent } from '../../common/Card';
+import { Search, Filter, UserPlus, MoreVertical } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { apiService } from '../../../services/api';
 import * as XLSX from 'xlsx';
 
 const AllCandidates = () => {
   const [candidates, setCandidates] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchCandidates = async () => {
@@ -25,8 +24,6 @@ const AllCandidates = () => {
         setCandidates(formattedCandidates);
       } catch (error) {
         console.error('Error fetching candidates:', error);
-      } finally {
-        setLoading(false);
       }
     };
 

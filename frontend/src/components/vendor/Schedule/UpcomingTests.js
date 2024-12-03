@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from '../../layout/Layout';
-import { Card, CardHeader, CardTitle, CardContent } from '../../common/Card';
+import { Card, CardContent } from '../../common/Card';
 import { Calendar, Clock, Users2, Filter, Bell } from 'lucide-react';
 
 const UpcomingTests = () => {

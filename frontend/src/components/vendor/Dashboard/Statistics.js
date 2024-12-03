@@ -3,13 +3,13 @@ import Layout from '../../layout/Layout';
 import { Card, CardHeader, CardTitle, CardContent } from '../../common/Card';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
-  LineChart, Line, PieChart, Pie, Cell, AreaChart, Area, Legend, RadarChart,
+  PieChart, Pie, Cell, AreaChart, Area, Legend, RadarChart,
   PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ComposedChart, Scatter
 } from 'recharts';
 import { 
-  Filter, Download, Clock, Brain, Target, Calendar, Zap, BookOpen, 
+  Download, Clock, Brain, Target, Zap, BookOpen, 
   AlertCircle, TrendingUp, ChevronDown, FileText, Share2, Printer, 
-  Mail, Sliders, Search, RefreshCw, ArrowUpRight, ArrowDownRight,
+  Sliders, RefreshCw, ArrowUpRight, ArrowDownRight,
   Award, Users, CheckCircle, XCircle, AlertTriangle, Shield
 } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -278,75 +278,6 @@ const Statistics = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [lastUpdated, setLastUpdated] = useState(new Date());
   
-  // Quick Stats
-  const quickStats = [
-    {
-      title: 'Test Success Rate',
-      value: '78%',
-      trend: '+12%',
-      icon: CheckCircle,
-      color: 'emerald'
-    },
-    {
-      title: 'Avg. Completion Time',
-      value: '45 min',
-      trend: '-5%',
-      icon: Clock,
-      color: 'blue'
-    },
-    {
-      title: 'Failed Attempts',
-      value: '22%',
-      trend: '-8%',
-      icon: XCircle,
-      color: 'red'
-    },
-    {
-      title: 'Skill Improvement',
-      value: '65%',
-      trend: '+15%',
-      icon: TrendingUp,
-      color: 'violet'
-    }
-  ];
-
-  // Enhanced test performance data
-  const testPerformanceData = [
-    { month: 'Jan', completionRate: 85, avgScore: 72, dropoutRate: 15, avgTime: 45, totalCandidates: 120 },
-    { month: 'Feb', completionRate: 88, avgScore: 75, dropoutRate: 12, avgTime: 42, totalCandidates: 145 },
-    { month: 'Mar', completionRate: 92, avgScore: 78, dropoutRate: 8, avgTime: 40, totalCandidates: 180 },
-    { month: 'Apr', completionRate: 90, avgScore: 76, dropoutRate: 10, avgTime: 43, totalCandidates: 160 },
-    { month: 'May', completionRate: 95, avgScore: 82, dropoutRate: 5, avgTime: 38, totalCandidates: 200 },
-    { month: 'Jun', completionRate: 94, avgScore: 80, dropoutRate: 6, avgTime: 39, totalCandidates: 190 }
-  ];
-
-  // Skill performance data for radar chart
-  const skillPerformanceData = [
-    { skill: 'Problem Solving', value: 85 },
-    { skill: 'Code Quality', value: 78 },
-    { skill: 'Time Management', value: 82 },
-    { skill: 'Algorithm Knowledge', value: 75 },
-    { skill: 'Debug Skills', value: 88 },
-    { skill: 'Code Optimization', value: 72 }
-  ];
-
-  // Question analytics with detailed metrics
-  const questionAnalytics = [
-    { type: 'MCQ', successRate: 82, avgAttempts: 1.2, timeSpent: 20, totalQuestions: 150 },
-    { type: 'Coding', successRate: 68, avgAttempts: 2.4, timeSpent: 35, totalQuestions: 80 },
-    { type: 'Debugging', successRate: 75, avgAttempts: 1.8, timeSpent: 25, totalQuestions: 60 },
-    { type: 'Database', successRate: 70, avgAttempts: 2.1, timeSpent: 30, totalQuestions: 45 }
-  ];
-
-  // Candidate performance distribution
-  const performanceDistribution = [
-    { range: '90-100', count: 45, label: 'Excellent' },
-    { range: '80-89', count: 78, label: 'Very Good' },
-    { range: '70-79', count: 92, label: 'Good' },
-    { range: '60-69', count: 55, label: 'Average' },
-    { range: 'Below 60', count: 30, label: 'Need Improvement' }
-  ];
-
   // Available time range options
   const timeRangeOptions = ['week', 'month', 'quarter', 'year'];
 
@@ -1071,4 +1002,4 @@ const Statistics = () => {
   );
 };
 
-export default Statistics; 
+export default Statistics;

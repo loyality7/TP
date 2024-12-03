@@ -1,13 +1,12 @@
 import React from 'react';
 import Layout from '../../layout/Layout';
-import { Card, CardHeader, CardTitle, CardContent } from '../../common/Card';
-import { Search, Filter, Clock, AlertCircle } from 'lucide-react';
+import { Card, CardContent } from '../../common/Card';
+import { Search, Filter, Clock } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { apiService } from '../../../services/api';
 
 const ActiveCandidates = () => {
   const [activeCandidates, setActiveCandidates] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchActiveCandidates = async () => {
@@ -26,8 +25,6 @@ const ActiveCandidates = () => {
         setActiveCandidates(formattedCandidates);
       } catch (error) {
         console.error('Error fetching active candidates:', error);
-      } finally {
-        setLoading(false);
       }
     };
 

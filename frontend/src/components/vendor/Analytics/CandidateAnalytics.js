@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Layout from '../../layout/Layout';
 import { Card, CardHeader, CardTitle, CardContent } from '../../common/Card';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { Users2, Calendar, Filter, Search } from 'lucide-react';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
+import { Users2, Calendar, Search } from 'lucide-react';
 import { apiService } from '../../../services/api';
 
 const CandidateAnalytics = () => {
@@ -16,13 +16,13 @@ const CandidateAnalytics = () => {
     const fetchData = async () => {
       try {
         const [metricsResponse, candidatesResponse] = await Promise.all([
-          apiService.get('/vendor/candidate-metrics', { 
+          apiService.get('vendor/candidate-metrics', { 
             params: { 
               timeframe,
               search: searchTerm || undefined
             }
           }),
-          apiService.get('/vendor/candidates')
+          apiService.get('vendor/candidates')
         ]);
 
         setMetrics(metricsResponse.data.metrics);

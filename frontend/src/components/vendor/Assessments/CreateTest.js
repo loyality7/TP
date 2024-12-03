@@ -4,7 +4,6 @@ import Layout from '../../layout/Layout';
 import { Card, CardHeader, CardTitle, CardContent } from '../../common/Card';
 import { toast } from 'react-hot-toast';
 import { useTestManagement } from '../../../hooks/useTestManagement';
-import QuestionsTab from './components/QuestionsTab';
 import SettingsTab from './components/SettingsTab';
 import { testService } from '../../../services/test.service';
 import MCQSection from './components/MCQSection';
@@ -13,10 +12,9 @@ import CodingSection from './components/CodingSection';
 const CreateTest = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const { validateTestData } = useTestManagement();
+  const { } = useTestManagement();
   
   const [activeTab, setActiveTab] = useState('details');
-  const [validationErrors, setValidationErrors] = useState({});
   
   const [testData, setTestData] = useState({
     title: '',
@@ -66,8 +64,8 @@ const CreateTest = () => {
         return;
       }
 
-      // Create the test
-      const response = await testService.createTest(testData);
+      // Create the test without storing response
+      await testService.createTest(testData);
       
       toast.success('Test created successfully!');
       navigate('/vendor/tests'); // Redirect to tests list

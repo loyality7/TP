@@ -2,12 +2,12 @@ import React from 'react';
 import Layout from '../../layout/Layout';
 import { Card, CardHeader, CardTitle, CardContent } from '../../common/Card';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Target, TrendingUp, Calendar, Filter } from 'lucide-react';
+import { Calendar, Filter } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const PerformanceInsights = () => {
-  const [period, setPeriod] = useState('month');
+  const [period] = useState('month');
   const [loading, setLoading] = useState(true);
   const [metrics, setMetrics] = useState(null);
   const [error, setError] = useState(null);

@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../../layout/Layout';
 import { Card, CardHeader, CardTitle, CardContent } from '../../common/Card';
-import { Wallet as WalletIcon, Plus, RefreshCcw } from 'lucide-react';
+import { Wallet as WalletIcon, Plus } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import walletService from '../../../services/walletService';
 
 const Wallet = () => {
   const [balance, setBalance] = useState(0);
   const [transactions, setTransactions] = useState([]);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchWalletData();
@@ -16,15 +15,12 @@ const Wallet = () => {
 
   const fetchWalletData = async () => {
     try {
-      setLoading(true);
       const balanceData = await walletService.getBalance();
       const transactionsData = await walletService.getTransactions();
       setBalance(balanceData.balance);
       setTransactions(transactionsData.transactions);
     } catch (error) {
       toast.error('Failed to fetch wallet data');
-    } finally {
-      setLoading(false);
     }
   };
 

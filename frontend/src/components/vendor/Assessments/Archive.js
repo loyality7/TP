@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from '../../layout/Layout';
-import { Card, CardHeader, CardTitle, CardContent } from '../../common/Card';
+import { Card, CardContent } from '../../common/Card';
 import { Search, Filter, Archive as ArchiveIcon, RefreshCw, Trash2 } from 'lucide-react';
 
 const Archive = () => {

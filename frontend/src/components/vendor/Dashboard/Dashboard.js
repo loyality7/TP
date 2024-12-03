@@ -1014,30 +1014,26 @@ const shimmerAnimation = {
 const Dashboard = () => {
   const auth = useAuth();
   const { isAuthenticated, token } = auth;
-  const [activeTimeRange, setActiveTimeRange] = useState('all');
   const navigate = useNavigate();
   
-  // Add state for API data
+  // Remove unused state variables
   const [metrics, setMetrics] = useState(null);
-  const [recentActivity, setRecentActivity] = useState(null);
   const [analyticsOverview, setAnalyticsOverview] = useState(null);
   const [performanceMetrics, setPerformanceMetrics] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [vendorTests, setVendorTests] = useState([]);
-  const [loadingTests, setLoadingTests] = useState(true);
-  const [filteredTests, setFilteredTests] = useState([]);
   const [tests, setTests] = useState([]);
+
+  // Simplified time range state - only keep if you plan to implement the feature soon
+  const [activeTimeRange] = useState('all');
 
   useEffect(() => {
     const fetchTests = async () => {
       try {
         const response = await apiService.get('/vendor/tests');
         setTests(response.data.tests);
-        setLoadingTests(false);
       } catch (error) {
         console.error('Error fetching tests:', error);
-        setLoadingTests(false);
       }
     };
 
@@ -1053,10 +1049,6 @@ const Dashboard = () => {
         // Fetch metrics
         const metricsResponse = await apiService.get('/vendor/dashboard/metrics');
         setMetrics(metricsResponse.data);
-
-        // Fetch recent activity
-        const activityResponse = await apiService.get('/vendor/dashboard/recent-activity');
-        setRecentActivity(activityResponse.data);
 
         // Fetch analytics overview
         const analyticsResponse = await apiService.get('/vendor/analytics/overview');

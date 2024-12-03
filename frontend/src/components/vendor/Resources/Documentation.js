@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from '../../layout/Layout';
-import { Card, CardHeader, CardTitle, CardContent } from '../../common/Card';
+import { Card, CardContent } from '../../common/Card';
 import { BookOpen, Search, ExternalLink, Star } from 'lucide-react';
 
 const Documentation = () => {

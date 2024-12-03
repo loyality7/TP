@@ -110,6 +110,8 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
     if (challenges?.length > 0 && currentChallenge >= 0) {
       // Track time spent on previous challenge before switching
       const timeSpent = (Date.now() - challengeStartTime) / 1000;
+      
+      // Update analytics for the challenge
       setAnalytics(prev => {
         const prevTimePerChallenge = prev?.codingMetrics?.timePerChallenge || {};
         return {
@@ -146,7 +148,7 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
           
           // Initialize answers only if they don't exist
           if (!answers[challenge._id]) {
-            memoizedSetAnswers({
+            setAnswers({
               ...answers,
               [challenge._id]: {
                 code: defaultCode,
@@ -160,7 +162,7 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
         }
       }
     }
-  }, [challenges, currentChallenge, memoizedSetAnswers]);
+  }, [challenges, currentChallenge, memoizedSetAnswers, answers, challengeStartTime, setAnalytics]);
 
   // Handle left panel resize
   const handleLeftResize = useCallback((e) => {

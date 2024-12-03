@@ -1,14 +1,13 @@
 import React from 'react';
 import Layout from '../../layout/Layout';
-import { Card, CardHeader, CardTitle, CardContent } from '../../common/Card';
-import { Search, Filter, Download, CheckCircle, X, FileText } from 'lucide-react';
+import { Card, CardContent } from '../../common/Card';
+import { Search, Filter, Download, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { apiService } from '../../../services/api';
 import * as XLSX from 'xlsx';
 
 const CompletedCandidates = () => {
   const [completedCandidates, setCompletedCandidates] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [metrics, setMetrics] = useState({
     activeTestTakers: 0,
     totalCandidates: 0,
@@ -56,8 +55,6 @@ const CompletedCandidates = () => {
         setMetrics(response.data.metrics);
       } catch (error) {
         console.error('Error fetching completed candidates:', error);
-      } finally {
-        setLoading(false);
       }
     };
 

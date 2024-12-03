@@ -42,8 +42,7 @@ export default function TakeTest() {
   const [showInstructions, setShowInstructions] = useState(true);
 
   // Ref to track last warning time
-  const lastWarningTime = useRef(0);
-  const WARNING_COOLDOWN = 3000; // 3 seconds cooldown between warnings
+  const lastWarningRef = useRef(0);
 
   // Add new state for tracking violations
   const [isTabVisible, setIsTabVisible] = useState(true);
@@ -110,15 +109,21 @@ export default function TakeTest() {
 
   // Simplify handleWarning to only increment warning count
   const handleWarning = useCallback((message) => {
-    // Show the warning modal
-    setWarningMessage(message);
-    setShowWarningModal(true);
+    const now = Date.now();
+    const lastWarning = lastWarningRef.current;
+    const WARNING_COOLDOWN = 3000;
 
-    // Update analytics
-    updateAnalytics(prev => ({
-      ...prev,
-      warnings: prev.warnings + 1
-    }));
+    if (now - lastWarning >= WARNING_COOLDOWN) {
+      setWarningMessage(message);
+      setShowWarningModal(true);
+      lastWarningRef.current = now;
+
+      // Update analytics
+      updateAnalytics(prev => ({
+        ...prev,
+        warnings: prev.warnings + 1
+      }));
+    }
   }, [updateAnalytics]);
 
   // Update handleSubmit to safely use testId
@@ -845,6 +850,10 @@ export default function TakeTest() {
     }
   }, [updateAnalytics]);
 
+  const handleSetAnalytics = useCallback((newAnalytics) => {
+    setAnalytics(newAnalytics);
+  }, []); // Empty dependency array since this function doesn't depend on any values
+
   // Render Loading State
   if (loading) {
     return (
@@ -1064,7 +1073,7 @@ export default function TakeTest() {
               onSubmitCoding={handleCodingSubmission}
               testId={uuid}
               analytics={analytics}
-              setAnalytics={updateAnalytics}
+              setAnalytics={handleSetAnalytics}
             />
           )}
         </div>

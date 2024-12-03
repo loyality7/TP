@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import { AuthProvider } from './context/AuthContext';
 import Header from './components/layout/Header';
 import ProtectedRoute from './components/auth/ProtectedRoute';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import VendorDashboard from './components/vendor/Dashboard/Dashboard';
 
 // Import pages
@@ -48,7 +47,6 @@ import ForgotPassword from './pages/auth/ForgotPassword';
 import ResetPassword from './pages/auth/ResetPassword';
 import { QueryProvider } from './providers/QueryProvider';
 import Wallet from './components/vendor/Payments/Wallet';
-const queryClient = new QueryClient();
 
 // Create a wrapper component to handle header visibility
 const AppContent = () => {

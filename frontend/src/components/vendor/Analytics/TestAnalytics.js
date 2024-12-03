@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Layout from '../../layout/Layout';
 import { Card, CardHeader, CardTitle, CardContent } from '../../common/Card';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
-import { Calendar, Filter } from 'lucide-react';
+import { Filter } from 'lucide-react';
 import { apiService } from '../../../services/api';
 
 const TestAnalytics = () => {
@@ -12,10 +12,10 @@ const TestAnalytics = () => {
 
   useEffect(() => {
     const fetchAnalytics = async () => {
-      try {
+      try { 
         const [overviewResponse, performanceResponse] = await Promise.all([
-          apiService.get('/vendor/analytics/overview', { params: { period } }),
-          apiService.get('/vendor/analytics/performance', { params: { period } })
+          apiService.get('vendor/analytics/overview', { params: { period } }),
+          apiService.get('vendor/analytics/performance', { params: { period } })
         ]);
 
         setAnalyticsData({

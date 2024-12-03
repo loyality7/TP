@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Edit, X, History } from 'lucide-react';
+import { Plus, Trash2, Edit } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 const MCQSection = ({ testData, setTestData }) => {
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const [newMCQ, setNewMCQ] = useState({
     question: '',
     options: ['', ''],

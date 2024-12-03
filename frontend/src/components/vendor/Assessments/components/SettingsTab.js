@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '../../../common/Card';
-import { Shield, Clock, Users, Eye, Brain, AlertTriangle } from 'lucide-react';
+import { Shield, Clock, Users, Eye, Brain } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { testService } from '../../../../services/test.service';
 

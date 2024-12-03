@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import Layout from '../../layout/Layout';
-import { Card, CardHeader, CardTitle, CardContent } from '../../common/Card';
+import { Card, CardContent } from '../../common/Card';
 import { 
-  Download, FileText, Users, Calendar, TrendingUp, 
-  Award, Clock, AlertCircle, Target, Brain, BookOpen,
-  BarChart2, PieChart, Activity, X, ChevronDown, Share2, Code, 
-  LayoutGrid
+  Download, FileText, Users, TrendingUp, 
+  Clock, AlertCircle, Target, Brain, BookOpen,
+  BarChart2, Share2, Code, LayoutGrid, X
 } from 'lucide-react';
 
 // Add Custom Report Modal Component
