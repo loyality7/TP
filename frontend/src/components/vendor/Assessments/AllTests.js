@@ -83,9 +83,8 @@ const AllTests = () => {
 
   const handleVisibilityToggle = async (test) => {
     try {
-      await testService.updateTestVisibility(test.id, test.visibility);
-      fetchTests();
-      toast.success('Test visibility updated successfully');
+      setSelectedTestForVisibility(test);
+      setShowVisibilityModal(true);
     } catch (error) {
       toast.error('Failed to update test visibility');
     }

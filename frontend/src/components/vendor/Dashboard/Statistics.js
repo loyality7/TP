@@ -446,55 +446,6 @@ const Statistics = () => {
     </div>
   );
 
-  // Add metrics data generator
-  const generateMetricsData = useCallback((timeRange) => {
-    switch (timeRange) {
-      case 'week':
-        return {
-          testSuccessRate: { value: 85, trend: '+4%' },
-          avgCompletionTime: { value: 35, trend: '+3%' },
-          failedAttempts: { value: 12, trend: '+15%' },
-          skillImprovement: { value: 78, trend: '+6%' }
-        };
-      case 'month':
-        return {
-          testSuccessRate: { value: 89, trend: '+6%' },
-          avgCompletionTime: { value: 40, trend: '+5%' },
-          failedAttempts: { value: 8, trend: '+30%' },
-          skillImprovement: { value: 83, trend: '+4%' }
-        };
-      case 'quarter':
-        return {
-          testSuccessRate: { value: 92, trend: '+8%' },
-          avgCompletionTime: { value: 38, trend: '+4%' },
-          failedAttempts: { value: 6, trend: '+25%' },
-          skillImprovement: { value: 87, trend: '+7%' }
-        };
-      case 'year':
-        return {
-          testSuccessRate: { value: 94, trend: '+10%' },
-          avgCompletionTime: { value: 36, trend: '+3%' },
-          failedAttempts: { value: 5, trend: '+20%' },
-          skillImprovement: { value: 90, trend: '+9%' }
-        };
-      default:
-        return {
-          testSuccessRate: { value: 89, trend: '+6%' },
-          avgCompletionTime: { value: 40, trend: '+5%' },
-          failedAttempts: { value: 8, trend: '+30%' },
-          skillImprovement: { value: 83, trend: '+4%' }
-        };
-    }
-  }, []);
-
-  // Add state for metrics data
-  const [metricsData, setMetricsData] = useState(generateMetricsData('month'));
-
-  // Update metrics when time range changes
-  useEffect(() => {
-    setMetricsData(generateMetricsData(timeRanges.overview));
-  }, [timeRanges.overview, generateMetricsData]);
-
   // Add performanceDistribution constant
   const performanceDistribution = generatePerformanceDistribution(timeRanges.performance);
 

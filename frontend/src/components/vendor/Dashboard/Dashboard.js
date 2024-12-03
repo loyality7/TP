@@ -3,8 +3,8 @@ import { useAuth } from '../../../context/AuthContext';
 import apiService from '../../../services/api';
 import { Card, CardContent, CardHeader, CardTitle } from "../../../components/common/Card";
 import { 
-  FileText, Users, Clock, Star,
-  Award, BookOpen, MessageSquare, Sparkles, Zap, TrendingUp, Shield, MoreVertical, UserX,
+  FileText, Users, Clock, 
+  Award, BookOpen, MessageSquare, Sparkles, Zap, TrendingUp, Shield, 
   PlusCircle, 
   UserPlus, 
   BarChart3, 
@@ -15,7 +15,7 @@ import {
 import Layout from '../../layout/Layout';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -26,26 +26,6 @@ const getMetricColor = (title) => {
     'Active Candidates': '#22c55e',
     'Pass Rate': '#f59e0b',
     'New Discussions': '#8b5cf6'
-  };
-  return colors[title] || colors['Total Tests'];
-};
-
-const getMetricBgColor = (title) => {
-  const colors = {
-    'Total Tests': 'bg-blue-50 ring-1 ring-blue-100',
-    'Active Candidates': 'bg-green-50 ring-1 ring-green-100',
-    'Pass Rate': 'bg-amber-50 ring-1 ring-amber-100',
-    'New Discussions': 'bg-violet-50 ring-1 ring-violet-100'
-  };
-  return colors[title] || colors['Total Tests'];
-};
-
-const getMetricIconColor = (title) => {
-  const colors = {
-    'Total Tests': 'text-blue-500',
-    'Active Candidates': 'text-green-500',
-    'Pass Rate': 'text-amber-500',
-    'New Discussions': 'text-violet-500'
   };
   return colors[title] || colors['Total Tests'];
 };
