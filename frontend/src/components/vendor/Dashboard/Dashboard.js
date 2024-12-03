@@ -10,7 +10,8 @@ import {
   BarChart3, 
   ArrowRight,
   Settings,
-  Download
+  Download,
+  UserX
 } from 'lucide-react';
 import Layout from '../../layout/Layout';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
@@ -988,6 +989,17 @@ const shimmerAnimation = {
   '.animate-shimmer': {
     animation: 'shimmer 2s infinite',
   },
+};
+
+// Add this helper function with the other helper functions at the top
+const getMetricBgColor = (title) => {
+  const colors = {
+    'Total Tests': 'bg-blue-50',
+    'Active Candidates': 'bg-green-50',
+    'Pass Rate': 'bg-amber-50',
+    'New Discussions': 'bg-violet-50'
+  };
+  return colors[title] || colors['Total Tests'];
 };
 
 // Update the early return for loading state in the Dashboard component
