@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Popover } from '@headlessui/react';
 import { toast } from 'react-hot-toast';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { Tooltip } from 'react-tooltip';
@@ -11,7 +11,8 @@ import { Card } from '../../common/Card';
 import { 
   Search, Filter, Plus, Clock, Users, Calendar, Download,
   Edit, Trash2, Eye, TrendingUp, Brain, Target, Copy,
-  BarChart2, Settings, TrendingDown, MessageCircle, EyeOff
+  BarChart2, Settings, TrendingDown, MessageCircle, EyeOff,
+  MoreVertical
 } from 'lucide-react';
 import { testService } from '../../../services/test.service';
 import { apiService } from '../../../services/api';
@@ -42,6 +43,43 @@ const AllTests = () => {
 
   const [quickFilters] = useState([]);
   const [showVisibilityModal, setShowVisibilityModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [selectedTestForVisibility, setSelectedTestForVisibility] = useState(null);
+
+  const stats = [
+    {
+      title: 'Total Tests',
+      value: dashboardMetrics.totalTests.value,
+      trend: dashboardMetrics.totalTests.trend,
+      subtext: dashboardMetrics.totalTests.subtitle,
+      icon: Target,
+      color: 'emerald'
+    },
+    {
+      title: 'Active Candidates',
+      value: dashboardMetrics.activeCandidates.value,
+      trend: dashboardMetrics.activeCandidates.trend,
+      subtext: dashboardMetrics.activeCandidates.subtitle,
+      icon: Users,
+      color: 'blue'
+    },
+    {
+      title: 'Pass Rate',
+      value: `${dashboardMetrics.passRate.value}%`,
+      trend: dashboardMetrics.passRate.trend,
+      subtext: dashboardMetrics.passRate.subtitle,
+      icon: TrendingUp,
+      color: 'indigo'
+    },
+    {
+      title: 'New Discussions',
+      value: dashboardMetrics.newDiscussions.value,
+      trend: dashboardMetrics.newDiscussions.trend,
+      subtext: dashboardMetrics.newDiscussions.subtitle,
+      icon: MessageCircle,
+      color: 'purple'
+    }
+  ];
 
   const handleVisibilityToggle = async (test) => {
     try {
