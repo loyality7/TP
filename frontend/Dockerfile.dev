@@ -1,0 +1,16 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Install dependencies
+COPY package*.json ./
+RUN npm install
+
+# Copy source code
+COPY . .
+
+# Expose React's default port
+EXPOSE 3000
+
+# Start React dev server with host flag
+CMD ["npm", "run", "start", "--", "--host", "0.0.0.0"] 

@@ -1,0 +1,387 @@
+{
+  "title": "Hysteresis Qualifier Test 2",
+  "description": "A comprehensive test covering Data Structures, Algorithms, and basic programming concepts. This test includes both multiple choice questions and hands-on coding challenges.",
+  "duration": 120,
+  "proctoring": true,
+  "type": "assessment",
+  "category": "Computer Science",
+  "difficulty": "intermediate",
+  "instructions": "1. Complete all coding challenges within the time limit\n2. Each coding solution must pass all test cases\n3. You can attempt questions in any order\n4. Ensure your code handles all edge cases",
+  "codingChallenges": [
+    {
+      "title": "Caesar Cipher Decoder",
+      "description": "Implement a Caesar cipher decryption algorithm",
+      "problemStatement": "Given an encrypted string and a shift value (key), implement the Caesar cipher decryption. In Caesar cipher, each letter in the plaintext is shifted a certain number of places down the alphabet. For example, with a shift of 3, 'D' would be replaced by 'A', 'E' would become 'B', and so on.\n\nNote:\n- The string will only contain uppercase letters and spaces\n- Spaces should remain unchanged\n- The shift value will be between 1 and 25",
+      "constraints": "1. 1 <= message.length <= 1000\n2. 1 <= shift <= 25\n3. message contains only uppercase letters and spaces",
+      "allowedLanguages": ["javascript", "python", "java", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "/**\n * @param {string} message - encrypted message\n * @param {number} shift - shift value\n * @return {string} - decrypted message\n */\nfunction caesarDecrypt(message, shift) {\n    // Write your code here\n    \n}",
+          "invisibleCode": "module.exports = caesarDecrypt;"
+        },
+        "python": {
+          "visibleCode": "def caesar_decrypt(message: str, shift: int) -> str:\n    # Write your code here\n    pass",
+          "invisibleCode": "# Test helper code here"
+        },
+        "java": {
+          "visibleCode": "class Solution {\n    public String caesarDecrypt(String message, int shift) {\n        // Write your code here\n        \n    }\n}",
+          "invisibleCode": "// Test helper code here"
+        },
+        "cpp": {
+          "visibleCode": "class Solution {\npublic:\n    string caesarDecrypt(string message, int shift) {\n        // Write your code here\n        \n    }\n};",
+          "invisibleCode": "// Test helper code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "KHOOR 3",
+          "output": "HELLO",
+          "isVisible": true,
+          "explanation": "Each letter is shifted back 3 positions"
+        },
+        {
+          "input": "DWWDFN DW GDZQ 3",
+          "output": "ATTACK AT DAWN",
+          "isVisible": true,
+          "explanation": "Spaces remain unchanged, letters shifted back 3"
+        },
+        {
+          "input": "ZZZZ 1",
+          "output": "YYYY",
+          "isVisible": true,
+          "explanation": "Testing wrap-around from Z to Y"
+        },
+        {
+          "input": "ABCDEFGHIJKLMNOPQRSTUVWXYZ 23",
+          "output": "DEFGHIJKLMNOPQRSTUVWXYZABC",
+          "isVisible": false,
+          "explanation": "Hidden test case with all alphabet letters"
+        },
+        {
+          "input": "SECURITY BASICS 15",
+          "output": "DPNFCTEK MLDTND",
+          "isVisible": false,
+          "explanation": "Hidden test case with larger shift"
+        }
+      ],
+      "marks": 20,
+      "timeLimit": 1000,
+      "memoryLimit": 128,
+      "difficulty": "easy",
+      "tags": ["cryptography", "string manipulation", "security"]
+    },
+    {
+      "title": "Password Strength Validator",
+      "description": "Implement a password strength checker",
+      "problemStatement": "Implement a password strength validator that returns a score from 0 to 5 based on the following criteria:\n\n+1 point for length >= 8\n+1 point for containing both upper and lowercase letters\n+1 point for containing numbers\n+1 point for containing special characters (!@#$%^&*)\n+1 point for not containing common patterns (123, abc, qwerty)\n\nReturn the final score of the password.",
+      "constraints": "1. 1 <= password.length <= 50\n2. password contains only printable ASCII characters\n3. Time Complexity should be O(n)",
+      "allowedLanguages": ["javascript", "python", "java", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "/**\n * @param {string} password\n * @return {number} strength score (0-5)\n */\nfunction checkPasswordStrength(password) {\n    // Write your code here\n    \n}",
+          "invisibleCode": "module.exports = checkPasswordStrength;"
+        },
+        "python": {
+          "visibleCode": "def check_password_strength(password: str) -> int:\n    # Write your code here\n    pass",
+          "invisibleCode": "# Test helper code here"
+        },
+        "java": {
+          "visibleCode": "class Solution {\n    public int checkPasswordStrength(String password) {\n        // Write your code here\n        \n    }\n}",
+          "invisibleCode": "// Test helper code here"
+        },
+        "cpp": {
+          "visibleCode": "class Solution {\npublic:\n    int checkPasswordStrength(string password) {\n        // Write your code here\n        \n    }\n};",
+          "invisibleCode": "// Test helper code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "Password123!",
+          "output": "5",
+          "isVisible": true,
+          "explanation": "Meets all criteria: length, upper/lower, numbers, special chars, no patterns"
+        },
+        {
+          "input": "abc123",
+          "output": "2",
+          "isVisible": true,
+          "explanation": "Only has numbers and contains common pattern 'abc'"
+        },
+        {
+          "input": "ADMIN123",
+          "output": "2",
+          "isVisible": true,
+          "explanation": "Has length and numbers, but missing lowercase and special chars"
+        },
+        {
+          "input": "P@ssw0rd",
+          "output": "4",
+          "isVisible": false,
+          "explanation": "Hidden test case: common password pattern"
+        },
+        {
+          "input": "!@#$%^&*()",
+          "output": "2",
+          "isVisible": false,
+          "explanation": "Hidden test case: only special characters"
+        }
+      ],
+      "marks": 20,
+      "timeLimit": 1000,
+      "memoryLimit": 128,
+      "difficulty": "medium",
+      "tags": ["security", "string manipulation", "validation"]
+    },
+    {
+      "title": "Excel Sheet Column Number",
+      "description": "Convert Excel column title to its corresponding column number",
+      "problemStatement": "Given a string columnTitle that represents the column title as appears in an Excel sheet, return its corresponding column number.\n\nFor example:\nA -> 1\nB -> 2\nC -> 3\n...\nZ -> 26\nAA -> 27\nAB -> 28\n...",
+      "constraints": "1. 1 <= columnTitle.length <= 7\n2. columnTitle consists only of uppercase English letters\n3. columnTitle is in the range ['A', 'FXSHRXW']\n4. Time Complexity should be O(n)",
+      "allowedLanguages": ["javascript", "python", "java", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "/**\n * @param {string} columnTitle\n * @return {number}\n */\nfunction titleToNumber(columnTitle) {\n    // Write your code here\n    \n}",
+          "invisibleCode": "module.exports = titleToNumber;"
+        },
+        "python": {
+          "visibleCode": "def titleToNumber(columnTitle: str) -> int:\n    # Write your code here\n    pass",
+          "invisibleCode": "# Test helper code here"
+        },
+        "java": {
+          "visibleCode": "class Solution {\n    public int titleToNumber(String columnTitle) {\n        // Write your code here\n        \n    }\n}",
+          "invisibleCode": "// Test helper code here"
+        },
+        "cpp": {
+          "visibleCode": "class Solution {\npublic:\n    int titleToNumber(string columnTitle) {\n        // Write your code here\n        \n    }\n};",
+          "invisibleCode": "// Test helper code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "A",
+          "output": "1",
+          "isVisible": true,
+          "explanation": "A is the first column"
+        },
+        {
+          "input": "AB",
+          "output": "28",
+          "isVisible": true,
+          "explanation": "A = 1, B = 2. AB = 26 * 1 + 2 = 28"
+        },
+        {
+          "input": "ZY",
+          "output": "701",
+          "isVisible": true,
+          "explanation": "Z = 26, Y = 25. ZY = 26 * 26 + 25 = 701"
+        },
+        {
+          "input": "AAA",
+          "output": "703",
+          "isVisible": false,
+          "explanation": "Hidden test case for three-letter column"
+        },
+        {
+          "input": "FXSHRXW",
+          "output": "2147483647",
+          "isVisible": false,
+          "explanation": "Hidden test case for maximum possible value"
+        }
+      ],
+      "marks": 20,
+      "timeLimit": 1000,
+      "memoryLimit": 128,
+      "difficulty": "easy",
+      "tags": ["math", "string", "algorithms"]
+    },
+    {
+      "title": "Decode Ways",
+      "description": "Find the number of ways to decode a string of digits into letters",
+      "problemStatement": "You have intercepted a secret message encoded as a string of numbers. The message is decoded via the following mapping:\n\n'1' -> 'A'\n'2' -> 'B'\n...\n'25' -> 'Y'\n'26' -> 'Z'\n\nGiven a string s containing only digits, return the number of ways to decode it. If the entire string cannot be decoded in any valid way, return 0.\n\nNote:\n- A code starting with '0' is invalid\n- The answer will fit in a 32-bit integer",
+      "constraints": "1. 1 <= s.length <= 100\n2. s contains only digits\n3. s may contain leading zero(s)\n4. Time Complexity should be O(n)",
+      "allowedLanguages": ["javascript", "python", "java", "cpp","c"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "/**\n * @param {string} s\n * @return {number}\n */\nfunction numDecodings(s) {\n    // Write your code here\n    \n}",
+          "invisibleCode": "module.exports = numDecodings;"
+        },
+        "python": {
+          "visibleCode": "def numDecodings(s: str) -> int:\n    # Write your code here\n    pass",
+          "invisibleCode": "# Test helper code here"
+        },
+        "java": {
+          "visibleCode": "class Solution {\n    public int numDecodings(String s) {\n        // Write your code here\n        \n    }\n}",
+          "invisibleCode": "// Test helper code here"
+        },
+        "cpp": {
+          "visibleCode": "class Solution {\npublic:\n    int numDecodings(string s) {\n        // Write your code here\n        \n    }\n};",
+          "invisibleCode": "// Test helper code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "12",
+          "output": "2",
+          "isVisible": true,
+          "explanation": "'12' can be decoded as 'AB' (1 2) or 'L' (12)"
+        },
+        {
+          "input": "226",
+          "output": "3",
+          "isVisible": true,
+          "explanation": "'226' can be decoded as 'BZ' (2 26), 'VF' (22 6), or 'BBF' (2 2 6)"
+        },
+        {
+          "input": "06",
+          "output": "0",
+          "isVisible": true,
+          "explanation": "'06' is invalid due to leading zero"
+        },
+        {
+          "input": "27",
+          "output": "1",
+          "isVisible": false,
+          "explanation": "Hidden test case: only one way as 27 > 26"
+        },
+        {
+          "input": "1201234",
+          "output": "3",
+          "isVisible": false,
+          "explanation": "Hidden test case with zero in middle"
+        }
+      ],
+      "marks": 20,
+      "timeLimit": 1000,
+      "memoryLimit": 128,
+      "difficulty": "medium",
+      "tags": ["dynamic programming", "string", "algorithms"]
+    },
+    {
+      "title": "Array Sum Calculator",
+      "description": "Calculate the sum of all elements in an array",
+      "problemStatement": "Given an array of integers, write a function to calculate the sum of all elements in the array.\n\nFor example:\n[1, 2, 3] → 6\n[-1, 5, 2] → 6\n[0] → 0",
+      "constraints": "1. 1 <= array.length <= 1000\n2. -1000 <= array[i] <= 1000\n3. Time Complexity should be O(n)",
+      "allowedLanguages": ["javascript", "python", "java", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "/**\n * @param {number[]} numbers\n * @return {number}\n */\nfunction calculateSum(numbers) {\n    // Write your code here\n    \n}",
+          "invisibleCode": "module.exports = calculateSum;"
+        },
+        "python": {
+          "visibleCode": "def calculate_sum(numbers: List[int]) -> int:\n    # Write your code here\n    pass",
+          "invisibleCode": "# Test helper code here"
+        },
+        "java": {
+          "visibleCode": "class Solution {\n    public int calculateSum(int[] numbers) {\n        // Write your code here\n        \n    }\n}",
+          "invisibleCode": "// Test helper code here"
+        },
+        "cpp": {
+          "visibleCode": "class Solution {\npublic:\n    int calculateSum(vector<int>& numbers) {\n        // Write your code here\n        \n    }\n};",
+          "invisibleCode": "// Test helper code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "[1, 2, 3, 4, 5]",
+          "output": "15",
+          "isVisible": true,
+          "explanation": "1 + 2 + 3 + 4 + 5 = 15"
+        },
+        {
+          "input": "[-1, -2, 5]",
+          "output": "2",
+          "isVisible": true,
+          "explanation": "-1 + (-2) + 5 = 2"
+        },
+        {
+          "input": "[0]",
+          "output": "0",
+          "isVisible": true,
+          "explanation": "Single element array"
+        },
+        {
+          "input": "[-10, -20, -30, -40]",
+          "output": "-100",
+          "isVisible": false,
+          "explanation": "Hidden test case with all negative numbers"
+        },
+        {
+          "input": "[100, 200, 300, 400, 500]",
+          "output": "1500",
+          "isVisible": false,
+          "explanation": "Hidden test case with larger numbers"
+        }
+      ],
+      "marks": 10,
+      "timeLimit": 1000,
+      "memoryLimit": 128,
+      "difficulty": "easy",
+      "tags": ["arrays", "loops", "basic"]
+    },
+    {
+      "title": "String Reversal",
+      "description": "Reverse a given string",
+      "problemStatement": "Write a function that reverses a string. The input string is given as an array of characters.\n\nFor example:\n'hello' → 'olleh'\n'world' → 'dlrow'\n'12345' → '54321'",
+      "constraints": "1. 1 <= s.length <= 100\n2. s consists of printable ASCII characters\n3. Time Complexity should be O(n)",
+      "allowedLanguages": ["javascript", "python", "java", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "/**\n * @param {string} s\n * @return {string}\n */\nfunction reverseString(s) {\n    // Write your code here\n    \n}",
+          "invisibleCode": "module.exports = reverseString;"
+        },
+        "python": {
+          "visibleCode": "def reverse_string(s: str) -> str:\n    # Write your code here\n    pass",
+          "invisibleCode": "# Test helper code here"
+        },
+        "java": {
+          "visibleCode": "class Solution {\n    public String reverseString(String s) {\n        // Write your code here\n        \n    }\n}",
+          "invisibleCode": "// Test helper code here"
+        },
+        "cpp": {
+          "visibleCode": "class Solution {\npublic:\n    string reverseString(string s) {\n        // Write your code here\n        \n    }\n};",
+          "invisibleCode": "// Test helper code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "hello",
+          "output": "olleh",
+          "isVisible": true,
+          "explanation": "Basic string reversal"
+        },
+        {
+          "input": "12345",
+          "output": "54321",
+          "isVisible": true,
+          "explanation": "Numeric string reversal"
+        },
+        {
+          "input": "a",
+          "output": "a",
+          "isVisible": true,
+          "explanation": "Single character string"
+        },
+        {
+          "input": "Hello World!",
+          "output": "!dlroW olleH",
+          "isVisible": false,
+          "explanation": "Hidden test case with spaces and special characters"
+        },
+        {
+          "input": "RaceCar",
+          "output": "raCecaR",
+          "isVisible": false,
+          "explanation": "Hidden test case with mixed case letters"
+        }
+      ],
+      "marks": 10,
+      "timeLimit": 1000,
+      "memoryLimit": 128,
+      "difficulty": "easy",
+      "tags": ["strings", "arrays", "basic"]
+    }
+  ],
+  "accessControl": {
+    "type": "private"
+  }
+}  

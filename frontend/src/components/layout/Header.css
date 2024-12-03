@@ -1,0 +1,17 @@
+.header {
+  height: 64px; /* Fixed header height */
+  background: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.nav-container {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+} 
