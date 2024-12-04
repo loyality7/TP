@@ -12,7 +12,7 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "https://evaluate-api.hysterchat.com/api/$1"
+      "dest": "https://testapi.nexterchat.com/api/$1"
     },
     {
       "src": "/static/(.*)",
