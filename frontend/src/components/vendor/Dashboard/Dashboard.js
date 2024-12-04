@@ -20,16 +20,7 @@ import { motion } from 'framer-motion';
 import { Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-// Add these helper functions at the top of your file, after the imports
-const getMetricColor = (title) => {
-  const colors = {
-    'Total Tests': '#3b82f6',
-    'Active Candidates': '#22c55e',
-    'Pass Rate': '#f59e0b',
-    'New Discussions': '#8b5cf6'
-  };
-  return colors[title] || colors['Total Tests'];
-};
+
 
 const getMetricValueColor = (title) => {
   const colors = {
@@ -41,27 +32,7 @@ const getMetricValueColor = (title) => {
   return colors[title] || colors['Total Tests'];
 };
 
-const getMetricProgressColor = (title) => {
-  const colors = {
-    'Total Tests': 'bg-gradient-to-r from-blue-400 to-blue-500',
-    'Active Candidates': 'bg-gradient-to-r from-green-400 to-green-500',
-    'Pass Rate': 'bg-gradient-to-r from-amber-400 to-amber-500',
-    'New Discussions': 'bg-gradient-to-r from-violet-400 to-violet-500'
-  };
-  return colors[title] || colors['Total Tests'];
-};
 
-// Add this helper function at the top of your file with other helper functions
-const getStatusStyles = (status) => {
-  const styles = {
-    'Completed': 'bg-green-100 text-green-800 ring-1 ring-green-600/20',
-    'In Progress': 'bg-blue-100 text-blue-800 ring-1 ring-blue-600/20',
-    'Pending': 'bg-amber-100 text-amber-800 ring-1 ring-amber-600/20',
-    'Failed': 'bg-red-100 text-red-800 ring-1 ring-red-600/20',
-    'Expired': 'bg-gray-100 text-gray-800 ring-1 ring-gray-600/20'
-  };
-  return styles[status] || styles['Pending'];
-};
 
 // Add this helper function with the other helper functions at the top
 const getMetricIcon = (title) => {
@@ -72,6 +43,17 @@ const getMetricIcon = (title) => {
     'New Discussions': <MessageSquare className="h-5 w-5 text-violet-500" />
   };
   return icons[title] || icons['Total Tests'];
+};
+
+// Add this helper function with the other helper functions at the top
+const getMetricBgColor = (title) => {
+  const colors = {
+    'Total Tests': 'bg-blue-50',
+    'Active Candidates': 'bg-green-50',
+    'Pass Rate': 'bg-amber-50',
+    'New Discussions': 'bg-violet-50'
+  };
+  return colors[title] || colors['Total Tests'];
 };
 
 // Enhanced MetricCard with hover effects and animations
@@ -989,17 +971,6 @@ const shimmerAnimation = {
   '.animate-shimmer': {
     animation: 'shimmer 2s infinite',
   },
-};
-
-// Add this helper function with the other helper functions at the top
-const getMetricBgColor = (title) => {
-  const colors = {
-    'Total Tests': 'bg-blue-50',
-    'Active Candidates': 'bg-green-50',
-    'Pass Rate': 'bg-amber-50',
-    'New Discussions': 'bg-violet-50'
-  };
-  return colors[title] || colors['Total Tests'];
 };
 
 // Update the early return for loading state in the Dashboard component
