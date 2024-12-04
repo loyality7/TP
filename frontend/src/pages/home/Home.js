@@ -7,7 +7,7 @@ import HowItWorksSection from '../../components/sections/HowItWorksSection';
 import TestimonialsSection from '../../components/sections/TestimonialsSection';
 import CTASection from '../../components/sections/CTASection';
 
-const home = () => {
+const Home = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -23,4 +23,4 @@ const home = () => {
   );
 };
 
-export default home;
+export default Home;
