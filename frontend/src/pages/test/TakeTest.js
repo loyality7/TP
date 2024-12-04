@@ -400,8 +400,28 @@ export default function TakeTest() {
     requestPermissions();
   }, []);
 
-  // Update the fullscreen effect to be more aggressive
+  // Update the fullscreen effect with stricter controls
   useEffect(() => {
+    let fullscreenAttempts = 0;
+    const maxAttempts = 3;
+
+    const forceFullscreen = async () => {
+      const elem = document.documentElement;
+      try {
+        await elem.requestFullscreen();
+        setIsFullScreen(true);
+        fullscreenAttempts = 0; // Reset attempts on success
+      } catch (error) {
+        fullscreenAttempts++;
+        if (fullscreenAttempts >= maxAttempts) {
+          toast.error('WARNING: Test will be submitted if fullscreen is not enabled!');
+          setTimeout(() => handleSubmit(), 5000); // Auto-submit after 5 seconds
+        } else {
+          handleWarning('Fullscreen mode is required! Please click "I understand" to continue.');
+        }
+      }
+    };
+
     const handleFullscreenChange = () => {
       const isInFullscreen = !!(
         document.fullscreenElement ||
@@ -413,55 +433,30 @@ export default function TakeTest() {
       setIsFullScreen(isInFullscreen);
       
       if (!isInFullscreen && !showInstructions) {
-        // Immediately try to re-enter fullscreen
-        const elem = document.documentElement;
-        
-        // Try all possible fullscreen methods
-        Promise.all([
-          elem.requestFullscreen?.(),
-          elem.webkitRequestFullscreen?.(),
-          elem.msRequestFullscreen?.(),
-          elem.mozRequestFullScreen?.()
-        ].filter(Boolean)).catch(() => {
-          handleWarning('Fullscreen mode is required. Please do not exit fullscreen.');
-          
-          // Force fullscreen again after a small delay
-          setTimeout(() => {
-            elem.requestFullscreen().catch(() => {
-              toast.error('WARNING: Exiting fullscreen may result in test termination');
-              updateAnalytics(prev => ({
-                ...prev,
-                warnings: prev.warnings + 1
-              }));
-            });
-          }, 100);
-        });
+        forceFullscreen();
       }
     };
 
-    // Listen for keyboard ESC key specifically
+    // Listen for keyboard ESC key
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' && !showInstructions) {
         e.preventDefault();
         e.stopPropagation();
-        
-        // Immediately re-enter fullscreen
-        document.documentElement.requestFullscreen().catch(() => {
-          handleWarning('Please do not use ESC key. Fullscreen is required.');
-        });
-        
+        forceFullscreen();
         return false;
       }
     };
 
-    // Add all possible fullscreen change event listeners
     document.addEventListener('fullscreenchange', handleFullscreenChange);
     document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
     document.addEventListener('mozfullscreenchange', handleFullscreenChange);
     document.addEventListener('MSFullscreenChange', handleFullscreenChange);
-    
-    // Add keydown listener for ESC key
     document.addEventListener('keydown', handleKeyDown, true);
+
+    // Initial fullscreen check
+    if (!document.fullscreenElement && !showInstructions) {
+      forceFullscreen();
+    }
 
     return () => {
       document.removeEventListener('fullscreenchange', handleFullscreenChange);
@@ -470,7 +465,7 @@ export default function TakeTest() {
       document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
       document.removeEventListener('keydown', handleKeyDown, true);
     };
-  }, [showInstructions, handleWarning, updateAnalytics]);
+  }, [showInstructions, handleWarning, handleSubmit]);
 
   const handleCodingSubmission = async (submission) => {
     try {
@@ -580,49 +575,54 @@ export default function TakeTest() {
     };
   }, [handleWarning]);
 
-  // Update tab visibility detection with stricter controls
+  // Update tab/window switching detection
   useEffect(() => {
-    let warningCount = 0;
-    const maxWarnings = 3; // Reduced from 5 to 3
+    let switchAttempts = 0;
+    const maxSwitchAttempts = 3;
     let lastWarningTime = Date.now();
-    const warningCooldown = 2000; // 2 seconds cooldown
+    const warningCooldown = 2000; // 2 seconds
 
     const handleVisibilityChange = () => {
       if (document.hidden && !showInstructions) {
         const now = Date.now();
         if (now - lastWarningTime >= warningCooldown) {
-          warningCount++;
+          switchAttempts++;
           lastWarningTime = now;
           
-          handleWarning(`Warning ${warningCount}/${maxWarnings}: Tab switching detected! Further attempts may result in automatic submission.`);
+          handleWarning(`Warning ${switchAttempts}/${maxSwitchAttempts}: Tab switching detected! Test will be auto-submitted after ${maxSwitchAttempts} attempts.`);
           
-          // Update analytics
           updateAnalytics(prev => ({
             ...prev,
             tabSwitches: (prev.tabSwitches || 0) + 1,
             warnings: prev.warnings + 1
           }));
 
-          if (warningCount >= maxWarnings) {
-            toast.error('Maximum tab switching warnings reached. Your test will be submitted.');
-            handleSubmit();
+          if (switchAttempts >= maxSwitchAttempts) {
+            toast.error('Maximum tab switching attempts reached. Test will be submitted.');
+            setTimeout(() => handleSubmit(), 3000);
           }
         }
       }
     };
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    
-    // Also detect blur events
-    window.addEventListener('blur', () => {
+    const handleBlur = () => {
       if (!showInstructions) {
-        handleWarning('Window focus lost! Please stay within the test window.');
+        switchAttempts++;
+        handleWarning(`Warning ${switchAttempts}/${maxSwitchAttempts}: Window switching detected!`);
+        
+        if (switchAttempts >= maxSwitchAttempts) {
+          toast.error('Maximum window switching attempts reached. Test will be submitted.');
+          setTimeout(() => handleSubmit(), 3000);
+        }
       }
-    });
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('blur', handleBlur);
 
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.removeEventListener('blur', handleVisibilityChange);
+      window.removeEventListener('blur', handleBlur);
     };
   }, [showInstructions, handleWarning, handleSubmit, updateAnalytics]);
 
@@ -853,6 +853,18 @@ export default function TakeTest() {
   const handleSetAnalytics = useCallback((newAnalytics) => {
     setAnalytics(newAnalytics);
   }, []); // Empty dependency array since this function doesn't depend on any values
+
+  // Update the warning modal close handler
+  const handleWarningModalClose = useCallback(() => {
+    setShowWarningModal(false);
+    
+    // Force fullscreen when warning modal is closed
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {
+        toast.error('Fullscreen is required to continue the test');
+      });
+    }
+  }, []);
 
   // Render Loading State
   if (loading) {
@@ -1090,7 +1102,7 @@ export default function TakeTest() {
         <WarningModal
           message={warningMessage}
           warningCount={analytics.warnings}
-          onClose={() => setShowWarningModal(false)}
+          onClose={handleWarningModalClose}
         />
       )}
 
