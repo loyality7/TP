@@ -577,8 +577,6 @@ const CircularProgress = ({ progress, status }) => {
 const CandidateTable = () => {
   const [candidates, setCandidates] = useState([]);
   const [metrics, setMetrics] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [selectedStatus, setSelectedStatus] = useState('All Status');
   const [searchQuery, setSearchQuery] = useState('');
   const [hoveredRow, setHoveredRow] = useState(null);
 
@@ -589,10 +587,8 @@ const CandidateTable = () => {
         const response = await apiService.get('/vendor/candidate-metrics');
         setCandidates(response.data.candidates);
         setMetrics(response.data.metrics);
-        setLoading(false);
       } catch (err) {
         console.error('Failed to fetch candidate metrics:', err);
-        setLoading(false);
       }
     };
 
@@ -846,7 +842,6 @@ const EnhancedMetricCard = ({ metric }) => {
 
 // Add this date filtering utility
 const getFilteredTests = (tests, timeRange) => {
-  const now = new Date();
   const filterDate = new Date();
 
   switch (timeRange) {
@@ -958,28 +953,11 @@ const LoadingScreen = () => {
   );
 };
 
-// Add this CSS animation at the top of your file
-const shimmerAnimation = {
-  '@keyframes shimmer': {
-    '0%': {
-      transform: 'translateX(-100%)',
-    },
-    '100%': {
-      transform: 'translateX(100%)',
-    },
-  },
-  '.animate-shimmer': {
-    animation: 'shimmer 2s infinite',
-  },
-};
-
-// Update the early return for loading state in the Dashboard component
+// Update the Dashboard component
 const Dashboard = () => {
-  const auth = useAuth();
-  const { user } = auth;
+  const { auth } = useAuth();
   const navigate = useNavigate();
   
-  // Add filteredTests state
   const [metrics, setMetrics] = useState(null);
   const [analyticsOverview, setAnalyticsOverview] = useState(null);
   const [performanceMetrics, setPerformanceMetrics] = useState(null);
