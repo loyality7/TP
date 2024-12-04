@@ -578,7 +578,8 @@ const CandidateTable = () => {
   const [candidates, setCandidates] = useState([]);
   const [metrics, setMetrics] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
-  const [hoveredRow, setHoveredRow] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState('All Status');
+  const [ setHoveredRow] = useState(null);
 
   // Fetch candidate metrics
   useEffect(() => {
