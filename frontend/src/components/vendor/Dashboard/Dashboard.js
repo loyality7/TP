@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../../../context/AuthContext';
 import apiService from '../../../services/api';
 import { Card, CardContent, CardHeader, CardTitle } from "../../../components/common/Card";
 import { 
@@ -172,165 +171,10 @@ const MetricCard = React.memo(({ title, value, subtitle, trend, delay }) => {
 MetricCard.displayName = 'MetricCard';
 
 // Add TimeRangeSelector Component
-const TimeRangeSelector = ({ activeRange, onRangeChange }) => {
-  const ranges = [
-    { label: '1H', value: '1H' },
-    { label: '1D', value: '1D' },
-    { label: '7D', value: '7D' },
-    { label: '1M', value: '1M' },
-    { label: '1Y', value: '1Y' },
-  ];
-
-  return (
-    <div className="flex items-center space-x-2">
-      {ranges.map(range => (
-        <button
-          key={range.value}
-          onClick={() => onRangeChange(range.value)}
-          className={`px-3 py-1 rounded-lg text-sm ${
-            activeRange === range.value
-              ? 'bg-blue-50 text-blue-600'
-              : 'text-gray-500 hover:bg-gray-100'
-          }`}
-        >
-          {range.label}
-        </button>
-      ))}
-      <motion.button 
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        className="flex items-center gap-2 px-3 py-1 rounded-lg text-sm font-medium 
-          bg-blue-50 text-blue-600 hover:bg-blue-100 
-          transition-colors duration-200 
-          border border-blue-200"
-      >
-        <Download className="h-4 w-4" />
-        Export
-      </motion.button>
-    </div>
-  );
-};
+// const TimeRangeSelector = ({ activeRange, onRangeChange }) => { ... }
 
 // Add this new pill progress indicator component
-const PillProgressIndicator = ({ value, isHighScore, trend }) => {
-  const getStatusConfig = (score) => {
-    if (score >= 90) return {
-      color: 'text-green-500',
-      bg: 'bg-green-500',
-      glow: 'shadow-green-500/20',
-      light: 'bg-green-100'
-    };
-    if (score >= 80) return {
-      color: 'text-blue-500',
-      bg: 'bg-blue-500',
-      glow: 'shadow-blue-500/20',
-      light: 'bg-blue-100'
-    };
-    return {
-      color: 'text-blue-400',
-      bg: 'bg-blue-400',
-      glow: 'shadow-blue-400/20',
-      light: 'bg-blue-50'
-    };
-  };
-
-  const status = getStatusConfig(value);
-
-  return (
-    <motion.div 
-      className={`relative w-44 h-16 rounded-full ${status.light} shadow-lg ${status.glow}`}
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      whileHover={{ scale: 1.02 }}
-    >
-      {/* Background Pattern */}
-      <div className="absolute inset-0 rounded-full overflow-hidden">
-        <motion.div 
-          className="absolute inset-0 opacity-10"
-          style={{
-            backgroundImage: `radial-gradient(circle at 50% 50%, ${status.bg} 1px, transparent 1px)`,
-            backgroundSize: '8px 8px'
-          }}
-          animate={{
-            backgroundPosition: ['0px 0px', '8px 8px'],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-        />
-      </div>
-
-      {/* Content Container */}
-      <div className="relative h-full flex items-center justify-between px-4">
-        {/* Score Section */}
-        <div className="flex items-center gap-2">
-          <motion.div 
-            className={`text-2xl font-bold ${status.color}`}
-            initial={{ scale: 0.8 }}
-            animate={{ scale: 1 }}
-          >
-            {value}
-          </motion.div>
-          <div className="flex flex-col">
-            <span className="text-xs font-medium text-gray-500">Score</span>
-            {trend && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className={`flex items-center gap-0.5 text-xs font-medium ${
-                  trend > 0 ? 'text-green-500' : 'text-red-500'
-                }`}
-              >
-                <TrendingUp className={`h-3 w-3 ${trend < 0 && 'rotate-180'}`} />
-                {Math.abs(trend)}%
-              </motion.div>
-            )}
-          </div>
-        </div>
-
-        {/* Divider */}
-        <div className={`h-8 w-px ${status.bg} opacity-20`} />
-
-        {/* Status Section */}
-        <div className="flex items-center gap-2">
-          {isHighScore ? (
-            <motion.div
-              animate={{ 
-                rotate: [0, 10, -10, 0],
-                scale: [1, 1.1, 1]
-              }}
-              transition={{ 
-                duration: 2,
-                repeat: Infinity,
-                repeatType: "reverse"
-              }}
-              className={`p-1.5 rounded-full ${status.light}`}
-            >
-              <Sparkles className={`h-4 w-4 ${status.color}`} />
-            </motion.div>
-          ) : (
-            <motion.div
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{ 
-                duration: 2,
-                repeat: Infinity,
-                repeatType: "reverse"
-              }}
-              className={`p-1.5 rounded-full ${status.light}`}
-            >
-              <Shield className={`h-4 w-4 ${status.color}`} />
-            </motion.div>
-          )}
-          <span className={`text-sm font-medium ${status.color}`}>
-            {value >= 90 ? 'Excellent' : value >= 80 ? 'Good' : 'Average'}
-          </span>
-        </div>
-      </div>
-    </motion.div>
-  );
-};
+// const PillProgressIndicator = ({ value, isHighScore, trend }) => { ... }
 
 // Add this helper function at the top with other helpers
 const trimText = (text, maxLength = 16) => {
@@ -578,8 +422,7 @@ const CandidateTable = () => {
   const [candidates, setCandidates] = useState([]);
   const [metrics, setMetrics] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState('All Status');
-  const [ setHoveredRow] = useState(null);
+  const [setHoveredRow] = useState(null);
 
   // Fetch candidate metrics
   useEffect(() => {
@@ -956,16 +799,13 @@ const LoadingScreen = () => {
 
 // Update the Dashboard component
 const Dashboard = () => {
-  const { auth } = useAuth();
   const navigate = useNavigate();
   
   const [metrics, setMetrics] = useState(null);
-  const [analyticsOverview, setAnalyticsOverview] = useState(null);
   const [performanceMetrics, setPerformanceMetrics] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [tests, setTests] = useState([]);
-  const [filteredTests, setFilteredTests] = useState([]);
 
   // Simplified time range state - only keep if you plan to implement the feature soon
   const [activeTimeRange] = useState('all');
@@ -992,10 +832,6 @@ const Dashboard = () => {
         // Fetch metrics
         const metricsResponse = await apiService.get('/vendor/dashboard/metrics');
         setMetrics(metricsResponse.data);
-
-        // Fetch analytics overview
-        const analyticsResponse = await apiService.get('/vendor/analytics/overview');
-        setAnalyticsOverview(analyticsResponse.data);
 
         // Fetch performance metrics
         const performanceResponse = await apiService.get('/vendor/analytics/performance', {

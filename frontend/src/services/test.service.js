@@ -4,7 +4,7 @@ export const testService = {
   // Get all tests
   getAllTests: async (filters = {}) => {
     const queryString = new URLSearchParams(filters).toString();
-    return await apiService.get(`/tests?${queryString}`);
+    return await apiService.get(`tests?${queryString}`);
   },
 
   // Create new test
