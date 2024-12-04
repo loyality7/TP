@@ -5,7 +5,6 @@ import Button from '../common/Button';
 
 const Header = () => {
   const { user, logout } = useAuth();
-  const [isExploreOpen, setIsExploreOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
@@ -22,27 +21,9 @@ const Header = () => {
           </Link>
 
           <div className="hidden md:flex items-center space-x-6">
-            <div className="relative">
-              <button 
-                className="flex items-center space-x-1 hover:text-blue-600"
-                onMouseEnter={() => setIsExploreOpen(true)}
-                onMouseLeave={() => setIsExploreOpen(false)}
-              >
-                <span>Explore</span>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {isExploreOpen && (
-                <div className="absolute top-full left-0 mt-2 w-48 bg-white shadow-lg rounded-md py-2">
-                  <Link to="/mcq-tests" className="block px-4 py-2 hover:bg-gray-100">MCQ Tests</Link>
-                  <Link to="/coding-challenges" className="block px-4 py-2 hover:bg-gray-100">Coding Challenges</Link>
-                  <Link to="/practice-tests" className="block px-4 py-2 hover:bg-gray-100">Practice Tests</Link>
-                </div>
-              )}
-            </div>
-            <Link to="/directory" className="hover:text-blue-600">Directory</Link>
-            <Link to="/resources" className="hover:text-blue-600">Resources</Link>
+            {user && (
+              <Link to="/vendor/dashboard" className="hover:text-blue-600">Dashboard</Link>
+            )}
           </div>
 
           <div className="hidden md:flex items-center space-x-4">
@@ -83,11 +64,9 @@ const Header = () => {
 
         {isMobileMenuOpen && (
           <div className="md:hidden pt-4 pb-3 border-t border-gray-200">
-            <Link to="/mcq-tests" className="block px-4 py-2 hover:bg-gray-100">MCQ Tests</Link>
-            <Link to="/coding-challenges" className="block px-4 py-2 hover:bg-gray-100">Coding Challenges</Link>
-            <Link to="/practice-tests" className="block px-4 py-2 hover:bg-gray-100">Practice Tests</Link>
-            <Link to="/directory" className="block px-4 py-2 hover:bg-gray-100">Directory</Link>
-            <Link to="/resources" className="block px-4 py-2 hover:bg-gray-100">Resources</Link>
+            {user && (
+              <Link to="/dashboard" className="block px-4 py-2 hover:bg-gray-100">Dashboard</Link>
+            )}
             
             <div className="mt-4 pt-4 border-t border-gray-200">
               {user ? (

@@ -1,9 +1,11 @@
 import React from 'react';
 import Header from '../../components/layout/Header';
 import Footer from '../../components/layout/Footer';
-import HeroSection from '../../components/layout/hero';
-import FeaturesSection from './sections/Features';
-import TestTypesSection from './sections/TestTypes';
+import HeroSection from '../../components/sections/HeroSection';
+import FeaturesSection from '../../components/sections/FeaturesSection';
+import HowItWorksSection from '../../components/sections/HowItWorksSection';
+import TestimonialsSection from '../../components/sections/TestimonialsSection';
+import CTASection from '../../components/sections/CTASection';
 
 const Home = () => {
   return (
@@ -12,7 +14,9 @@ const Home = () => {
       <main className="flex-grow">
         <HeroSection />
         <FeaturesSection />
-        <TestTypesSection />
+        <HowItWorksSection />
+        <TestimonialsSection />
+        <CTASection />
       </main>
       <Footer />
     </div>

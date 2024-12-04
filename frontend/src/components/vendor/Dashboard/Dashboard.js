@@ -18,6 +18,7 @@ import 'react-circular-progressbar/dist/styles.css';
 import { motion } from 'framer-motion';
 import { Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import Home from '../../../pages/home/home';
 
 
 
@@ -423,6 +424,7 @@ const CandidateTable = () => {
   const [metrics, setMetrics] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
   const [setHoveredRow] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState('All Status');
 
   // Fetch candidate metrics
   useEffect(() => {
@@ -801,6 +803,8 @@ const LoadingScreen = () => {
 const Dashboard = () => {
   const navigate = useNavigate();
   
+  // Add selectedStatus state here, at the top with other state declarations
+  const [selectedStatus, setSelectedStatus] = useState('All Status');
   const [metrics, setMetrics] = useState(null);
   const [performanceMetrics, setPerformanceMetrics] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -853,7 +857,8 @@ const Dashboard = () => {
   useEffect(() => {
     if (tests.length > 0) {
       const filtered = getFilteredTests(tests, activeTimeRange);
-      setFilteredTests(filtered);
+      // Remove this line:
+      // setFilteredTests(filtered);
     }
   }, [tests, activeTimeRange]);
 

@@ -6,7 +6,7 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import VendorDashboard from './components/vendor/Dashboard/Dashboard';
 
 // Import pages
-import Home from './pages/home/Home';
+import Home from './pages/home/home';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import Profile from './pages/profile/profile';
