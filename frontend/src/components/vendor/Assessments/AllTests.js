@@ -480,6 +480,42 @@ const AllTests = () => {
     }
   };
 
+  // Add stats array definition before the return statement
+  const stats = [
+    {
+      title: 'Total Tests',
+      value: dashboardMetrics.totalTests.value,
+      trend: dashboardMetrics.totalTests.trend,
+      subtext: dashboardMetrics.totalTests.subtitle,
+      color: 'blue',
+      icon: Target
+    },
+    {
+      title: 'Active Candidates',
+      value: dashboardMetrics.activeCandidates.value,
+      trend: dashboardMetrics.activeCandidates.trend,
+      subtext: dashboardMetrics.activeCandidates.subtitle,
+      color: 'green',
+      icon: Users
+    },
+    {
+      title: 'Pass Rate',
+      value: `${dashboardMetrics.passRate.value}%`,
+      trend: dashboardMetrics.passRate.trend,
+      subtext: dashboardMetrics.passRate.subtitle,
+      color: 'yellow',
+      icon: TrendingUp
+    },
+    {
+      title: 'New Discussions',
+      value: dashboardMetrics.newDiscussions.value,
+      trend: dashboardMetrics.newDiscussions.trend,
+      subtext: dashboardMetrics.newDiscussions.subtitle,
+      color: 'purple',
+      icon: MessageCircle
+    }
+  ];
+
   return (
     <Layout>
       <div className="space-y-6">
