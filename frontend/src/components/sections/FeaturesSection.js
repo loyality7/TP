@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Code, Brain, Book, Zap, Users } from 'lucide-react';
+import { Code, Brain, Zap } from 'lucide-react';
 
 const FeaturesSection = () => {
   const features = [  

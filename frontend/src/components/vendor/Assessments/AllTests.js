@@ -4,10 +4,10 @@ import { Popover } from '@headlessui/react';
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import Layout from '../../layout/Layout';
-import { Card, CardHeader, CardTitle, CardContent } from '../../common/Card';
+import { Card,  CardContent } from '../../common/Card';
 import { 
   Search, Filter, Plus, MoreVertical, Clock, Users, Calendar, Download,
-  Edit, Trash2, Eye, TrendingUp, Brain, Target, Share2,
+  Edit, Trash2, Eye, TrendingUp, Brain, Target, 
   BarChart2, Settings, MessageCircle, Copy, TrendingDown
 } from 'lucide-react';
 import { testService } from '../../../services/test.service';
@@ -16,20 +16,12 @@ import { apiService } from '../../../services/api';
 const AllTests = () => {
   const navigate = useNavigate();
   const [viewMode, setViewMode] = useState('grid');
-  const [selectedTest, setSelectedTest] = useState(null);
-  const [showAnalytics, setShowAnalytics] = useState(false);
-  const [filterStatus, setFilterStatus] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [tests, setTests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [filters, setFilters] = useState({
-    search: '',
-    category: '',
-    status: '',
-    difficulty: ''
-  });
+  const [filterStatus, setFilterStatus] = useState('all');
   const [dashboardMetrics, setDashboardMetrics] = useState({
     totalTests: { value: 0, trend: 0, subtitle: '' },
     activeCandidates: { value: 0, trend: 0, subtitle: '' },
@@ -113,16 +105,6 @@ const AllTests = () => {
       return `${day}-${month}-${year}`;
     };
 
-    const toggleVisibility = () => {
-      try {
-        const newVisibility = test?.visibility === 'public' ? 'private' : 'public';
-        // You can add API call here if needed
-        toast.success(`Test visibility changed to ${newVisibility}`);
-      } catch (error) {
-        toast.error('Failed to change test visibility');
-      }
-    };
-
     return (
       <Card className="hover:shadow-xl transition-all duration-200 h-full">
         <CardContent className="p-6">
@@ -188,7 +170,7 @@ const AllTests = () => {
           <div className="mt-6 pt-4 border-t flex justify-between items-center">
             <div className="flex gap-2">
               <button 
-                onClick={() => toggleVisibility(test)}
+                onClick={() => handleVisibilityToggle(test)}
                 className="p-2 hover:bg-gray-50 rounded-lg transition-colors duration-200 group relative" 
                 title={`Test is ${test?.visibility || 'private'}`}
               >
@@ -512,6 +494,27 @@ const AllTests = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
+
+  // Add handleVisibilityToggle function
+  const handleVisibilityToggle = async (test) => {
+    try {
+      const newVisibility = test.visibility === 'public' ? 'private' : 'public';
+      await testService.updateTestVisibility(test.id, newVisibility);
+      
+      // Update the test in state
+      setTests(prevTests => 
+        prevTests.map(t => 
+          t.id === test.id 
+            ? { ...t, visibility: newVisibility }
+            : t
+        )
+      );
+      
+      toast.success(`Test is now ${newVisibility}`);
+    } catch (error) {
+      toast.error('Failed to update test visibility');
+    }
+  };
 
   return (
     <Layout>

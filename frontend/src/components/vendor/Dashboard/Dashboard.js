@@ -3,14 +3,15 @@ import apiService from '../../../services/api';
 import { Card, CardContent, CardHeader, CardTitle } from "../../../components/common/Card";
 import { 
   FileText, Users, Clock, 
-  Award, BookOpen, MessageSquare, Sparkles, Zap, TrendingUp, Shield, 
+  Award, BookOpen, MessageSquare, TrendingUp, Shield, 
   PlusCircle, 
   UserPlus, 
   BarChart3, 
   ArrowRight,
   Settings,
   Download,
-  UserX
+  UserX,
+  Zap
 } from 'lucide-react';
 import Layout from '../../layout/Layout';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
@@ -18,7 +19,6 @@ import 'react-circular-progressbar/dist/styles.css';
 import { motion } from 'framer-motion';
 import { Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import Home from '../../../pages/home/home';
 
 
 
@@ -425,7 +425,7 @@ const CandidateTable = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [setHoveredRow] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState('All Status');
-
+  
   // Fetch candidate metrics
   useEffect(() => {
     const fetchCandidateMetrics = async () => {
@@ -803,8 +803,7 @@ const LoadingScreen = () => {
 const Dashboard = () => {
   const navigate = useNavigate();
   
-  // Add selectedStatus state here, at the top with other state declarations
-  const [selectedStatus, setSelectedStatus] = useState('All Status');
+  // Remove unused selectedStatus state
   const [metrics, setMetrics] = useState(null);
   const [performanceMetrics, setPerformanceMetrics] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -856,9 +855,7 @@ const Dashboard = () => {
   // Update tests when time range changes
   useEffect(() => {
     if (tests.length > 0) {
-      const filtered = getFilteredTests(tests, activeTimeRange);
-      // Remove this line:
-      // setFilteredTests(filtered);
+      getFilteredTests(tests, activeTimeRange);
     }
   }, [tests, activeTimeRange]);
 

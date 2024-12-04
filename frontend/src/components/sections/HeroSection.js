@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRightIcon } from '@radix-ui/react-icons';
-import { Code, Brain, Timer, CheckCircle, Zap, Users, Star } from 'lucide-react';
+import { Code, CheckCircle, Zap, Star } from 'lucide-react';
 import Button from '../common/Button';
 
 const TypewriterText = ({ text }) => {
