@@ -115,7 +115,7 @@ const testSchema = new mongoose.Schema({
     type: {
       type: String,
       enum: ['public', 'private'],
-      default: 'private'
+      default: 'public'
     },
     userLimit: {
       type: Number,
