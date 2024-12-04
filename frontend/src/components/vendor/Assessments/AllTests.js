@@ -29,56 +29,12 @@ const AllTests = () => {
     newDiscussions: { value: 0, trend: 0, subtitle: '' }
   });
 
-  // Remove dummy analyticsData
-  const [analyticsData, setAnalyticsData] = useState({
-    completionTrend: [],
-    performanceMetrics: {
-      avgScore: 0,
-      passRate: 0,
-      avgCompletionTime: '0 mins',
-      totalAttempts: 0
-    },
-    skillGaps: []
-  });
-
-  // Remove enhancedStats - we'll use stats from API directly
-  const stats = [
-    { 
-      title: 'Total Tests', 
-      value: dashboardMetrics.totalTests.value, 
-      trend: dashboardMetrics.totalTests.trend,
-      subtext: dashboardMetrics.totalTests.subtitle,
-      icon: Brain, 
-      color: 'blue' 
-    },
-    { 
-      title: 'Active Candidates', 
-      value: dashboardMetrics.activeCandidates.value,
-      trend: dashboardMetrics.activeCandidates.trend,
-      subtext: dashboardMetrics.activeCandidates.subtitle,
-      icon: Users, 
-      color: 'orange' 
-    },
-    { 
-      title: 'Pass Rate', 
-      value: `${dashboardMetrics.passRate.value}%`,
-      trend: dashboardMetrics.passRate.trend,
-      subtext: dashboardMetrics.passRate.subtitle,
-      icon: Target, 
-      color: 'purple' 
-    },
-    { 
-      title: 'New Discussions', 
-      value: dashboardMetrics.newDiscussions.value,
-      trend: dashboardMetrics.newDiscussions.trend,
-      subtext: dashboardMetrics.newDiscussions.subtitle,
-      icon: MessageCircle, 
-      color: 'green' 
-    }
-  ];
-
-  // Update quickFilters to be dynamic based on API data
-  const [quickFilters, setQuickFilters] = useState([]);
+  // Initialize quickFilters with default values
+  const [quickFilters, setQuickFilters] = useState([
+    { label: 'All Tests', count: 0 },
+    { label: 'Active', count: 0 },
+    { label: 'Draft', count: 0 }
+  ]);
 
   // Update TestCard component to remove unused features
   const TestCard = React.memo(({ test }) => {
@@ -126,14 +82,14 @@ const AllTests = () => {
           <div className="min-h-[60px]">
             <h3 className="font-semibold text-lg text-gray-900 pr-20 line-clamp-2">{test?.title || 'Untitled Test'}</h3>
             <div className="flex items-center gap-2 mt-1">
-              <span className="text-sm text-gray-500 truncate">{test.category}</span>
+              <span className="text-sm text-gray-500 truncate">{category}</span>
               <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
               <span className={`text-sm font-medium ${
-                test.difficulty === 'Advanced' ? 'text-red-500' :
-                test.difficulty === 'Intermediate' ? 'text-yellow-500' :
+                difficulty === 'Advanced' ? 'text-red-500' :
+                difficulty === 'Intermediate' ? 'text-yellow-500' :
                 'text-green-500'
               }`}>
-                {test.difficulty}
+                {difficulty}
               </span>
             </div>
           </div>
@@ -251,9 +207,11 @@ const AllTests = () => {
 
   // Remove unused action handlers from useTestActions
   const useTestActions = () => {
+    const navigate = useNavigate();
+    
     const handleEdit = useCallback((testId) => {
       navigate(`/vendor/tests/${testId}/edit`);
-    }, [navigate]);
+    }, []);
 
     const handleDelete = useCallback(async (testId) => {
       if (window.confirm('Are you sure you want to delete this test?')) {
@@ -329,8 +287,14 @@ const AllTests = () => {
         // Use the metrics directly from the new endpoint
         const metrics = metricsResponse.data;
         setDashboardMetrics({
-          totalTests: metrics.totalTests,
-          activeCandidates: metrics.activeCandidates,
+          totalTests: {
+            ...metrics.totalTests,
+            trend: calculateTrend(metrics.totalTests.trendData)
+          },
+          activeCandidates: {
+            ...metrics.activeCandidates,
+            trend: calculateTrend(metrics.activeCandidates.trendData)
+          },
           passRate: metrics.passRate,
           newDiscussions: metrics.newDiscussions
         });

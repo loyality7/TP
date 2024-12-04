@@ -424,7 +424,7 @@ const CandidateTable = () => {
   const [metrics, setMetrics] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
   const [setHoveredRow] = useState(null);
-  const [selectedStatus, setSelectedStatus] = useState('All Status');
+  const [selectedStatus, setSelectedStatus] = useState('all');
   
   // Fetch candidate metrics
   useEffect(() => {
@@ -443,7 +443,7 @@ const CandidateTable = () => {
 
   // Filter candidates based on status and search query
   const filteredCandidates = candidates.filter(candidate => {
-    const matchesStatus = selectedStatus === 'All Status' || 
+    const matchesStatus = selectedStatus === 'all' || 
       candidate.status.replace('_', ' ').toLowerCase() === selectedStatus.toLowerCase();
     const matchesSearch = candidate.candidateName.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          candidate.testType.toLowerCase().includes(searchQuery.toLowerCase());
