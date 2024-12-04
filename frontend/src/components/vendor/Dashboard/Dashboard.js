@@ -473,6 +473,11 @@ const CandidateTable = () => {
     return styles[status] || styles['pending'];
   };
 
+  // Add status filter handler
+  const handleStatusChange = (status) => {
+    setSelectedStatus(status);
+  };
+
   return (
     <Card className="overflow-hidden">
       <div className="border-b bg-white sticky top-0 z-20">
@@ -500,6 +505,21 @@ const CandidateTable = () => {
                 className="w-full pl-10 pr-4 py-2.5 text-sm border rounded-lg focus:ring-2 focus:ring-blue-100 outline-none"
               />
               <Search className="h-4 w-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            </div>
+            <div className="flex gap-2">
+              {['all', 'completed', 'in_progress', 'pending'].map((status) => (
+                <button
+                  key={status}
+                  onClick={() => handleStatusChange(status)}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                    selectedStatus === status
+                      ? 'bg-blue-50 text-blue-600'
+                      : 'text-gray-600 hover:bg-gray-50'
+                  }`}
+                >
+                  {status.charAt(0).toUpperCase() + status.slice(1).replace('_', ' ')}
+                </button>
+              ))}
             </div>
           </div>
         </div>

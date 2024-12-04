@@ -36,6 +36,30 @@ const AllTests = () => {
     { label: 'Draft', count: 0 }
   ]);
 
+  // 1. Add search handler
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  // 2. Add category handler
+  const handleCategoryChange = (e) => {
+    setSelectedCategory(e.target.value);
+  };
+
+  // 3. Add filter status handler
+  const handleFilterStatusChange = (e) => {
+    setFilterStatus(e.target.value);
+  };
+
+  // 4. Add quick filters update
+  useEffect(() => {
+    setQuickFilters([
+      { label: 'All Tests', count: tests.length },
+      { label: 'Active', count: tests.filter(t => t.status === 'Active').length },
+      { label: 'Draft', count: tests.filter(t => t.status === 'Draft').length }
+    ]);
+  }, [tests]);
+
   // Update TestCard component to remove unused features
   const TestCard = React.memo(({ test }) => {
     const actions = useTestActions();
@@ -178,11 +202,18 @@ const AllTests = () => {
               <Popover.Panel className="absolute right-0 z-10 mt-2 w-48 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
                 <div className="py-1">
                   <button
-                    onClick={() => actions.handleDelete(test.id)}
+                    onClick={() => handleDelete(test.id)}
                     className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                   >
                     <Trash2 className="h-4 w-4 mr-2" />
                     Delete Test
+                  </button>
+                  <button
+                    onClick={() => handleShare(test.id, [])}
+                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                  >
+                    <Users className="h-4 w-4 mr-2" />
+                    Share Test
                   </button>
                   <button
                     className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
@@ -205,13 +236,13 @@ const AllTests = () => {
     );
   });
 
-  // Remove unused action handlers from useTestActions
+  // 5. Fix useCallback dependency
   const useTestActions = () => {
     const navigate = useNavigate();
     
     const handleEdit = useCallback((testId) => {
       navigate(`/vendor/tests/${testId}/edit`);
-    }, []);
+    }, [navigate]);
 
     const handleDelete = useCallback(async (testId) => {
       if (window.confirm('Are you sure you want to delete this test?')) {
@@ -590,21 +621,30 @@ const AllTests = () => {
                   type="text"
                   placeholder="Search tests by name, category, skills..."
                   className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-100 outline-none"
+                  value={searchTerm}
+                  onChange={handleSearch}
                 />
               </div>
               <div className="flex flex-wrap gap-3">
-                <select className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-100 outline-none">
-                  <option>All Categories</option>
-                  <option>Programming</option>
-                  <option>Web Development</option>
-                  <option>System Design</option>
-                  <option>DevOps</option>
+                <select 
+                  className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-100 outline-none"
+                  value={selectedCategory}
+                  onChange={handleCategoryChange}
+                >
+                  <option value="all">All Categories</option>
+                  <option value="programming">Programming</option>
+                  <option value="webdev">Web Development</option>
+                  <option value="systemdesign">System Design</option>
+                  <option value="devops">DevOps</option>
                 </select>
-                <select className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-100 outline-none">
-                  <option>Difficulty</option>
-                  <option>Beginner</option>
-                  <option>Intermediate</option>
-                  <option>Advanced</option>
+                <select 
+                  className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-100 outline-none"
+                  value={filterStatus}
+                  onChange={handleFilterStatusChange}
+                >
+                  <option value="all">All Status</option>
+                  <option value="active">Active</option>
+                  <option value="draft">Draft</option>
                 </select>
                 <select className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-100 outline-none">
                   <option>Duration</option>
