@@ -62,7 +62,6 @@ const AllTests = () => {
 
   // Update TestCard component to remove unused features
   const TestCard = React.memo(({ test }) => {
-    const actions = useTestActions();
     const [showStats, setShowStats] = useState(false);
 
     // Remove unused metrics
@@ -393,16 +392,6 @@ const AllTests = () => {
     navigate('/vendor/tests/create');
   };
 
-  // Add share handler
-  const handleShare = async (testId, emails) => {
-    try {
-      await testService.shareTest(testId, emails);
-      toast.success('Test shared successfully');
-    } catch (error) {
-      toast.error('Failed to share test');
-    }
-  };
-
   // Function to sort and get the latest six tests
   const getLatestTests = (tests) => {
     return tests
@@ -470,28 +459,6 @@ const AllTests = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-
-  // Add handleVisibilityToggle function
-  const handleVisibilityToggle = async (test) => {
-    try {
-      const newVisibility = test.visibility === 'public' ? 'private' : 'public';
-      await testService.updateTestVisibility(test._id, newVisibility);
-      
-      // Update the test in state
-      setTests(prevTests => 
-        prevTests.map(t => 
-          t._id === test._id 
-            ? { ...t, visibility: newVisibility }
-            : t
-        )
-      );
-      
-      toast.success(`Test is now ${newVisibility}`);
-    } catch (error) {
-      console.error('Error updating visibility:', error);
-      toast.error('Failed to update test visibility');
-    }
-  };
 
   // Add stats array definition before the return statement
   const stats = [
