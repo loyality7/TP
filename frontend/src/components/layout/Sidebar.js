@@ -106,7 +106,7 @@ const Sidebar = ({ isOpen, setIsOpen, onLogout }) => {
         // { label: "Billing", path: "/vendor/payments/billing" },
         { label: "Invoices", path: "/vendor/payments/invoices" },
         // { label: "Subscription", path: "/vendor/payments/subscription" },
-        { label: "Payment History", path: "/vendor/payments/history" },
+        // { label: "Payment History", path: "/vendor/payments/history" },
         { label: "Wallet", path: "/vendor/payments/wallet" }
       ]
     },
