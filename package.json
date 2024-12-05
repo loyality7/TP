@@ -10,5 +10,10 @@
   },
   "devDependencies": {
     "concurrently": "^9.1.0"
+  },
+  "overrides": {
+    "face-api.js": {
+      "sourceMap": false
+    }
   }
 }
