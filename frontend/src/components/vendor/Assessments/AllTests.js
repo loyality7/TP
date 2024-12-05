@@ -197,13 +197,6 @@ const AllTests = () => {
                     Delete Test
                   </button>
                   <button
-                    onClick={() => handleShare(test.id, [])}
-                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                  >
-                    <Users className="h-4 w-4 mr-2" />
-                    Share Test
-                  </button>
-                  <button
                     className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                   >
                     <BarChart2 className="h-4 w-4 mr-2" />
