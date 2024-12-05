@@ -149,6 +149,8 @@ const AllTests = () => {
           {/* Action Buttons */}
           <div className="mt-6 pt-4 border-t flex justify-between items-center">
             <div className="flex gap-2">
+              {/* Commented out visibility toggle button */}
+              {/*
               <button 
                 onClick={() => handleVisibilityToggle(test)}
                 className="p-2 hover:bg-gray-50 rounded-lg transition-colors duration-200 group relative" 
@@ -160,6 +162,9 @@ const AllTests = () => {
                     : 'text-gray-600'
                 } group-hover:text-indigo-600`} />
               </button>
+              */}
+              {/* Commented out edit button */}
+              {/*
               <button 
                 onClick={() => actions.handleEdit(test.id)}
                 className="p-2 hover:bg-gray-50 rounded-lg transition-colors duration-200 group" 
@@ -167,6 +172,7 @@ const AllTests = () => {
               >
                 <Edit className="h-4 w-4 text-gray-600 group-hover:text-indigo-600" />
               </button>
+              */}
               <button 
                 onClick={() => handlePublish(test)}
                 className="p-2 hover:bg-gray-50 rounded-lg transition-colors duration-200 group" 
