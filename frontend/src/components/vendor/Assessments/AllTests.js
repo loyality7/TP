@@ -216,30 +216,6 @@ const AllTests = () => {
     );
   });
 
-  // 5. Fix useCallback dependency
-  const useTestActions = () => {
-    const navigate = useNavigate();
-    
-    const handleEdit = useCallback((testId) => {
-      navigate(`/vendor/tests/${testId}/edit`);
-    }, [navigate]);
-
-    const handleDelete = useCallback(async (testId) => {
-      if (window.confirm('Are you sure you want to delete this test?')) {
-        try {
-          toast.success('Test deleted successfully!');
-        } catch (error) {
-          toast.error('Failed to delete test');
-        }
-      }
-    }, []);
-
-    return {
-      handleEdit,
-      handleDelete
-    };
-  };
-
   // Move fetchTests inside component
   const fetchTests = async () => {
     try {
