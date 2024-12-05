@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LoginForm.css';
 import { useAuth } from '../../hooks/auth/useAuth';
+import { toast } from 'react-toastify';
 
 const LoginForm = () => {
   const { login } = useAuth();
@@ -37,6 +38,7 @@ const LoginForm = () => {
       
       if (result?.user) {
         console.log('Login successful:', result);
+        toast.success('Successfully logged in!');
         navigate('/');
       }
     } catch (error) {

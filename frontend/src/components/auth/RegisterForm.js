@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './RegisterForm.css';
 import apiService from '../../services/api';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const RegisterForm = () => {
   const navigate = useNavigate();
@@ -31,6 +32,10 @@ const RegisterForm = () => {
       const response = await apiService.post('/auth/register', formData);
       
       if (response.data) {
+        toast.success('Account created successfully! Please log in.', {
+          position: "top-right",
+          autoClose: 3000
+        });
         navigate('/login');
       }
     } catch (err) {
