@@ -29,7 +29,9 @@ axiosInstance.interceptors.request.use((config) => {
   const newConfig = { ...config };
   newConfig.headers = newConfig.headers || {};
   
-  if (config.url.includes('/auth/login') || config.requiresAuth === false) {
+  if (config.url.includes('/auth/login') || 
+      config.url.includes('/auth/register') || 
+      config.requiresAuth === false) {
     return newConfig;
   }
 
@@ -130,7 +132,7 @@ export const apiService = {
       const path = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
       const response = await axiosInstance.post(path, data, {
         ...config,
-        requiresAuth: endpoint.includes('/auth/login') ? false : true
+        requiresAuth: !endpoint.includes('/auth/')
       });
       console.log('API Response:', response);
       return response;

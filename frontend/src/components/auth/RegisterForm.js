@@ -28,14 +28,10 @@ const RegisterForm = () => {
     setError('');
     
     try {
-      const response = await apiService.post('auth/register', formData);
+      const response = await apiService.post('/auth/register', formData);
       
-      if (response.token) {
+      if (response.data) {
         navigate('/login');
-      } else if (response.error) {
-        setError(response.error);
-      } else {
-        setError('Registration failed. Please check your input.');
       }
     } catch (err) {
       if (err.field === 'email') {

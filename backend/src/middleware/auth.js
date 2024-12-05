@@ -3,6 +3,11 @@ import User from "../models/user.model.js";
 import Vendor from "../models/vendor.model.js";
 
 export const auth = async (req, res, next) => {
+  // Skip authentication for login and register routes
+  if (req.path.includes('/login') || req.path.includes('/register')) {
+    return next();
+  }
+
   try {
     console.log('Auth middleware - Headers:', req.headers);
 

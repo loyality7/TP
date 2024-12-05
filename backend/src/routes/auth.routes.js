@@ -157,22 +157,6 @@ router.post("/register", register);
 
 /**
  * @swagger
- * /api/auth/logout:
- *   post:
- *     summary: Logout user
- *     tags: [Auth]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Logout successful
- *       401:
- *         description: Not authenticated
- */
-router.post("/logout", auth, logout);
-
-/**
- * @swagger
  * /api/auth/forgot-password:
  *   post:
  *     summary: Request password reset
@@ -218,5 +202,21 @@ router.post("/forgot-password", forgotPasswordLimiter, forgotPassword);
  *         description: Invalid or expired token
  */
 router.post("/reset-password", resetPassword);
+
+/**
+ * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     summary: Logout user
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Logout successful
+ *       401:
+ *         description: Not authenticated
+ */
+router.post("/logout", auth, logout);
 
 export default router;
