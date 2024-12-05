@@ -98,20 +98,19 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-// Add a health check method
-const checkServerHealth = async () => {
-  try {
-    const response = await axios.get('http://localhost:5000/api/health');
-    console.log('Server is accessible:', response.data);
-    return true;
-  } catch (error) {
-    console.error('Server health check failed:', error);
-    return false;
-  }
-};
-
-// Export the service methods
+// Add checkServerHealth to the apiService object
 export const apiService = {
+  checkServerHealth: async () => {
+    try {
+      const response = await axios.get(`${API_URL}/health`);
+      console.log('Server is accessible:', response.data);
+      return true;
+    } catch (error) {
+      console.error('Server health check failed:', error);
+      return false;
+    }
+  },
+
   get: async (endpoint, config = {}) => {
     try {
       const path = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
@@ -164,21 +163,13 @@ export const apiService = {
   },
   patch: async (endpoint, data = {}, config = {}) => {
     try {
-      // Check server health first
-      const isServerUp = await checkServerHealth();
-      if (!isServerUp) {
-        throw new Error('Backend server is not accessible');
-      }
-
       const path = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-      console.log('Making PATCH request to:', `${API_URL}${path}`);
-      console.log('With data:', data);
-      console.log('With headers:', axiosInstance.defaults.headers);
-
+      
+      // Make request without requiring health check
       const response = await axiosInstance.patch(path, data, {
         ...config,
-        timeout: 5000, // Add timeout
-        validateStatus: status => status >= 200 && status < 300 // Validate status
+        timeout: 5000,
+        validateStatus: status => status >= 200 && status < 300
       });
 
       return response;
@@ -190,9 +181,14 @@ export const apiService = {
           fullURL: `${API_URL}${endpoint}`,
           error: error.message
         });
-        throw new Error('Cannot connect to server. Please check if the backend is running.');
+        throw new Error('Cannot connect to server. Please check your internet connection.');
       }
-      console.error(`PATCH ${endpoint} failed:`, error);
+      
+      // Throw the original error response if available
+      if (error.response?.data) {
+        throw error.response.data;
+      }
+      
       throw error;
     }
   },

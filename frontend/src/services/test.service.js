@@ -64,5 +64,26 @@ export const testService = {
   // Get test by ID
   getTestById: async (testId) => {
     return await apiService.get(`/tests/${testId}`);
+  },
+
+  // Update test visibility
+  updateTestVisibility: async (testId, visibility) => {
+    try {
+      const response = await apiService.patch(`/tests/${testId}/visibility`, { 
+        visibility,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.data) {
+        throw new Error('No data received from server');
+      }
+      
+      return response.data;
+    } catch (error) {
+      console.error('Failed to update test visibility:', error);
+      throw error;
+    }
   }
 }; 

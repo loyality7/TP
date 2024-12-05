@@ -8,7 +8,7 @@ import { Card,  CardContent } from '../../common/Card';
 import { 
   Search, Filter, Plus, MoreVertical, Clock, Users, Calendar, Download,
   Edit, Trash2, Eye, TrendingUp, Brain, Target, 
-  BarChart2, Settings, MessageCircle, Copy, TrendingDown
+  BarChart2, Settings, MessageCircle,  TrendingDown
 } from 'lucide-react';
 import { testService } from '../../../services/test.service';
 import { apiService } from '../../../services/api';
@@ -173,24 +173,6 @@ const AllTests = () => {
                 title="Publish & Get Shareable Link"
               >
                 <TrendingUp className="h-4 w-4 text-gray-600 group-hover:text-indigo-600" />
-              </button>
-              <button 
-                onClick={() => {
-                  if (test.sharingToken) {
-                    navigator.clipboard.writeText(test.shareableLink);
-                    toast.success('Shareable link copied!');
-                  } else {
-                    toast.error('Please publish the test first to get a shareable link');
-                  }
-                }}
-                className="p-2 hover:bg-gray-50 rounded-lg transition-colors duration-200 group" 
-                title={test.sharingToken ? 'Copy Shareable Link' : 'Publish test first to get shareable link'}
-              >
-                <Copy className={`h-4 w-4 ${
-                  test.sharingToken 
-                    ? 'text-gray-600 group-hover:text-indigo-600' 
-                    : 'text-gray-400'
-                }`} />
               </button>
             </div>
             
@@ -494,12 +476,12 @@ const AllTests = () => {
   const handleVisibilityToggle = async (test) => {
     try {
       const newVisibility = test.visibility === 'public' ? 'private' : 'public';
-      await testService.updateTestVisibility(test.id, newVisibility);
+      await testService.updateTestVisibility(test._id, newVisibility);
       
       // Update the test in state
       setTests(prevTests => 
         prevTests.map(t => 
-          t.id === test.id 
+          t._id === test._id 
             ? { ...t, visibility: newVisibility }
             : t
         )
@@ -507,6 +489,7 @@ const AllTests = () => {
       
       toast.success(`Test is now ${newVisibility}`);
     } catch (error) {
+      console.error('Error updating visibility:', error);
       toast.error('Failed to update test visibility');
     }
   };

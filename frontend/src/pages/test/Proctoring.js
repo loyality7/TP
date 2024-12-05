@@ -11,7 +11,6 @@ export default function Proctoring({
   onDeviceDetectionAlert 
 }) {
   const videoRef = useRef(null);
-  const canvasRef = useRef(null);
   const streamRef = useRef(null);
   const lastWarningRef = useRef(Date.now());
   const lastFacePositionRef = useRef(null);
@@ -39,9 +38,15 @@ export default function Proctoring({
           videoRef.current.srcObject = stream;
         }
 
-        detectorRef.current = new faceapi.FaceDetector({
+        try {
+          await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
+        } catch (modelError) {
+          throw new Error(`Failed to load face detection models: ${modelError.message}`);
+        }
+        
+        detectorRef.current = new faceapi.TinyFaceDetector({
           inputSize: 320,
-          scoreThreshold: 0.9
+          scoreThreshold: 0.5
         });
 
         setIsInitialized(true);
@@ -63,7 +68,10 @@ export default function Proctoring({
           return;
         }
 
-        const detections = await detectorRef.current.detectAllFaces(videoRef.current);
+        const detections = await faceapi.detectAllFaces(
+          videoRef.current,
+          detectorRef.current
+        );
 
         const now = Date.now();
         
@@ -76,8 +84,8 @@ export default function Proctoring({
             if (onFaceDetectionAlert) onFaceDetectionAlert('Multiple faces detected in camera view');
           } else {
             const face = detections[0];
-            const centerX = face.box.xCenter / videoRef.current.videoWidth;
-            const centerY = face.box.yCenter / videoRef.current.videoHeight;
+            const centerX = face.box.x / videoRef.current.videoWidth;
+            const centerY = face.box.y / videoRef.current.videoHeight;
 
             if (lastFacePositionRef.current) {
               const [lastX, lastY] = lastFacePositionRef.current;
@@ -91,16 +99,6 @@ export default function Proctoring({
             }
 
             lastFacePositionRef.current = [centerX, centerY];
-          }
-
-          const electronicDevices = detections.filter(detection => 
-            ['cell phone', 'laptop', 'remote', 'keyboard', 'mouse', 'tv', 'monitor']
-            .includes(detection.class.toLowerCase())
-          );
-
-          if (electronicDevices.length > 0) {
-            lastWarningRef.current = now;
-            if (onDeviceDetectionAlert) onDeviceDetectionAlert(`Electronic device detected: ${electronicDevices.map(d => d.class).join(', ')}`);
           }
 
           console.log('Face detections:', detections);
