@@ -852,9 +852,19 @@ const Dashboard = () => {
       try {
         setLoading(true);
         
-        // Fetch metrics
+        // Fetch candidates first
+        const candidatesResponse = await apiService.get('/vendor/candidate-metrics');
+        const activeCandidatesCount = candidatesResponse.data.candidates.length;
+
+        // Fetch metrics and update with correct active candidates count
         const metricsResponse = await apiService.get('/vendor/dashboard/metrics');
-        setMetrics(metricsResponse.data);
+        setMetrics({
+          ...metricsResponse.data,
+          activeCandidates: {
+            ...metricsResponse.data.activeCandidates,
+            value: activeCandidatesCount // Update the value with actual count
+          }
+        });
 
         // Fetch performance metrics
         const performanceResponse = await apiService.get('/vendor/analytics/performance', {
