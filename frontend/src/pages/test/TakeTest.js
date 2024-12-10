@@ -383,22 +383,30 @@ export default function TakeTest() {
     loadTest();
   }, [uuid, navigate]);
 
-  // Request Permissions
+  // Update the useEffect for requesting permissions
   useEffect(() => {
     const requestPermissions = async () => {
-      try {
-        // Request camera access
-        await navigator.mediaDevices.getUserMedia({ video: true });
-        console.log('Camera access granted');
+      // Only request camera if proctoring is enabled
+      if (test?.proctoring) {
+        try {
+          await navigator.mediaDevices.getUserMedia({ video: true });
+          console.log('Camera access granted');
+          setPermissionsGranted(true);
+        } catch (error) {
+          console.error('Camera access denied:', error);
+          setPermissionsGranted(false);
+          toast.error('Camera access is required for proctored tests');
+        }
+      } else {
+        // Auto-grant permissions if proctoring is disabled
         setPermissionsGranted(true);
-      } catch (error) {
-        console.error('Camera access denied:', error);
-        alert('Camera access is required to proceed with the test.');
       }
     };
 
-    requestPermissions();
-  }, []);
+    if (test) {
+      requestPermissions();
+    }
+  }, [test]);
 
   // Update the fullscreen effect with stricter controls
   useEffect(() => {
@@ -916,49 +924,71 @@ export default function TakeTest() {
             <ul className="list-disc pl-6 space-y-2 text-gray-600">
               <li>Ensure you are in a quiet environment</li>
               <li>Close all other applications and browser tabs</li>
-              <li>Your camera must remain on throughout the test</li>
+              {test?.proctoring && (
+                <li className="font-medium text-blue-600">
+                  Your camera must remain on throughout the test
+                </li>
+              )}
               <li>Switching tabs or applications is not allowed</li>
               <li>The test must be completed in full-screen mode</li>
-              <li>Multiple faces in camera view will be flagged</li>
+              {test?.proctoring && (
+                <li className="font-medium text-blue-600">
+                  Multiple faces in camera view will be flagged
+                </li>
+              )}
             </ul>
           </div>
 
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold text-gray-700 mb-2">System Permissions:</h2>
-            <div className="space-y-2">
-              <div className="flex items-center">
-                <svg 
-                  className={`w-6 h-6 ${permissionsGranted ? 'text-green-500' : 'text-gray-400'}`}
-                  fill="none" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth="2" 
-                  viewBox="0 0 24 24" 
-                  stroke="currentColor"
-                >
-                  <path d="M5 13l4 4L19 7"></path>
-                </svg>
-                <span className="ml-2">Camera Access: {permissionsGranted ? 'Granted' : 'Required'}</span>
+          {test?.proctoring ? (
+            // Show camera permissions section only for proctored tests
+            <div className="mb-6">
+              <h2 className="text-lg font-semibold text-gray-700 mb-2">
+                System Permissions Required:
+              </h2>
+              <div className="space-y-2">
+                <div className="flex items-center">
+                  <svg 
+                    className={`w-6 h-6 ${permissionsGranted ? 'text-green-500' : 'text-red-500'}`}
+                    fill="none" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    strokeWidth="2" 
+                    viewBox="0 0 24 24" 
+                    stroke="currentColor"
+                  >
+                    <path d="M5 13l4 4L19 7"></path>
+                  </svg>
+                  <span className="ml-2">
+                    Camera Access: {permissionsGranted ? 'Granted' : 'Required'}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
+          ) : (
+            // Show message for non-proctored tests
+            <div className="mb-6 text-gray-600 italic">
+              This is a non-proctored test. No camera access required.
+            </div>
+          )}
 
           <div className="text-center">
             <button
               onClick={handleStartTest}
-              disabled={!permissionsGranted}
+              disabled={test?.proctoring && !permissionsGranted}
               className={`
                 px-6 py-3 text-lg font-semibold rounded-lg
-                ${permissionsGranted 
+                ${(!test?.proctoring || permissionsGranted)
                   ? 'bg-blue-600 text-white hover:bg-blue-700 transform transition hover:scale-105' 
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'}
               `}
             >
-              {permissionsGranted ? 'Start Test' : 'Waiting for Permissions...'}
+              {test?.proctoring && !permissionsGranted 
+                ? 'Camera Access Required' 
+                : 'Start Test'}
             </button>
-            {!permissionsGranted && (
+            {test?.proctoring && !permissionsGranted && (
               <p className="mt-2 text-sm text-red-500">
-                Please grant camera access to continue
+                Please grant camera access to continue with this proctored test
               </p>
             )}
           </div>
