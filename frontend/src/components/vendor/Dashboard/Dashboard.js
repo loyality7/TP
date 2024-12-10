@@ -423,7 +423,6 @@ const CandidateTable = () => {
   const [candidates, setCandidates] = useState([]);
   const [metrics, setMetrics] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
-  const [setHoveredRow] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState('all');
   
   // Fetch candidate metrics
@@ -550,12 +549,9 @@ const CandidateTable = () => {
             {filteredCandidates.map((candidate, index) => (
               <motion.tr 
                 key={candidate.candidateId}
-                className="group hover:bg-gray-50/90 relative cursor-pointer"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                onHoverStart={() => setHoveredRow(index)}
-                onHoverEnd={() => setHoveredRow(null)}
               >
                 <td className="py-3 px-4">
                   <div className="flex items-center gap-3">
@@ -954,20 +950,21 @@ const Dashboard = () => {
   // Add these styles at the top of your file
   const styles = {
     blurEffect: {
-      filter: 'blur(2px)', // Reduced from 5px to 2px
+      WebkitFilter: 'blur(2px)',
+      filter: 'blur(2px)',
       position: 'relative',
     },
     comingSoonOverlay: {
       position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
+      top: '0',
+      left: '0',
+      right: '0',
+      bottom: '0',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: 'rgba(255, 255, 255, 0.5)', // Reduced opacity from 0.7 to 0.5
-      zIndex: 10,
+      backgroundColor: 'rgba(255, 255, 255, 0.5)',
+      zIndex: '10',
     },
   };
 

@@ -43,7 +43,8 @@ export const testService = {
 
   // Update test
   updateTest: async (testId, testData) => {
-    return await apiService.put(`/tests/${testId}`, testData);
+    const response = await apiService.put(`/tests/${testId}`, testData);
+    return response.data;
   },
 
   // Delete test
@@ -63,7 +64,35 @@ export const testService = {
 
   // Get test by ID
   getTestById: async (testId) => {
-    return await apiService.get(`/tests/${testId}`);
+    try {
+      const response = await apiService.get(`/tests/${testId}`);
+      if (!response.data) {
+        throw new Error('No data received from server');
+      }
+      
+      // Transform the data to match form structure
+      const formattedData = {
+        ...response.data,
+        duration: response.data.duration?.toString() || '',
+        proctoring: response.data.proctoring?.toString() || 'false',
+        settings: response.data.settings || {},
+        mcqs: (response.data.mcqs || []).map(mcq => ({
+          ...mcq,
+          marks: mcq.marks?.toString() || '0'
+        })),
+        codingChallenges: (response.data.codingChallenges || []).map(challenge => ({
+          ...challenge,
+          marks: challenge.marks?.toString() || '0',
+          timeLimit: challenge.timeLimit?.toString() || '0',
+          memoryLimit: challenge.memoryLimit?.toString() || '0'
+        }))
+      };
+
+      return { data: formattedData };
+    } catch (error) {
+      console.error('Error in getTestById:', error);
+      throw error;
+    }
   },
 
   // Update test visibility

@@ -28,6 +28,10 @@ const CodingSection = ({ testData, setTestData }) => {
     explanation: ''
   });
 
+  const [editingIndex, setEditingIndex] = useState(-1);
+
+  if (!testData) return null;
+
   const programmingLanguages = [
     { id: 'javascript', name: 'JavaScript' },
     { id: 'python', name: 'Python' },
@@ -96,10 +100,23 @@ const CodingSection = ({ testData, setTestData }) => {
       memoryLimit: parseInt(newChallenge.memoryLimit)
     };
 
-    setTestData(prev => ({
-      ...prev,
-      codingChallenges: [...prev.codingChallenges, challenge]
-    }));
+    if (editingIndex >= 0) {
+      // Update existing challenge
+      setTestData(prev => ({
+        ...prev,
+        codingChallenges: [
+          ...prev.codingChallenges.slice(0, editingIndex),
+          challenge,
+          ...prev.codingChallenges.slice(editingIndex + 1)
+        ]
+      }));
+    } else {
+      // Add new challenge
+      setTestData(prev => ({
+        ...prev,
+        codingChallenges: [...prev.codingChallenges, challenge]
+      }));
+    }
 
     // Reset form
     setNewChallenge({
@@ -119,6 +136,7 @@ const CodingSection = ({ testData, setTestData }) => {
       category: '',
       instructions: ''
     });
+    setEditingIndex(-1);
   };
 
   const getDefaultTemplate = (language) => {
@@ -146,7 +164,9 @@ const CodingSection = ({ testData, setTestData }) => {
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-lg border p-4">
-        <h3 className="text-lg font-medium mb-4">Add Coding Challenge</h3>
+        <h3 className="text-lg font-medium mb-4">
+          {editingIndex >= 0 ? 'Edit Coding Challenge' : 'Add Coding Challenge'}
+        </h3>
         
         <div className="space-y-4">
           {/* Basic Information */}
@@ -527,7 +547,7 @@ const CodingSection = ({ testData, setTestData }) => {
             onClick={handleAddChallenge}
             className="w-full mt-4 px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600"
           >
-            Add Challenge
+            {editingIndex >= 0 ? 'Update Challenge' : 'Add Challenge'}
           </button>
         </div>
       </div>
@@ -559,12 +579,9 @@ const CodingSection = ({ testData, setTestData }) => {
                   <div className="flex gap-2">
                     <button
                       onClick={() => {
-                        // Handle edit
+                        setEditingIndex(index);
                         setNewChallenge(challenge);
-                        setTestData({
-                          ...testData,
-                          codingChallenges: testData.codingChallenges.filter((_, i) => i !== index)
-                        });
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
                       className="p-2 text-gray-500 hover:bg-gray-50 rounded-lg"
                     >
@@ -572,10 +589,12 @@ const CodingSection = ({ testData, setTestData }) => {
                     </button>
                     <button 
                       onClick={() => {
-                        setTestData({
-                          ...testData,
-                          codingChallenges: testData.codingChallenges.filter((_, i) => i !== index)
-                        });
+                        if (window.confirm('Are you sure you want to delete this challenge?')) {
+                          setTestData({
+                            ...testData,
+                            codingChallenges: testData.codingChallenges.filter((_, i) => i !== index)
+                          });
+                        }
                       }}
                       className="p-2 text-red-500 hover:bg-red-50 rounded-lg"
                     >

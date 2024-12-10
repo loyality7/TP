@@ -4,6 +4,7 @@ import { toast } from 'react-hot-toast';
 
 const MCQSection = ({ testData, setTestData }) => {
   const [loading] = useState(false);
+  const [editingIndex, setEditingIndex] = useState(-1);
   const [newMCQ, setNewMCQ] = useState({
     question: '',
     options: ['', ''],
@@ -14,6 +15,8 @@ const MCQSection = ({ testData, setTestData }) => {
     explanation: '',
     tags: []
   });
+
+  if (!testData) return null;
 
   const removeOption = (indexToRemove) => {
     setNewMCQ(prev => ({
@@ -26,6 +29,7 @@ const MCQSection = ({ testData, setTestData }) => {
   };
 
   const handleEditMCQ = (index) => {
+    setEditingIndex(index);
     setNewMCQ(testData.mcqs[index]);
     setTestData(prev => ({
       ...prev,
@@ -107,11 +111,12 @@ const MCQSection = ({ testData, setTestData }) => {
       mcqs: [...prev.mcqs, {
         ...newMCQ,
         correctOptions: newMCQ.correctOptions.map(Number),
-        marks: parseInt(newMCQ.marks)
+        marks: parseInt(newMCQ.marks),
+        id: editingIndex >= 0 ? testData.mcqs[editingIndex]?.id : Date.now()
       }]
     }));
 
-    // Reset form
+    // Reset form and editing state
     setNewMCQ({
       question: '',
       options: ['', ''],
@@ -122,12 +127,15 @@ const MCQSection = ({ testData, setTestData }) => {
       explanation: '',
       tags: []
     });
+    setEditingIndex(-1);
   };
 
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-lg border p-4">
-        <h3 className="text-lg font-medium mb-4">Add Multiple Choice Question</h3>
+        <h3 className="text-lg font-medium mb-4">
+          {editingIndex >= 0 ? 'Edit Multiple Choice Question' : 'Add Multiple Choice Question'}
+        </h3>
         
         <div className="space-y-4">
           {/* Question */}
@@ -259,7 +267,7 @@ const MCQSection = ({ testData, setTestData }) => {
             className="w-full mt-4 px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 disabled:opacity-50"
             disabled={loading}
           >
-            {loading ? 'Adding...' : 'Add Question'}
+            {loading ? 'Saving...' : editingIndex >= 0 ? 'Save Changes' : 'Add Question'}
           </button>
         </div>
       </div>

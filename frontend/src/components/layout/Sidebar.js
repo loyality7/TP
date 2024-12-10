@@ -65,6 +65,7 @@ const Sidebar = ({ isOpen, setIsOpen, onLogout }) => {
       children: [
         { label: "All Tests", path: "/vendor/tests" },
         { label: "Create New", path: "/vendor/tests/create" },
+        { label: "Edit Test", path: "/vendor/tests/edit/:testId" },
         // { label: "Templates", path: "/vendor/tests/templates" },
         { label: "Question Bank", path: "/vendor/tests/questions" },
         { label: "Archive", path: "/vendor/tests/archive" }

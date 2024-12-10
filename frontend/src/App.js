@@ -47,6 +47,7 @@ import ForgotPassword from './pages/auth/ForgotPassword';
 import ResetPassword from './pages/auth/ResetPassword';
 import { QueryProvider } from './providers/QueryProvider';
 import Wallet from './components/vendor/Payments/Wallet';
+import EditTest from './components/vendor/Assessments/EditTest';
 
 // Create a wrapper component to handle header visibility
 const AppContent = () => {
@@ -99,6 +100,7 @@ const AppContent = () => {
                     <Route path="dashboard/reports" element={<Reports />} />
                     <Route path="tests" element={<AllTests />} />
                     <Route path="tests/create" element={<CreateTest />} />
+                    <Route path="tests/edit/:testId" element={<EditTest />} />
                     {/* <Route path="tests/templates" element={<Templates />} /> */}
                     <Route path="tests/questions" element={<QuestionBank />} />
                     <Route path="tests/archive" element={<Archive />} />
