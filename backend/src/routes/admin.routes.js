@@ -1,11 +1,14 @@
 import express from 'express';
 import { isAdmin } from '../middleware/auth.middleware.js';
+import { auth } from '../middleware/auth.js';
+import { checkRole } from '../middleware/checkRole.js';
 import User from '../models/user.model.js';
 import Vendor from '../models/vendor.model.js';
 import Test from '../models/test.model.js';
 import TestResult from '../models/testResult.model.js';
 import bcrypt from 'bcryptjs';
 import SystemSettings from '../models/systemSettings.model.js';
+import { adminAddFunds } from '../controllers/vendorWallet.controller.js';
 
 const router = express.Router();
 
@@ -1967,5 +1970,69 @@ router.put('/settings/test-pricing', isAdmin, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+/**
+ * @swagger
+ * /api/admin/vendor/wallet/add-funds:
+ *   post:
+ *     summary: Add funds to vendor wallet (Admin only)
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - vendorId
+ *               - amount
+ *             properties:
+ *               vendorId:
+ *                 type: string
+ *                 description: ID of the vendor
+ *               amount:
+ *                 type: number
+ *                 description: Amount to add in INR
+ *                 minimum: 1
+ *               description:
+ *                 type: string
+ *                 description: Optional description for the transaction
+ *     responses:
+ *       200:
+ *         description: Funds added successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 addedAmount:
+ *                   type: number
+ *                 newBalance:
+ *                   type: number
+ *                 transaction:
+ *                   type: object
+ *       400:
+ *         description: Invalid request
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - Not an admin
+ *       404:
+ *         description: Vendor not found
+ *       500:
+ *         description: Server error
+ */
+router.post(
+  "/vendor/wallet/add-funds",
+  auth,
+  checkRole(["admin"]),
+  adminAddFunds
+);
 
 export default router; 

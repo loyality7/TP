@@ -24,7 +24,21 @@ export default function SharedTest() {
           return;
         }
 
-        // Step 1: Verify Test
+        // Step 1: Parse UUID to get test and vendor IDs
+        const parseResponse = await apiService.get(`tests/parse-uuid/${uuid}`);
+        console.log('Parse Response:', parseResponse?.data);
+
+        if (!parseResponse?.data?.data) {
+          throw new Error('Invalid test data received');
+        }
+
+        const { testId, vendorId } = parseResponse.data.data;
+        
+        // Store IDs immediately
+        localStorage.setItem('currentTestId', testId);
+        localStorage.setItem('currentVendorId', vendorId);
+
+        // Step 2: Verify Test
         const verifyResponse = await apiService.post(`tests/verify/${uuid}`);
         console.log('Verify Response:', verifyResponse?.data);
 
@@ -43,18 +57,15 @@ export default function SharedTest() {
         const testData = verifyResponse.data.test;
         setVendorBalance({ hasBalance: true });
         
-        // Store test ID immediately after verification
-        localStorage.setItem('currentTestId', testData.id);
-        console.log('Stored test ID:', testData.id);
-
         // Set test data
         setTest({
           ...testData,
-          id: testData.id,
-          uuid: uuid
+          id: testId,
+          uuid: uuid,
+          vendorId: vendorId
         });
 
-        // Step 2: Check Registration Status
+        // Step 3: Check Registration Status
         const regResponse = await apiService.post(`tests/${uuid}/check-registration`);
         console.log('Registration Response:', regResponse?.data);
 
@@ -85,31 +96,53 @@ export default function SharedTest() {
     verifyAndCheckRegistration();
   }, [uuid, navigate]);
 
-  // Update handleRegister to store test data
   const handleRegister = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      // Store test data directly
-      localStorage.setItem('currentTestId', test.id);
+      const testId = localStorage.getItem('currentTestId');
+      const vendorId = localStorage.getItem('currentVendorId');
+
+      if (!testId || !vendorId) {
+        throw new Error('Missing test or vendor information');
+      }
+
+      // First try to debit the test fee from vendor's wallet
+      const debitResponse = await apiService.post('vendor/wallet/debit-test-fee', {
+        vendorId: vendorId,
+        testId: testId
+      });
+
+      if (!debitResponse.data.success) {
+        throw new Error(debitResponse.data.message || 'Failed to process test fee');
+      }
+
+      // Store complete test data
       localStorage.setItem('currentTestData', JSON.stringify({
-        id: test.id,
+        id: testId,
         uuid: uuid,
         title: test.title,
         type: test.type,
         duration: test.duration,
-        totalMarks: test.totalMarks
+        totalMarks: test.totalMarks,
+        vendorId: vendorId
       }));
 
-      toast.success('Starting test');
+      toast.success('Registration successful');
       navigate(`/test/take/${uuid}`);
 
     } catch (error) {
       console.error('Registration error:', error);
-      const errorMessage = error.response?.data?.message || error.message || 'Failed to register for test';
-      toast.error(errorMessage);
-      setError(errorMessage);
+      const errorMessage = error.response?.data?.message || error.message;
+      
+      if (error.response?.status === 400 && error.response?.data?.error === "Insufficient balance") {
+        setError("This test is currently unavailable. Please contact the test coordinator for assistance.");
+        toast.error("Test registration unavailable. Please contact coordinator.");
+      } else {
+        setError(errorMessage);
+        toast.error(errorMessage);
+      }
     } finally {
       setLoading(false);
     }
@@ -120,15 +153,21 @@ export default function SharedTest() {
       setLoading(true);
       setError(null);
 
-      // Store test data directly without parsing
-      localStorage.setItem('currentTestId', test.id);
+      const testId = localStorage.getItem('currentTestId');
+      const vendorId = localStorage.getItem('currentVendorId');
+
+      if (!testId || !vendorId) {
+        throw new Error('Missing test or vendor information');
+      }
+
       localStorage.setItem('currentTestData', JSON.stringify({
-        id: test.id,
+        id: testId,
         uuid: uuid,
         title: test.title,
         type: test.type,
         duration: test.duration,
-        totalMarks: test.totalMarks
+        totalMarks: test.totalMarks,
+        vendorId: vendorId
       }));
 
       toast.success('Starting test');

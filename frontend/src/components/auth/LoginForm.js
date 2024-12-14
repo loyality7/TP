@@ -43,13 +43,18 @@ const LoginForm = ({ onLoginSuccess }) => {
           onLoginSuccess();
         }
         
-        // Check for redirect URL in localStorage
-        const redirectUrl = localStorage.getItem('redirectAfterLogin');
-        if (redirectUrl) {
-          localStorage.removeItem('redirectAfterLogin'); // Clean up
-          navigate(redirectUrl);
+        // Check if user is a vendor
+        if (result.user.role === 'vendor') {
+          navigate('/vendor/dashboard');
         } else {
-          navigate('/dashboard'); // Default fallback
+          // Existing redirect logic for non-vendor users
+          const redirectUrl = localStorage.getItem('redirectAfterLogin');
+          if (redirectUrl) {
+            localStorage.removeItem('redirectAfterLogin'); // Clean up
+            navigate(redirectUrl);
+          } else {
+            navigate('/dashboard'); // Default fallback
+          }
         }
       }
     } catch (error) {

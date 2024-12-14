@@ -47,7 +47,8 @@ import {
   getWalletTransactions,
   createWalletOrder,
   verifyWalletPayment,
-  deductTestUserBalance 
+  deductTestUserBalance,
+  debitTestFee 
 } from '../controllers/vendorWallet.controller.js';
 import { checkWalletBalance } from '../middleware/checkWalletBalance.js';
 import Vendor from '../models/vendor.model.js';
@@ -2607,5 +2608,34 @@ router.get("/candidates", auth, checkRole(["vendor"]), checkVendorApproval, getV
  *                             type: string
  */
 router.get("/candidate-metrics", auth, checkRole(["vendor"]), checkVendorApproval, getCandidateMetrics);
+
+/**
+ * @swagger
+ * /api/vendor/wallet/debit-test-fee:
+ *   post:
+ *     tags: [Vendor Wallet]
+ *     summary: Debit test registration fee from vendor wallet
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               vendorId:
+ *                 type: string
+ *                 required: true
+ *               testId:
+ *                 type: string
+ *                 required: true
+ *     responses:
+ *       200:
+ *         description: Amount debited successfully
+ *       400:
+ *         description: Insufficient balance
+ *       404:
+ *         description: Vendor not found
+ */
+router.post('/wallet/debit-test-fee', debitTestFee);
 
 export default router; 

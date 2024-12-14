@@ -34,6 +34,19 @@ const testRegistrationSchema = new mongoose.Schema({
     type: String,
     enum: ['public', 'private'],
     required: true
+  },
+  paymentInfo: {
+    amount: Number,
+    status: {
+      type: String,
+      enum: ['pending', 'completed', 'failed'],
+      default: 'pending'
+    },
+    paidBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Vendor'
+    },
+    paidAt: Date
   }
 }, {
   timestamps: true

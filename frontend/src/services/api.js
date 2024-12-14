@@ -1,7 +1,9 @@
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 
-const API_URL = 'https://testapi.nexterchat.com/api';
+// const API_URL = 'https://testapi.nexterchat.com/api';
+const API_URL = 'http://localhost:5000/api';
+
 
 // Create axios instance with default config
 const axiosInstance = axios.create({

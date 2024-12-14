@@ -1327,88 +1327,111 @@ export const verifyTestByUuid = async (req, res) => {
 export const checkTestRegistration = async (req, res) => {
   try {
     const { uuid } = req.params;
-    const userEmail = req.user.email;
-    const userRole = req.user.role;
+    const userId = req.user._id;
 
+    // Get test details with populated vendor
     const test = await Test.findOne({ uuid })
-      .populate('vendor', 'name email')
+      .populate('vendor')
       .lean();
 
     if (!test) {
-      return res.status(404).json({
-        message: 'Test not found'
-      });
+      return res.status(404).json({ error: "Test not found" });
     }
 
-    // Get existing registration if any
+    // Get user details
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Check access conditions
+    const isAdmin = user.role === 'admin';
+    const isVendor = test.vendor._id.toString() === userId.toString();
+    const isPublicTest = test.accessControl?.type === 'public';
+    const isPracticeTest = test.type === 'coding_challenge';
+    const isAllowedUser = test.accessControl?.allowedUsers?.some(u => 
+      u.email === user.email
+    );
+    const hasAccessByEmail = test.accessControl?.allowedEmails?.includes(user.email);
+
+    const canAccess = isAdmin || isVendor || isPublicTest || isPracticeTest || 
+                      isAllowedUser || hasAccessByEmail;
+
+    // Get existing registration
     const existingRegistration = await TestRegistration.findOne({
       test: test._id,
-      user: req.user._id
+      user: userId
     });
 
-    // Get last session if any
+    // Get last session
     const lastSession = await TestSession.findOne({
       test: test._id,
-      user: req.user._id
+      user: userId
     }).sort({ startTime: -1 });
 
-    // Determine access based on test type and user role
-    let canAccess = false;
-    if (test.type === 'coding_challenge') {
-      // Practice tests are accessible to all authenticated users
-      canAccess = true;
-    } else {
-      // For assessment tests, check specific permissions
-      canAccess = userRole === 'admin' || 
-                  test.vendor._id.toString() === req.user._id.toString() ||
-                  test.accessControl?.allowedUsers?.some(user => user.email === userEmail);
-    }
+    // Determine registration requirement
+    const requiresRegistration = !isPracticeTest && !existingRegistration;
 
-    // Determine if registration is required
-    const requiresRegistration = test.type === 'assessment' && !existingRegistration;
-    const isRegistered = !!existingRegistration;
-
-    let message = '';
-    if (!canAccess) {
-      message = 'You do not have access to this test';
-    } else if (requiresRegistration) {
-      message = 'Please register to take this test';
-    } else if (isRegistered) {
-      message = 'You are registered for this test';
-    }
-
-    return res.json({
+    // Build response
+    const response = {
       canAccess,
       requiresRegistration,
-      isRegistered,
-      message,
+      isRegistered: !!existingRegistration,
+      testId: test._id.toString(),
+      vendorId: test.vendor._id.toString(),
+      message: !canAccess ? 'You do not have access to this test' :
+               existingRegistration ? 'You are already registered for this test' :
+               requiresRegistration ? 'Registration required for this test' :
+               'You can take this test',
       test: {
         id: test._id,
         uuid: test.uuid,
         title: test.title,
         type: test.type,
+        vendor: {
+          id: test.vendor._id,
+          name: test.vendor.name
+        },
         accessControl: {
           type: test.accessControl?.type || 'private',
-          allowedUsers: canAccess ? [{
-            email: userEmail,
-            name: test.accessControl?.allowedUsers?.find(u => u.email === userEmail)?.name,
-            addedAt: test.accessControl?.allowedUsers?.find(u => u.email === userEmail)?.addedAt
-          }] : []
+          allowedUsers: test.accessControl?.allowedUsers || []
         }
-      },
-      lastSession: lastSession ? {
+      }
+    };
+
+    // Add registration info if exists
+    if (existingRegistration) {
+      response.registration = {
+        id: existingRegistration._id,
+        status: existingRegistration.status,
+        registeredAt: existingRegistration.registeredAt
+      };
+    }
+
+    // Add last session if exists
+    if (lastSession) {
+      response.lastSession = {
         id: lastSession._id,
         status: lastSession.status,
-        startTime: lastSession.startTime,
-        endTime: lastSession.endTime
-      } : null
+        startTime: lastSession.startTime
+      };
+    }
+
+    // Log response for debugging
+    console.log('Check Registration Response:', {
+      testId: response.testId,
+      vendorId: response.vendorId,
+      canAccess: response.canAccess,
+      isRegistered: response.isRegistered
     });
 
+    res.json(response);
+
   } catch (error) {
-    console.error('Error in checkTestRegistration:', error);
-    return res.status(500).json({
-      message: 'Error checking test registration',
-      error: error.message
+    console.error('Error in checkRegistration:', error);
+    res.status(500).json({
+      error: "Failed to check registration status",
+      details: error.message
     });
   }
 };
@@ -2248,78 +2271,115 @@ export const registerForTest = async (req, res) => {
     const { uuid } = req.params;
     const userId = req.user._id;
 
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
+    // Start a transaction
+    const session = await mongoose.startSession();
+    session.startTransaction();
 
-    const test = await Test.findOne({ uuid });
-    if (!test) {
-      return res.status(404).json({ error: "Test not found" });
-    }
+    try {
+      const user = await User.findById(userId);
+      if (!user) {
+        throw new Error("User not found");
+      }
 
-    // Check if already registered
-    const existingRegistration = await TestRegistration.findOne({
-      test: test._id,
-      user: userId
-    });
+      const test = await Test.findOne({ uuid }).populate('vendor');
+      if (!test) {
+        throw new Error("Test not found");
+      }
 
-    if (existingRegistration) {
-      return res.status(400).json({
-        message: "You are already registered for this test",
+      // Get system settings for price
+      const settings = await SystemSettings.findOne();
+      const pricePerUser = settings?.testPricing?.pricePerUser || 4.35; // Default price
+
+      // Find vendor and check balance
+      const vendor = await Vendor.findById(test.vendor._id);
+      if (!vendor) {
+        throw new Error("Vendor not found");
+      }
+
+      // Check if vendor has sufficient balance
+      if (vendor.wallet.balance < pricePerUser) {
+        throw new Error("Vendor has insufficient balance");
+      }
+
+      // Check if already registered
+      const existingRegistration = await TestRegistration.findOne({
+        test: test._id,
+        user: userId
+      });
+
+      if (existingRegistration) {
+        throw new Error("Already registered for this test");
+      }
+
+      // Check access conditions
+      const isAdmin = user.role === 'admin';
+      const isVendor = test.vendor._id.toString() === userId.toString();
+      const isPublicTest = test.accessControl?.type === 'public';
+      const isPracticeTest = test.type === 'coding_challenge';
+      const isAllowedUser = test.accessControl?.allowedUsers?.some(u => 
+        u.email === user.email
+      );
+      const hasAccessByEmail = test.accessControl?.allowedEmails?.includes(user.email);
+
+      const canAccess = isAdmin || isVendor || isPublicTest || isPracticeTest || 
+                        isAllowedUser || hasAccessByEmail;
+
+      if (!canAccess) {
+        throw new Error("Not authorized to access this test");
+      }
+
+      // Deduct balance from vendor's wallet
+      if (!isAdmin && !isVendor) { // Don't charge for admin or vendor's own test
+        vendor.wallet.balance -= pricePerUser;
+        vendor.wallet.transactions.push({
+          type: 'debit',
+          amount: pricePerUser,
+          description: `Test registration fee for ${user.email} - ${test.title}`,
+          timestamp: new Date()
+        });
+        await vendor.save({ session });
+      }
+
+      // Create registration
+      const registration = await TestRegistration.create([{
+        test: test._id,
+        user: userId,
+        registeredAt: new Date(),
+        status: 'registered',
+        registrationType: isPracticeTest ? 'coding_challenge' : 'assessment',
+        testType: test.type,
+        accessType: test.accessControl?.type || 'private',
+        paymentInfo: {
+          amount: pricePerUser,
+          status: 'completed',
+          paidBy: test.vendor._id
+        }
+      }], { session });
+
+      // Commit transaction
+      await session.commitTransaction();
+
+      res.status(201).json({
+        message: "Successfully registered for test",
         registration: {
-          id: existingRegistration._id,
-          registeredAt: existingRegistration.registeredAt,
-          status: existingRegistration.status
+          id: registration[0]._id,
+          registeredAt: registration[0].registeredAt,
+          status: registration[0].status,
+          registrationType: registration[0].registrationType,
+          testType: registration[0].testType
         }
       });
+
+    } catch (error) {
+      await session.abortTransaction();
+      throw error;
+    } finally {
+      session.endSession();
     }
-
-    // Check access conditions
-    const isAdmin = user.role === 'admin';
-    const isVendor = test.vendor.toString() === userId.toString();
-    const isPublicTest = test.accessControl?.type === 'public';
-    const isPracticeTest = test.type === 'coding_challenge';
-    const isAllowedUser = test.accessControl?.allowedUsers?.some(u => 
-      u.email === user.email
-    );
-    const hasAccessByEmail = test.accessControl?.allowedEmails?.includes(user.email);
-
-    const canAccess = isAdmin || isVendor || isPublicTest || isPracticeTest || 
-                      isAllowedUser || hasAccessByEmail;
-
-    if (!canAccess) {
-      return res.status(403).json({
-        error: "Not authorized to access this test",
-        requiresRegistration: false
-      });
-    }
-
-    // Create registration with required fields
-    const registration = await TestRegistration.create({
-      test: test._id,
-      user: userId,
-      registeredAt: new Date(),
-      status: 'registered',
-      registrationType: isPracticeTest ? 'coding_challenge' : 'assessment',
-      testType: test.type,
-      accessType: test.accessControl?.type || 'private'
-    });
-
-    res.status(201).json({
-      message: "Successfully registered for test",
-      registration: {
-        id: registration._id,
-        registeredAt: registration.registeredAt,
-        status: registration.status,
-        registrationType: registration.registrationType,
-        testType: registration.testType
-      }
-    });
 
   } catch (error) {
     console.error('Error in registerForTest:', error);
-    res.status(500).json({
+    res.status(error.message.includes('Not authorized') ? 403 : 500).json({
       message: "Error registering for test",
       error: error.message
     });
@@ -2703,16 +2763,11 @@ export const verifyTestAccess = async (req, res) => {
     });
   }
 };
+
 export const checkRegistration = async (req, res) => {
   try {
     const { uuid } = req.params;
     const userId = req.user._id;
-
-    // Get user details
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
 
     // Get test details with populated vendor
     const test = await Test.findOne({ uuid })
@@ -2721,6 +2776,12 @@ export const checkRegistration = async (req, res) => {
 
     if (!test) {
       return res.status(404).json({ error: "Test not found" });
+    }
+
+    // Get user details
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
     }
 
     // Check access conditions
@@ -2733,42 +2794,41 @@ export const checkRegistration = async (req, res) => {
     );
     const hasAccessByEmail = test.accessControl?.allowedEmails?.includes(user.email);
 
-    // Check TestAccess collection
-    const testAccess = await TestAccess.findOne({
-      test: test._id,
-      $or: [
-        { userEmail: user.email },
-        { user: userId }
-      ]
-    });
-
     const canAccess = isAdmin || isVendor || isPublicTest || isPracticeTest || 
-                      isAllowedUser || hasAccessByEmail || testAccess;
+                      isAllowedUser || hasAccessByEmail;
 
-    // Get existing registration if any
+    // Get existing registration
     const existingRegistration = await TestRegistration.findOne({
       test: test._id,
       user: userId
     });
 
-    // Get last session if any
+    // Get last session
     const lastSession = await TestSession.findOne({
       test: test._id,
       user: userId
     }).sort({ startTime: -1 });
 
+    // Build response object
     const response = {
+      testId: test._id.toString(),           // Add testId at top level
+      vendorId: test.vendor._id.toString(),  // Add vendorId at top level
       canAccess,
-      canRegister: canAccess && !existingRegistration,
+      requiresRegistration: !isPracticeTest && !existingRegistration,
       isRegistered: !!existingRegistration,
-      message: canAccess ? 
-        (existingRegistration ? 'You are already registered for this test' : 'You can register for this test') :
-        'You do not have access to this test',
+      message: !canAccess ? 'You do not have access to this test' :
+               existingRegistration ? 'You are already registered for this test' :
+               !isPracticeTest ? 'Registration required for this test' :
+               'You can take this test',
       test: {
         id: test._id,
         uuid: test.uuid,
         title: test.title,
         type: test.type,
+        vendor: {
+          id: test.vendor._id,
+          name: test.vendor.name
+        },
         accessControl: {
           type: test.accessControl?.type || 'private',
           allowedUsers: test.accessControl?.allowedUsers || []
@@ -2776,6 +2836,16 @@ export const checkRegistration = async (req, res) => {
       }
     };
 
+    // Add registration info if exists
+    if (existingRegistration) {
+      response.registration = {
+        id: existingRegistration._id,
+        status: existingRegistration.status,
+        registeredAt: existingRegistration.registeredAt
+      };
+    }
+
+    // Add last session if exists
     if (lastSession) {
       response.lastSession = {
         id: lastSession._id,
@@ -2784,28 +2854,13 @@ export const checkRegistration = async (req, res) => {
       };
     }
 
-    if (testAccess) {
-      response.testAccess = {
-        id: testAccess._id,
-        status: testAccess.status,
-        validUntil: testAccess.validUntil,
-        maxAttempts: testAccess.maxAttempts
-      };
-    }
-
-    // Add access details for debugging
-    if (!canAccess) {
-      response.details = {
-        isAdmin,
-        isVendor,
-        isPublicTest,
-        isPracticeTest,
-        isAllowedUser,
-        hasAccessByEmail,
-        hasTestAccess: !!testAccess,
-        userEmail: user.email
-      };
-    }
+    // Log the response for debugging
+    console.log('Check Registration Response:', {
+      testId: response.testId,
+      vendorId: response.vendorId,
+      canAccess: response.canAccess,
+      isRegistered: response.isRegistered
+    });
 
     res.json(response);
 
@@ -2858,6 +2913,46 @@ export const getTestAccess = async (req, res) => {
     res.status(500).json({ 
       error: "Failed to get test access settings",
       details: error.message 
+    });
+  }
+};
+
+export const parseTestUuid = async (req, res) => {
+  try {
+    console.log('Parsing UUID:', req.params.uuid); // Debug log
+
+    const test = await Test.findOne({ uuid: req.params.uuid })
+      .select('_id uuid title vendor')
+      .populate('vendor', '_id name')
+      .lean();
+    
+    if (!test) {
+      console.log('Test not found for UUID:', req.params.uuid);
+      return res.status(404).json({ 
+        message: "Test not found",
+        uuid: req.params.uuid 
+      });
+    }
+
+    res.json({
+      message: "Test parsed successfully",
+      data: {
+        testId: test._id.toString(),
+        vendorId: test.vendor._id.toString(),
+        uuid: test.uuid,
+        title: test.title,
+        vendor: {
+          name: test.vendor.name
+        }
+      }
+    });
+
+  } catch (error) {
+    console.error('Error in parseTestUuid:', error);
+    res.status(500).json({ 
+      message: "Error parsing test UUID",
+      error: error.message,
+      uuid: req.params.uuid
     });
   }
 };

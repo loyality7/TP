@@ -98,17 +98,26 @@ const vendorSchema = new mongoose.Schema({
     validUntil: Date
   },
   wallet: {
-    type: walletSchema,
-    default: () => ({
-      balance: 10, // Initial balance of 10 rupees
-      transactions: [{
-        type: 'credit',
-        amount: 10,
-        description: 'Welcome bonus',
-        status: 'completed',
-        createdAt: new Date()
-      }]
-    })
+    balance: {
+      type: Number,
+      default: 0
+    },
+    transactions: [{
+      type: {
+        type: String,
+        enum: ['credit', 'debit'],
+        required: true
+      },
+      amount: {
+        type: Number,
+        required: true
+      },
+      description: String,
+      timestamp: {
+        type: Date,
+        default: Date.now
+      }
+    }]
   }
 }, { timestamps: true });
 

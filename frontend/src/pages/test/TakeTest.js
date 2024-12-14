@@ -218,19 +218,36 @@ export default function TakeTest() {
   // Update handleStartTest to initialize the timer
   const handleStartTest = useCallback(async () => {
     try {
-      // Check if proctoring is enabled and camera access is required
+      // Check if proctoring is enabled and verify camera access
       if (test?.proctoring) {
-        // Try to get camera access
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        
-        // Verify that we actually got a video track
-        if (!stream.getVideoTracks().length) {
-          toast.error('Camera access is required for this test');
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ 
+            video: { 
+              width: { ideal: 1280 },
+              height: { ideal: 720 }
+            } 
+          });
+          
+          // Verify we actually got a video track
+          if (!stream.getVideoTracks().length) {
+            toast.error('No camera detected. Please connect a camera to continue.');
+            return;
+          }
+
+          // Stop the test stream - the Proctoring component will create its own
+          stream.getTracks().forEach(track => track.stop());
+          setPermissionsGranted(true);
+        } catch (error) {
+          console.error('Camera access error:', error);
+          if (error.name === 'NotAllowedError') {
+            toast.error('Camera access was denied. Please allow camera access to continue.');
+          } else if (error.name === 'NotFoundError') {
+            toast.error('No camera detected. Please connect a camera to continue.');
+          } else {
+            toast.error('Failed to access camera. Please check your device settings.');
+          }
           return;
         }
-
-        // Stop the test stream - the Proctoring component will request its own
-        stream.getTracks().forEach(track => track.stop());
       }
 
       setShowInstructions(false);
@@ -242,25 +259,17 @@ export default function TakeTest() {
       }
       
       // Request fullscreen after camera permission is granted
-      const elem = document.documentElement;
       try {
-        await elem.requestFullscreen();
+        await document.documentElement.requestFullscreen();
         setIsFullScreen(true);
       } catch (error) {
         toast.error('Fullscreen mode is required. Please allow fullscreen to continue.');
-        return; // Don't proceed if fullscreen fails
+        return;
       }
       
     } catch (error) {
       console.error('Error starting test:', error);
-      if (error.name === 'NotAllowedError') {
-        toast.error('Camera access was denied. Please allow camera access to continue.');
-      } else if (error.name === 'NotFoundError') {
-        toast.error('No camera detected. Please connect a camera to continue.');
-      } else {
-        toast.error('Failed to start test. Please ensure camera access is enabled.');
-      }
-      return; // Don't proceed if there's any error
+      toast.error('Failed to start test. Please ensure all permissions are granted.');
     }
   }, [test]);
 
@@ -976,8 +985,8 @@ export default function TakeTest() {
           </div>
 
           {test?.proctoring && (
-            <div className="mb-6">
-              <h2 className="text-lg font-semibold text-gray-700 mb-2">
+            <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <h2 className="text-lg font-semibold text-blue-800 mb-2">
                 Camera Access Required
               </h2>
               <div className="space-y-4">
@@ -994,33 +1003,45 @@ export default function TakeTest() {
                     <path d="M5 13l4 4L19 7"></path>
                   </svg>
                   <span className="ml-2">
-                    Camera Access: {permissionsGranted ? 'Granted' : 'Not Granted'}
+                    Camera Status: {permissionsGranted ? 'Active' : 'Not Active'}
                   </span>
                 </div>
                 
                 {!permissionsGranted && (
-                  <button
-                    onClick={async () => {
-                      try {
-                        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                        if (stream.getVideoTracks().length) {
-                          setPermissionsGranted(true);
-                          stream.getTracks().forEach(track => track.stop());
+                  <>
+                    <button
+                      onClick={async () => {
+                        try {
+                          const stream = await navigator.mediaDevices.getUserMedia({ 
+                            video: { 
+                              width: { ideal: 1280 },
+                              height: { ideal: 720 }
+                            } 
+                          });
+                          
+                          if (stream.getVideoTracks().length) {
+                            setPermissionsGranted(true);
+                            // Stop the test stream - Proctoring component will create its own
+                            stream.getTracks().forEach(track => track.stop());
+                            toast.success('Camera access granted successfully!');
+                          }
+                        } catch (error) {
+                          console.error('Camera access error:', error);
+                          toast.error(
+                            error.name === 'NotAllowedError' 
+                              ? 'Camera access denied. Please allow camera access to continue.'
+                              : 'Failed to access camera. Please check your device settings.'
+                          );
                         }
-                      } catch (error) {
-                        toast.error('Failed to get camera access. Please check your browser settings.');
-                      }
-                    }}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                  >
-                    Grant Camera Access
-                  </button>
-                )}
-                
-                {!permissionsGranted && (
-                  <p className="text-sm text-red-500">
-                    You must grant camera access before starting the test. This is required for proctoring.
-                  </p>
+                      }}
+                      className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                      Enable Camera Access
+                    </button>
+                    <p className="text-sm text-red-600">
+                      ⚠️ Camera access is required for this proctored test. You must enable your camera to continue.
+                    </p>
+                  </>
                 )}
               </div>
             </div>
@@ -1031,20 +1052,26 @@ export default function TakeTest() {
               onClick={handleStartTest}
               disabled={test?.proctoring && !permissionsGranted}
               className={`
-                px-6 py-3 text-lg font-semibold rounded-lg
+                px-6 py-3 text-lg font-semibold rounded-lg transition-all
                 ${(!test?.proctoring || permissionsGranted)
-                  ? 'bg-blue-600 text-white hover:bg-blue-700 transform transition hover:scale-105' 
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'}
+                  ? 'bg-blue-600 text-white hover:bg-blue-700 transform hover:scale-105' 
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'}
               `}
             >
               {test?.proctoring && !permissionsGranted 
                 ? 'Camera Access Required' 
                 : 'Start Test'}
             </button>
+            
             {test?.proctoring && !permissionsGranted && (
-              <p className="mt-2 text-sm text-red-500">
-                Please grant camera access to continue with this proctored test
-              </p>
+              <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-sm text-red-600 font-medium">
+                  Camera access is required to start this proctored test
+                </p>
+                <p className="text-xs text-red-500 mt-1">
+                  Please enable your camera using the button above
+                </p>
+              </div>
             )}
           </div>
         </div>

@@ -311,4 +311,115 @@ export const deductTestUserBalance = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const debitTestFee = async (req, res) => {
+  try {
+    const { vendorId, testId } = req.body;
+
+    // Find vendor
+    const vendor = await Vendor.findById(vendorId);
+    if (!vendor) {
+      return res.status(404).json({
+        error: "Vendor not found",
+        message: "Unable to locate vendor account"
+      });
+    }
+
+    // Get current price per user from system settings
+    const settings = await SystemSettings.findOne();
+    const pricePerUser = settings?.testPricing?.pricePerUser || 4.35; // Default price
+
+    // Check if vendor has sufficient balance
+    if (vendor.wallet.balance < pricePerUser) {
+      return res.status(400).json({
+        error: "Insufficient balance",
+        message: "Please contact test coordinator for assistance",
+        required: pricePerUser,
+        currentBalance: vendor.wallet.balance,
+        shortfall: pricePerUser - vendor.wallet.balance
+      });
+    }
+
+    // Deduct balance
+    vendor.wallet.balance -= pricePerUser;
+    
+    // Add transaction record
+    vendor.wallet.transactions.push({
+      type: 'debit',
+      amount: pricePerUser,
+      description: `Test registration fee for test ID: ${testId}`,
+      testId: testId,
+      status: 'completed',
+      timestamp: new Date()
+    });
+
+    await vendor.save();
+
+    res.json({
+      success: true,
+      message: "Test fee debited successfully",
+      debitedAmount: pricePerUser,
+      newBalance: vendor.wallet.balance,
+      transaction: vendor.wallet.transactions[vendor.wallet.transactions.length - 1]
+    });
+
+  } catch (error) {
+    console.error('Error in debitTestFee:', error);
+    res.status(500).json({
+      error: "Failed to process test fee",
+      message: error.message
+    });
+  }
+};
+
+export const adminAddFunds = async (req, res) => {
+  try {
+    const { vendorId, amount, description } = req.body;
+
+    if (!amount || amount <= 0) {
+      return res.status(400).json({
+        error: "Invalid amount. Amount must be greater than 0"
+      });
+    }
+
+    // Find vendor
+    const vendor = await Vendor.findById(vendorId);
+    if (!vendor) {
+      return res.status(404).json({
+        error: "Vendor not found",
+        message: "Unable to locate vendor account"
+      });
+    }
+
+    // Add balance
+    vendor.wallet.balance += amount;
+    
+    // Add transaction record
+    vendor.wallet.transactions.push({
+      type: 'credit',
+      amount: amount,
+      description: description || 'Admin added funds',
+      status: 'completed',
+      addedBy: req.user._id,
+      createdAt: new Date()
+    });
+
+    await vendor.save();
+
+    res.json({
+      success: true,
+      message: "Funds added successfully",
+      addedAmount: amount,
+      newBalance: vendor.wallet.balance,
+      transaction: vendor.wallet.transactions[vendor.wallet.transactions.length - 1]
+    });
+
+  } catch (error) {
+    console.error('Error in adminAddFunds:', error);
+    res.status(500).json({
+      error: "Failed to add funds",
+      message: error.message
+    });
+  }
+};
   

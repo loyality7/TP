@@ -37,7 +37,8 @@ import {
   getFeaturedPublicTests,
   getPublicTestCategories,
   registerForTest,
-  validateSession
+  validateSession,
+  parseTestUuid
 } from "../controllers/test.controller.js";
 import { auth } from "../middleware/auth.js";
 import { checkRole } from "../middleware/checkRole.js";
@@ -2757,6 +2758,51 @@ router.get('/submissions/test/:testId/mcq', auth, async (req, res) => {
     });
   }
 });
+
+/**
+ * @swagger
+ * /api/tests/parse-uuid/{uuid}:
+ *   get:
+ *     summary: Parse test UUID to get test ID and vendor ID
+ *     tags: [Tests]
+ *     parameters:
+ *       - in: path
+ *         name: uuid
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: UUID of the test
+ *     responses:
+ *       200:
+ *         description: Test details retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     testId:
+ *                       type: string
+ *                     vendorId:
+ *                       type: string
+ *                     uuid:
+ *                       type: string
+ *                     title:
+ *                       type: string
+ *                     vendor:
+ *                       type: object
+ *                       properties:
+ *                         name:
+ *                           type: string
+ *       404:
+ *         description: Test not found
+ */
+router.get("/parse-uuid/:uuid", parseTestUuid);
 
 
 export default router;
