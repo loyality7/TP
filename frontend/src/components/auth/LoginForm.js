@@ -42,6 +42,15 @@ const LoginForm = ({ onLoginSuccess }) => {
         if (onLoginSuccess) {
           onLoginSuccess();
         }
+        
+        // Check for redirect URL in localStorage
+        const redirectUrl = localStorage.getItem('redirectAfterLogin');
+        if (redirectUrl) {
+          localStorage.removeItem('redirectAfterLogin'); // Clean up
+          navigate(redirectUrl);
+        } else {
+          navigate('/dashboard'); // Default fallback
+        }
       }
     } catch (error) {
       console.error('Login failed:', error);
