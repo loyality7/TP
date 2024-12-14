@@ -218,6 +218,21 @@ export default function TakeTest() {
   // Update handleStartTest to initialize the timer
   const handleStartTest = useCallback(async () => {
     try {
+      // Check if proctoring is enabled and camera access is required
+      if (test?.proctoring) {
+        // Try to get camera access
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        
+        // Verify that we actually got a video track
+        if (!stream.getVideoTracks().length) {
+          toast.error('Camera access is required for this test');
+          return;
+        }
+
+        // Stop the test stream - the Proctoring component will request its own
+        stream.getTracks().forEach(track => track.stop());
+      }
+
       setShowInstructions(false);
       
       // Initialize test end time if not already set
@@ -226,46 +241,26 @@ export default function TakeTest() {
         localStorage.setItem('testEndTime', endTime.toString());
       }
       
-      // Get the document element
+      // Request fullscreen after camera permission is granted
       const elem = document.documentElement;
-      
-      // Try different fullscreen methods in sequence
-      const enterFullscreen = async () => {
-        try {
-          if (elem.requestFullscreen) {
-            await elem.requestFullscreen();
-          } else if (elem.webkitRequestFullscreen) { // Safari
-            await elem.webkitRequestFullscreen();
-          } else if (elem.msRequestFullscreen) { // IE11
-            await elem.msRequestFullscreen();
-          } else if (elem.mozRequestFullScreen) { // Firefox
-            await elem.mozRequestFullScreen();
-          }
-          setIsFullScreen(true);
-        } catch (error) {
-          // If first attempt fails, try again after a short delay
-          setTimeout(() => {
-            elem.requestFullscreen().catch(() => {
-              toast.error('Fullscreen mode is required. Please allow fullscreen to continue.');
-            });
-          }, 100);
-        }
-      };
-
-      await enterFullscreen();
+      try {
+        await elem.requestFullscreen();
+        setIsFullScreen(true);
+      } catch (error) {
+        toast.error('Fullscreen mode is required. Please allow fullscreen to continue.');
+        return; // Don't proceed if fullscreen fails
+      }
       
     } catch (error) {
-      console.error('Error entering fullscreen:', error);
-      toast.error('Fullscreen mode is required. Please allow fullscreen to continue.');
-      
-      // Keep trying to enter fullscreen
-      const fullscreenInterval = setInterval(() => {
-        if (!document.fullscreenElement) {
-          document.documentElement.requestFullscreen().catch(() => {});
-        } else {
-          clearInterval(fullscreenInterval);
-        }
-      }, 1000);
+      console.error('Error starting test:', error);
+      if (error.name === 'NotAllowedError') {
+        toast.error('Camera access was denied. Please allow camera access to continue.');
+      } else if (error.name === 'NotFoundError') {
+        toast.error('No camera detected. Please connect a camera to continue.');
+      } else {
+        toast.error('Failed to start test. Please ensure camera access is enabled.');
+      }
+      return; // Don't proceed if there's any error
     }
   }, [test]);
 
@@ -370,7 +365,9 @@ export default function TakeTest() {
       } catch (error) {
         console.error('Error in loadTest:', error);
         if (error.response?.status === 401) {
-          localStorage.setItem('redirectAfterLogin', window.location.pathname);
+          // Store the full test URL before redirecting
+          const testUrl = window.location.pathname + window.location.search;
+          localStorage.setItem('redirectAfterLogin', testUrl);
           navigate('/login');
         } else {
           setError(error.message || 'Error loading test');
@@ -729,65 +726,104 @@ export default function TakeTest() {
   const handleConfirmedSubmit = async () => {
     setShowSubmitConfirmation(false);
     
-    // Clear test end time
-    localStorage.removeItem('testEndTime');
-    
-    // Navigate immediately
-    navigate('/test/completed', { 
-      state: { 
-        testId: uuid,
-        submission: {
-          mcq: answers.mcq,
-          coding: answers.coding,
-          totalScore: (test?.mcqSubmission?.totalScore || 0) + 
-                     (test?.codingSubmission?.totalScore || 0),
-          testType: test.type
+    try {
+      // Prepare MCQ submission data
+      const mcqSubmissions = test?.mcqs?.map(mcq => ({
+        questionId: mcq._id,
+        selectedOptions: answers.mcq[mcq._id]?.selectedOptions || []
+      })) || [];
+
+      // Prepare coding submission data
+      const codingSubmissions = test?.codingChallenges?.map(challenge => ({
+        challengeId: challenge._id,
+        code: answers.coding[challenge._id]?.code || '',
+        language: answers.coding[challenge._id]?.language || 'javascript',
+        testCaseResults: [],
+        executionTime: 0,
+        memory: 0,
+        output: '',
+        error: null
+      })) || [];
+
+      // Submit MCQ data
+      let mcqResponse = null;
+      if (mcqSubmissions.length > 0) {
+        try {
+          mcqResponse = await apiService.post('submissions/submit/mcq', {
+            testId: testId,
+            submissions: mcqSubmissions
+          });
+        } catch (error) {
+          console.error('MCQ submission error:', error);
+          // Continue with submission even if MCQ fails
         }
       }
-    });
 
-    // Handle analytics submission in the background
-    try {
-      const storedAnalytics = localStorage.getItem('testAnalytics');
-      if (storedAnalytics) {
-        const analyticsData = JSON.parse(storedAnalytics);
-        
-        // Calculate final time spent
-        const startTime = new Date(localStorage.getItem('testStartTime'));
-        const endTime = new Date();
-        const timeSpentSeconds = Math.floor((endTime - startTime) / 1000);
-
-        // Ensure browserEvents is an array of objects
-        const browserEvents = Array.isArray(analyticsData.browserEvents) 
-          ? analyticsData.browserEvents 
-          : [];
-
-        // Prepare final analytics data
-        const finalAnalytics = {
-          ...analyticsData,
-          timeSpent: timeSpentSeconds,
-          endTime: endTime.toISOString(),
-          testStatus: isTestCompleted() ? 'completed' : 'incomplete',
-          finalScore: (test?.mcqSubmission?.totalScore || 0) + (test?.codingSubmission?.totalScore || 0),
-          sectionCompletion: {
-            mcq: !!test?.mcqSubmission,
-            coding: !!test?.codingSubmission
-          },
-          submissionType: 'manual',
-          browserEvents // Ensure it's an array
-        };
-
-        // Submit analytics in background
-        await apiService.post(`analytics/test/${testId}`, {
-          analyticsData: finalAnalytics
-        });
-
-        // Clear analytics from localStorage after successful submission
-        localStorage.removeItem('testAnalytics');
+      // Submit coding data
+      let codingResponse = null;
+      if (codingSubmissions.length > 0) {
+        try {
+          codingResponse = await apiService.post('submissions/submit/coding', {
+            testId: testId,
+            submissions: codingSubmissions
+          });
+        } catch (error) {
+          console.error('Coding submission error:', error);
+          // Continue with submission even if coding fails
+        }
       }
+
+      // Calculate total score
+      const totalScore = (
+        (mcqResponse?.data?.totalScore || 0) + 
+        (codingResponse?.data?.totalScore || 0)
+      );
+
+      // Submit analytics
+      try {
+        await apiService.post(`analytics/test/${testId}`, {
+          analyticsData: {
+            ...analytics,
+            timeSpent: Math.floor((Date.now() - new Date(localStorage.getItem('testStartTime'))) / 1000),
+            endTime: new Date().toISOString(),
+            testStatus: 'completed',
+            finalScore: totalScore,
+            sectionCompletion: {
+              mcq: mcqSubmissions.length > 0,
+              coding: codingSubmissions.length > 0
+            },
+            submissionType: 'manual'
+          }
+        });
+      } catch (error) {
+        console.error('Analytics submission error:', error);
+        // Continue with navigation even if analytics fails
+      }
+
+      // Clear localStorage
+      localStorage.removeItem('testEndTime');
+      localStorage.removeItem('testAnalytics');
+      localStorage.removeItem('mcq_answers');
+      localStorage.removeItem('coding_answers');
+
+      // Navigate to completion page
+      navigate('/test/completed', { 
+        state: { 
+          testId: uuid,
+          submission: {
+            mcq: answers.mcq,
+            coding: answers.coding,
+            totalScore,
+            testType: test?.type,
+            mcqScore: mcqResponse?.data?.totalScore || 0,
+            codingScore: codingResponse?.data?.totalScore || 0
+          }
+        }
+      });
+
     } catch (error) {
-      console.error('Error submitting analytics:', error);
-      // Don't show error toast since user is already on completion page
+      console.error('Final submission error:', error);
+      toast.error('An error occurred during submission. Please try again.');
     }
   };
 
@@ -939,13 +975,12 @@ export default function TakeTest() {
             </ul>
           </div>
 
-          {test?.proctoring ? (
-            // Show camera permissions section only for proctored tests
+          {test?.proctoring && (
             <div className="mb-6">
               <h2 className="text-lg font-semibold text-gray-700 mb-2">
-                System Permissions Required:
+                Camera Access Required
               </h2>
-              <div className="space-y-2">
+              <div className="space-y-4">
                 <div className="flex items-center">
                   <svg 
                     className={`w-6 h-6 ${permissionsGranted ? 'text-green-500' : 'text-red-500'}`}
@@ -959,15 +994,35 @@ export default function TakeTest() {
                     <path d="M5 13l4 4L19 7"></path>
                   </svg>
                   <span className="ml-2">
-                    Camera Access: {permissionsGranted ? 'Granted' : 'Required'}
+                    Camera Access: {permissionsGranted ? 'Granted' : 'Not Granted'}
                   </span>
                 </div>
+                
+                {!permissionsGranted && (
+                  <button
+                    onClick={async () => {
+                      try {
+                        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                        if (stream.getVideoTracks().length) {
+                          setPermissionsGranted(true);
+                          stream.getTracks().forEach(track => track.stop());
+                        }
+                      } catch (error) {
+                        toast.error('Failed to get camera access. Please check your browser settings.');
+                      }
+                    }}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  >
+                    Grant Camera Access
+                  </button>
+                )}
+                
+                {!permissionsGranted && (
+                  <p className="text-sm text-red-500">
+                    You must grant camera access before starting the test. This is required for proctoring.
+                  </p>
+                )}
               </div>
-            </div>
-          ) : (
-            // Show message for non-proctored tests
-            <div className="mb-6 text-gray-600 italic">
-              This is a non-proctored test. No camera access required.
             </div>
           )}
 

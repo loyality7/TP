@@ -4,7 +4,7 @@ import './LoginForm.css';
 import { useAuth } from '../../hooks/auth/useAuth';
 import { toast } from 'react-toastify';
 
-const LoginForm = () => {
+const LoginForm = ({ onLoginSuccess }) => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -39,7 +39,9 @@ const LoginForm = () => {
       if (result?.user) {
         console.log('Login successful:', result);
         toast.success('Successfully logged in!');
-        navigate('/');
+        if (onLoginSuccess) {
+          onLoginSuccess();
+        }
       }
     } catch (error) {
       console.error('Login failed:', error);
