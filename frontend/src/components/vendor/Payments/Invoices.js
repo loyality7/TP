@@ -87,7 +87,7 @@ const Transactions = () => {
                 {transactions.map((transaction) => (
                   <tr key={transaction._id} className="hover:bg-gray-50">
                     <td className="p-4 text-gray-600">
-                      {new Date(transaction.createdAt).toLocaleDateString()}
+                      {new Date(transaction.timestamp).toLocaleDateString()}
                     </td>
                     <td className="p-4 text-gray-600">{transaction.description}</td>
                     <td className="p-4">
