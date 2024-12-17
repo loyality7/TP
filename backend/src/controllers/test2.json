@@ -3,7 +3,7 @@
     "description": "A comprehensive test covering Data Structures, Algorithms, and basic programming concepts. This test includes both multiple choice questions and hands-on coding challenges.",
     "duration": 180,
     "proctoring": true,
-    "type": "assessment",
+    "type": "coding_challenge",
     "category": "Computer Science",
     "difficulty": "intermediate",
     "instructions": "1. Complete all MCQs and coding challenges within the time limit\n2. Each coding solution must pass all test cases\n3. You can attempt questions in any order\n4. Ensure your code handles all edge cases",

@@ -17,9 +17,14 @@ const Wallet = () => {
     try {
       const balanceData = await walletService.getBalance();
       const transactionsData = await walletService.getTransactions();
+      
+      console.log('Balance Data:', balanceData);
+      console.log('Transactions Data:', transactionsData);
+      
       setBalance(balanceData.balance);
       setTransactions(transactionsData.transactions);
     } catch (error) {
+      console.error('Wallet Data Error:', error);
       toast.error('Failed to fetch wallet data');
     }
   };
@@ -105,7 +110,7 @@ const Wallet = () => {
                   <div>
                     <p className="font-medium text-gray-800">{transaction.description}</p>
                     <p className="text-sm text-gray-500">
-                      {new Date(transaction.createdAt).toLocaleDateString()}
+                      {new Date(transaction.timestamp).toLocaleDateString()}
                     </p>
                   </div>
                   <div className={`font-medium ${

@@ -72,7 +72,7 @@ const AllTests = () => {
     const codingQuestionsCount = test?.codingChallenges?.length || 0;
     const mcqCount = test?.mcqs?.length || 0;
     const totalQuestions = codingQuestionsCount + mcqCount;
-    const candidates = test?.candidates || 0;
+    const candidates = test?.candidatesCount || test?.candidates?.length || 0;
     const lastModified = test?.lastModified || new Date().toISOString();
 
     // Keep only the formatDate helper function
