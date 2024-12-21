@@ -1,39 +1,132 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import Button from '../common/Button';
+import { 
+  ChevronDown, 
+  BarChart, 
+  FileText, 
+  Settings, 
+  Users, 
+  BookOpen, 
+  Layout,
+  Clock,
+  Award,
+  HelpCircle,
+  Calendar
+} from 'lucide-react';
+import './Header.css';
 
 const Header = () => {
   const { user, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const location = useLocation();
+
+  const navigation = {
+    vendor: [
+      { name: 'Dashboard', path: '/vendor/dashboard', icon: Layout },
+      { name: 'My Tests', path: '/vendor/tests', icon: FileText },
+      { name: 'Analytics', path: '/vendor/analytics', icon: BarChart },
+      { name: 'Candidates', path: '/vendor/candidates', icon: Users },
+    ],
+    candidate: [
+      { name: 'Dashboard', path: '/candidate/dashboard', icon: Layout },
+      { name: 'Available Tests', path: '/tests', icon: BookOpen },
+      { name: 'My Results', path: '/results', icon: Award },
+      { name: 'Upcoming Tests', path: '/upcoming', icon: Calendar },
+      { name: 'Test History', path: '/history', icon: Clock },
+    ]
+  };
+
+  const isActive = (path) => location.pathname === path;
 
   return (
-    <header className="bg-white shadow-md fixed w-full top-0 z-50">
-      <nav className="container mx-auto px-4 py-3">
-        <div className="flex justify-between items-center">
-          <Link to="/" className="flex items-center space-x-2">
+    <header className="header">
+      <nav className="nav-container">
+        <div className="flex justify-between items-center w-full">
+          {/* Logo */}
+          <Link to="/" className="flex items-center space-x-3">
             <img 
               src="https://res.cloudinary.com/dfdtxogcl/images/c_scale,w_248,h_180,dpr_1.25/f_auto,q_auto/v1706606519/Picture1_215dc6b/Picture1_215dc6b.png"
               alt="Test Platform Logo"
-              className="w-8 h-8 object-contain"
+              className="w-10 h-10 object-contain"
             />
-            <span className="text-xl font-bold">Test Platform</span>
+            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+              Test Platform
+            </span>
           </Link>
 
-          <div className="hidden md:flex items-center space-x-6">
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex items-center space-x-8">
             {user && (
-              <Link to="/vendor/dashboard" className="hover:text-blue-600">Dashboard</Link>
+              <div className="flex items-center space-x-6">
+                {(user.role === 'vendor' ? navigation.vendor : navigation.candidate).map((item) => (
+                  <Link
+                    key={item.name}
+                    to={item.path}
+                    className={`nav-link flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium ${
+                      isActive(item.path)
+                        ? 'text-blue-600 bg-blue-50'
+                        : 'text-gray-700 hover:text-blue-600'
+                    }`}
+                  >
+                    <item.icon className="w-4 h-4" />
+                    <span>{item.name}</span>
+                  </Link>
+                ))}
+              </div>
             )}
           </div>
 
-          <div className="hidden md:flex items-center space-x-4">
+          {/* Right Section */}
+          <div className="hidden lg:flex items-center space-x-6">
+            {/* Help button only */}
+            {user && (
+              <button className="text-gray-600 hover:text-blue-600">
+                <HelpCircle className="w-5 h-5" />
+              </button>
+            )}
+
+            {/* User Menu */}
             {user ? (
-              <>
-                <span className="text-gray-600">Welcome, {user.name}</span>
-                <Button onClick={logout} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">
-                  Logout
-                </Button>
-              </>
+              <div className="relative">
+                <button
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className="flex items-center space-x-3 text-gray-700 hover:text-blue-600"
+                >
+                  <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                    <span className="text-sm font-medium text-blue-600">
+                      {user.name.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                  <span className="font-medium">{user.name}</span>
+                  <ChevronDown className="w-4 h-4" />
+                </button>
+
+                {/* Dropdown Menu */}
+                {isDropdownOpen && (
+                  <div className="dropdown-menu absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg py-1 border">
+                    <div className="px-4 py-2 border-b">
+                      <p className="text-sm font-medium text-gray-900">{user.name}</p>
+                      <p className="text-xs text-gray-500">{user.email}</p>
+                    </div>
+                    <Link
+                      to="/profile"
+                      className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                    >
+                      <Settings className="w-4 h-4" />
+                      <span>Profile Settings</span>
+                    </Link>
+                    <button
+                      onClick={logout}
+                      className="flex items-center space-x-2 w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
+                    >
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                )}
+              </div>
             ) : (
               <>
                 <Link to="/login">
@@ -48,8 +141,9 @@ const Header = () => {
             )}
           </div>
 
+          {/* Mobile Menu Button */}
           <button 
-            className="md:hidden p-2"
+            className="lg:hidden p-2"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -62,28 +156,60 @@ const Header = () => {
           </button>
         </div>
 
+        {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden pt-4 pb-3 border-t border-gray-200">
-            {user && (
-              <Link to="/dashboard" className="block px-4 py-2 hover:bg-gray-100">Dashboard</Link>
-            )}
-            
-            <div className="mt-4 pt-4 border-t border-gray-200">
-              {user ? (
+          <div className="lg:hidden fixed inset-0 top-[70px] bg-white z-50">
+            <div className="p-4">
+              {user && (
                 <>
-                  <span className="block px-4 py-2 text-gray-600">Welcome, {user.name}</span>
-                  <button 
-                    onClick={logout}
-                    className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
-                  >
-                    Logout
-                  </button>
+                  <div className="flex items-center space-x-3 mb-6 p-4 bg-gray-50 rounded-lg">
+                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                      <span className="text-lg font-medium text-blue-600">
+                        {user.name.charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900">{user.name}</p>
+                      <p className="text-sm text-gray-500">{user.email}</p>
+                    </div>
+                  </div>
+                  {(user.role === 'vendor' ? navigation.vendor : navigation.candidate).map((item) => (
+                    <Link
+                      key={item.name}
+                      to={item.path}
+                      className={`flex items-center space-x-2 px-4 py-3 rounded-lg ${
+                        isActive(item.path)
+                          ? 'text-blue-600 bg-blue-50'
+                          : 'text-gray-700 hover:bg-gray-50'
+                      }`}
+                    >
+                      <item.icon className="w-5 h-5" />
+                      <span>{item.name}</span>
+                    </Link>
+                  ))}
+                  <div className="border-t border-gray-200 mt-6 pt-6">
+                    <Link to="/profile" className="flex items-center space-x-2 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg">
+                      <Settings className="w-5 h-5" />
+                      <span>Settings</span>
+                    </Link>
+                    <button 
+                      onClick={logout}
+                      className="flex items-center space-x-2 w-full px-4 py-3 text-red-600 hover:bg-gray-50 rounded-lg"
+                    >
+                      <span>Logout</span>
+                    </button>
+                  </div>
                 </>
-              ) : (
-                <>
-                  <Link to="/login" className="block px-4 py-2 hover:bg-gray-100">Log in</Link>
-                  <Link to="/register" className="block px-4 py-2 text-blue-600 hover:bg-gray-100">Sign Up</Link>
-                </>
+              )}
+              {!user && (
+                <div className="space-y-4 p-4">
+                  <Link to="/login" className="block w-full py-3 text-center text-gray-600 hover:text-blue-600 border rounded-lg">
+                    Log in
+                  </Link>
+                  <Link to="/register" className="block w-full py-3 text-center text-white bg-blue-600 hover:bg-blue-700 rounded-lg">
+                    Sign Up
+                  </Link>
+                </div>
               )}
             </div>
           </div>

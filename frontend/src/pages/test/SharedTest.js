@@ -9,6 +9,7 @@ export default function SharedTest() {
   const [error, setError] = useState(null);
   const [registrationStatus, setRegistrationStatus] = useState(null);
   const [vendorBalance, setVendorBalance] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
   const { uuid } = useParams();
   const navigate = useNavigate();
 
@@ -95,6 +96,15 @@ export default function SharedTest() {
 
     verifyAndCheckRegistration();
   }, [uuid, navigate]);
+
+  useEffect(() => {
+    // Add mobile detection
+    const checkMobile = () => {
+      const mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      setIsMobile(mobile);
+    };
+    checkMobile();
+  }, []);
 
   const handleRegister = async () => {
     try {
@@ -197,6 +207,20 @@ export default function SharedTest() {
         <div className="bg-red-50 border border-red-200 rounded-lg p-6">
           <h1 className="text-2xl font-bold mb-4">Error</h1>
           <p className="text-gray-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isMobile) {
+    return (
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+          <h1 className="text-xl font-bold mb-4">⚠️ Desktop Mode Recommended</h1>
+          <p className="text-gray-600">
+            For the best test-taking experience, please open this page in desktop mode or on a computer.
+            Some features may not work correctly on mobile devices.
+          </p>
         </div>
       </div>
     );
