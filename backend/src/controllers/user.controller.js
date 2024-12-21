@@ -301,15 +301,34 @@ export const getTestResults = async (req, res) => {
       return res.json(detailedResult);
     }
 
-    // Modified query for all submissions to ensure consistent sorting
-    const submissions = await Submission.find({ user: req.user._id })
-      .populate('test', 'title totalMarks passingMarks uuid')
-      .sort({ 
-        createdAt: -1,  // Primary sort by creation date
-        startTime: -1   // Secondary sort by test start time
-      });
+    // Modified query for all submissions with better error handling
+    const submissions = await Submission.find({ 
+      user: req.user._id 
+    })
+    .populate({
+      path: 'test',
+      select: 'title totalMarks passingMarks uuid',
+      match: { status: 'published' } // Only get published tests
+    })
+    .sort({ 
+      createdAt: -1,
+      startTime: -1 
+    });
 
-    const summaryResults = submissions.map(submission => ({
+    // Add logging to debug
+    console.log(`Found ${submissions.length} submissions for user ${req.user._id}`);
+
+    // Filter out submissions where test is null (in case test was deleted)
+    const validSubmissions = submissions.filter(sub => sub.test);
+
+    if (validSubmissions.length === 0) {
+      return res.status(200).json({
+        message: "No test submissions found",
+        results: []
+      });
+    }
+
+    const summaryResults = validSubmissions.map(submission => ({
       testId: submission.test._id,
       uuid: submission.test.uuid,
       title: submission.test.title,
@@ -320,13 +339,23 @@ export const getTestResults = async (req, res) => {
       totalScore: submission.totalScore,
       maxScore: submission.test.totalMarks,
       passingScore: submission.test.passingMarks,
-      status: submission.status,
-      attemptedAt: submission.createdAt
+      status: submission.status || 
+        (submission.totalScore >= submission.test.passingMarks ? 'passed' : 'failed'),
+      attemptedAt: submission.createdAt,
+      completionStatus: submission.completionStatus || 'completed'
     }));
 
-    res.json(summaryResults);
+    res.json({
+      count: summaryResults.length,
+      results: summaryResults
+    });
+
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error fetching test results:', error);
+    res.status(500).json({ 
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 };
 
