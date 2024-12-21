@@ -7,8 +7,7 @@ import {
   BarChart, 
   FileText, 
   Settings, 
-  Users, 
-  BookOpen, 
+  Users,  
   Layout,
   HelpCircle,
 } from 'lucide-react';

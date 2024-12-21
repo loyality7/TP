@@ -36,10 +36,6 @@ const UserTestResult = () => {
     );
   }
 
-  const getOptionLabel = (index) => {
-    return String.fromCharCode(65 + index); // Converts 0 -> A, 1 -> B, etc.
-  };
-
   const renderMCQSection = () => (
     <div className="bg-white rounded-lg shadow-md p-6 space-y-6">
       <div className="flex justify-between items-center">

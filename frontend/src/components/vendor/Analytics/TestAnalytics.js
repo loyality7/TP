@@ -54,6 +54,10 @@ const TestAnalytics = () => {
     fetchAnalytics();
   }, [period]);
 
+  if (loading) {
+    return <div className="flex justify-center items-center h-screen">Loading analytics...</div>;
+  }
+
   if (!analyticsData) {
     return <div>Loading...</div>;
   }

@@ -23,11 +23,6 @@ const getTestEndTime = () => {
   return savedEndTime ? parseInt(savedEndTime) : null;
 };
 
-// Add this helper function near the top of the component
-const isTestCompleted = () => {
-  return !!test?.mcqSubmission && !!test?.codingSubmission;
-};
-
 export default function TakeTest() {
   const [testId, setTestId] = useState(localStorage.getItem('currentTestId'));
   const [test, setTest] = useState(null);
@@ -419,22 +414,7 @@ export default function TakeTest() {
     }
   }, [test]);
 
-  // Move state declarations to the top with other state variables
-  const [showSubmitConfirmation, setShowSubmitConfirmation] = useState(false);
-
-  // Update handleWarningModalClose
-  const handleWarningModalClose = useCallback(() => {
-    setShowWarningModal(false);
-    
-    // Only force fullscreen if we're not in the submission process
-    if (!showSubmitConfirmation && !document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(() => {
-        toast.error('Fullscreen is required to continue the test');
-      });
-    }
-  }, [showSubmitConfirmation]);
-
-  // Update the fullscreen effect
+  // Update the fullscreen effect with stricter controls
   useEffect(() => {
     let fullscreenAttempts = 0;
     const maxAttempts = 3;
@@ -444,12 +424,12 @@ export default function TakeTest() {
       try {
         await elem.requestFullscreen();
         setIsFullScreen(true);
-        fullscreenAttempts = 0;
+        fullscreenAttempts = 0; // Reset attempts on success
       } catch (error) {
         fullscreenAttempts++;
         if (fullscreenAttempts >= maxAttempts) {
           toast.error('WARNING: Test will be submitted if fullscreen is not enabled!');
-          setTimeout(() => handleSubmit(), 5000);
+          setTimeout(() => handleSubmit(), 5000); // Auto-submit after 5 seconds
         } else {
           handleWarning('Fullscreen mode is required! Please click "I understand" to continue.');
         }
@@ -466,9 +446,18 @@ export default function TakeTest() {
       
       setIsFullScreen(isInFullscreen);
       
-      // Don't force fullscreen if we're in the submission process
-      if (!isInFullscreen && !showInstructions && !showSubmitConfirmation) {
+      if (!isInFullscreen && !showInstructions) {
         forceFullscreen();
+      }
+    };
+
+    // Listen for keyboard ESC key
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && !showInstructions) {
+        e.preventDefault();
+        e.stopPropagation();
+        forceFullscreen();
+        return false;
       }
     };
 
@@ -476,14 +465,21 @@ export default function TakeTest() {
     document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
     document.addEventListener('mozfullscreenchange', handleFullscreenChange);
     document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+    document.addEventListener('keydown', handleKeyDown, true);
+
+    // Initial fullscreen check
+    if (!document.fullscreenElement && !showInstructions) {
+      forceFullscreen();
+    }
 
     return () => {
       document.removeEventListener('fullscreenchange', handleFullscreenChange);
       document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
       document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
       document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+      document.removeEventListener('keydown', handleKeyDown, true);
     };
-  }, [showInstructions, handleWarning, handleSubmit, showSubmitConfirmation]);
+  }, [showInstructions, handleWarning, handleSubmit]);
 
   const handleCodingSubmission = async (submission) => {
     try {
@@ -723,53 +719,25 @@ export default function TakeTest() {
 
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.removeEventListener('blur', handleBlur);
+      window.addEventListener('blur', handleBlur);
     };
   }, [showInstructions, handleWarning, handleSubmit]);
 
-  // Add detection for developer tools
-  useEffect(() => {
-    const detectDevTools = () => {
-      const threshold = 160;
-      const widthThreshold = window.outerWidth - window.innerWidth > threshold;
-      const heightThreshold = window.outerHeight - window.innerHeight > threshold;
+  // Inside TakeTest component, add new state for confirmation dialog
+  const [showSubmitConfirmation, setShowSubmitConfirmation] = useState(false);
 
-      if (widthThreshold || heightThreshold) {
-        handleWarning('Developer tools are not allowed during the test');
-        // Force close dev tools by toggling fullscreen
-        document.documentElement.requestFullscreen().catch(() => {});
-      }
-    };
-
-    // Check periodically
-    const interval = setInterval(detectDevTools, 1000);
-
-    // Also check on resize
-    window.addEventListener('resize', detectDevTools);
-
-    return () => {
-      clearInterval(interval);
-      window.removeEventListener('resize', detectDevTools);
-    };
-  }, [handleWarning]);
-
-  // Update isTestCompleted to be a memoized function with access to test state
+  // Add helper function to check if all sections are completed
   const isTestCompleted = useCallback(() => {
-    return !!test?.mcqSubmission && !!test?.codingSubmission;
+    return test?.mcqSubmission && test?.codingSubmission;
   }, [test]);
 
-  // Add handleConfirmedSubmit function
-  const handleConfirmedSubmit = useCallback(async () => {
+  // Update handleConfirmedSubmit to be simpler and more direct
+  const handleConfirmedSubmit = async () => {
     setShowSubmitConfirmation(false);
     
     try {
       // Show loading toast
-      const loadingToast = toast.loading('Submitting your test...');
-
-      // Exit fullscreen before navigation
-      if (document.fullscreenElement) {
-        await document.exitFullscreen();
-      }
+      toast.loading('Submitting your test...');
 
       // Calculate total score from existing submissions
       const totalScore = (test?.mcqSubmission?.totalScore || 0) + 
@@ -784,18 +752,15 @@ export default function TakeTest() {
             endTime: new Date().toISOString(),
             testStatus: 'completed',
             finalScore: totalScore,
-            sectionCompletion: {
-              mcq: !!test?.mcqSubmission,
-              coding: !!test?.codingSubmission
-            },
             submissionType: 'manual'
           }
         });
       } catch (error) {
         console.error('Analytics submission error:', error);
+        // Continue with navigation even if analytics fails
       }
 
-      // Clear localStorage
+      // Clear all test-related localStorage items
       localStorage.removeItem('testEndTime');
       localStorage.removeItem('testAnalytics');
       localStorage.removeItem('mcq_answers');
@@ -804,33 +769,56 @@ export default function TakeTest() {
       localStorage.removeItem('currentTestData');
 
       // Dismiss loading toast
-      toast.dismiss(loadingToast);
+      toast.dismiss();
       toast.success('Test submitted successfully!');
 
-      // Force a small delay to ensure state updates are complete
-      await new Promise(resolve => setTimeout(resolve, 100));
-
-      // Navigate using window.location instead of navigate
-      window.location.href = '/test/completed';
+      // Navigate to completion page
+      navigate('/test/completed', { 
+        state: { 
+          testId: uuid,
+          submission: {
+            mcq: answers.mcq,
+            coding: answers.coding,
+            totalScore,
+            testType: test?.type
+          }
+        }
+      });
 
     } catch (error) {
       console.error('Final submission error:', error);
       toast.error('An error occurred during submission. Please try again.');
     }
-  }, [test, testId, analytics]);
+  };
 
-  // Update handleFinalSubmitClick
+  // Update handleFinalSubmitClick to be more direct
   const handleFinalSubmitClick = useCallback(() => {
-    // Show confirmation dialog
     setShowSubmitConfirmation(true);
     
     // Optional: Show warning toast if sections are incomplete
     if (!isTestCompleted()) {
-      toast.warning('Some sections are incomplete. Submitting now may affect your score.', {
-        duration: 5000,
-      });
+      toast(
+        <div className="flex flex-col gap-2">
+          <p className="font-semibold">Warning: Incomplete Test!</p>
+          <p className="text-sm">Please complete all sections before submitting:</p>
+          <ul className="list-disc list-inside text-sm">
+            {!test?.mcqSubmission && <li>MCQ section not completed</li>}
+            {!test?.codingSubmission && <li>Coding section not completed</li>}
+          </ul>
+          <p className="text-sm mt-2">Submitting now will result in loss of marks.</p>
+        </div>,
+        {
+          duration: 5000,
+          icon: '⚠️',
+          style: {
+            background: '#FEF2F2',
+            color: '#991B1B',
+            border: '1px solid #EF4444',
+          }
+        }
+      );
     }
-  }, [isTestCompleted]);
+  }, [test, isTestCompleted]);
 
   // Update handleAnswerUpdate to be more selective about analytics updates
   const handleAnswerUpdate = useCallback((section, newAnswers) => {
@@ -872,6 +860,18 @@ export default function TakeTest() {
   const handleSetAnalytics = useCallback((newAnalytics) => {
     setAnalytics(newAnalytics);
   }, []); // Empty dependency array since this function doesn't depend on any values
+
+  // Update the warning modal close handler
+  const handleWarningModalClose = useCallback(() => {
+    setShowWarningModal(false);
+    
+    // Force fullscreen when warning modal is closed
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {
+        toast.error('Fullscreen is required to continue the test');
+      });
+    }
+  }, []);
 
   // Render Loading State
   if (loading) {

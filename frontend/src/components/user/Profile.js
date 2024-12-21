@@ -83,16 +83,6 @@ const Profile = () => {
     }
   };
 
-  const updateSkills = async () => {
-    try {
-      const skillNames = formData.skills.map(s => s.name);
-      await userService.updateSkills(skillNames);
-      loadProfile();
-    } catch (error) {
-      console.error('Failed to update skills:', error);
-    }
-  };
-
   if (loading) return <div>Loading...</div>;
 
   return (
