@@ -191,17 +191,19 @@ export const getTestResults = async (req, res) => {
   try {
     const { testId } = req.query;
     
-    // Base query to find submissions for the user
-    const query = {
-      user: req.user._id,
-      status: 'completed'
-    };
-
     if (testId) {
-      query.test = testId;
-      // Detailed report for specific test
-      const submission = await Submission.findOne(query)
-        .populate('test', 'title totalMarks passingMarks mcqs codingChallenges')
+      const submission = await Submission.findOne({ 
+        test: testId,
+        user: req.user._id 
+      })
+        .populate({
+          path: 'test',
+          select: 'title totalMarks passingMarks mcqs codingChallenges',
+          populate: {
+            path: 'codingChallenges.testCases',
+            select: 'input expectedOutput isHidden'
+          }
+        })
         .sort({ createdAt: -1 });
 
       if (!submission) {
@@ -255,19 +257,29 @@ export const getTestResults = async (req, res) => {
             return {
               challengeId: challenge.challengeId,
               title: challengeDetails?.title,
+              description: challengeDetails?.description,
               code: latestSubmission?.code,
               language: latestSubmission?.language,
               status: latestSubmission?.status,
               marks: latestSubmission?.marks,
               maxMarks: challengeDetails?.marks,
-              testCases: latestSubmission?.testCaseResults?.map(tc => ({
-                input: tc.input,
-                expectedOutput: tc.expectedOutput,
-                actualOutput: tc.actualOutput,
-                passed: tc.passed,
-                executionTime: tc.executionTime,
-                memory: tc.memory
-              })),
+              testCases: {
+                sample: challengeDetails?.testCases
+                  ?.filter(tc => !tc.isHidden)
+                  ?.map(tc => ({
+                    input: tc.input,
+                    expectedOutput: tc.expectedOutput
+                  })) || [],
+                results: latestSubmission?.testCaseResults?.map(tc => ({
+                  input: tc.input,
+                  expectedOutput: tc.expectedOutput,
+                  actualOutput: tc.actualOutput,
+                  passed: tc.passed,
+                  executionTime: tc.executionTime,
+                  memory: tc.memory,
+                  error: tc.error
+                })) || []
+              },
               executionMetrics: {
                 totalTime: latestSubmission?.executionTime,
                 memory: latestSubmission?.memory,
@@ -282,13 +294,17 @@ export const getTestResults = async (req, res) => {
       return res.json(detailedResult);
     }
 
-    // Summary report for all tests
-    const submissions = await Submission.find(query)
-      .populate('test', 'title totalMarks passingMarks')
-      .sort({ createdAt: -1 });
+    // Modified query for all submissions to ensure consistent sorting
+    const submissions = await Submission.find({ user: req.user._id })
+      .populate('test', 'title totalMarks passingMarks uuid')
+      .sort({ 
+        createdAt: -1,  // Primary sort by creation date
+        startTime: -1   // Secondary sort by test start time
+      });
 
     const summaryResults = submissions.map(submission => ({
       testId: submission.test._id,
+      uuid: submission.test.uuid,
       title: submission.test.title,
       startTime: submission.startTime,
       endTime: submission.endTime,
@@ -297,7 +313,7 @@ export const getTestResults = async (req, res) => {
       totalScore: submission.totalScore,
       maxScore: submission.test.totalMarks,
       passingScore: submission.test.passingMarks,
-      status: submission.totalScore >= submission.test.passingMarks ? 'passed' : 'failed',
+      status: submission.status,
       attemptedAt: submission.createdAt
     }));
 
@@ -597,4 +613,158 @@ export const getPracticeHistory = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+};
+
+export const getDashboardData = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const currentDate = new Date();
+    const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+
+    // Get all submissions for this user (any status)
+    const submissions = await Submission.find({ 
+      user: userId 
+    })
+    .populate({
+      path: 'test',
+      select: 'title description duration totalMarks type category difficulty vendor createdAt updatedAt',
+      populate: {
+        path: 'vendor',
+        select: 'name email'
+      }
+    })
+    .sort({ 
+      createdAt: -1,
+      startTime: -1 
+    })
+    .lean();
+
+    // Get upcoming tests (registered but not completed)
+    const upcomingTests = await TestRegistration.find({
+      user: userId,
+      status: 'registered',
+      testDate: { $gt: new Date() }
+    }).populate('test', 'title startTime duration');
+
+    // Calculate this month's submissions
+    const thisMonthSubmissions = submissions.filter(s => 
+      new Date(s.submittedAt || s.createdAt) >= firstDayOfMonth
+    );
+
+    // Calculate coding-specific metrics
+    const codingSubmissions = submissions.filter(s => 
+      s.codingSubmission && s.codingSubmission.challenges
+    );
+
+    const codingSuccessRate = codingSubmissions.length > 0
+      ? (codingSubmissions.filter(s => 
+          s.codingSubmission.challenges.some(c => 
+            c.submissions?.some(sub => sub.status === 'passed')
+          )
+        ).length / codingSubmissions.length * 100).toFixed(1)
+      : 0;
+
+    // Calculate overall metrics
+    const totalTestsTaken = submissions.length;
+    const scores = submissions.filter(s => s.totalScore != null)
+      .map(s => s.totalScore);
+    const averageScore = scores.length > 0 
+      ? (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1)
+      : 0;
+
+    // Calculate MCQ and Coding performance
+    const mcqScores = submissions
+      .filter(s => s.mcqSubmission?.totalScore != null)
+      .map(s => s.mcqSubmission.totalScore);
+    const codingScores = submissions
+      .filter(s => s.codingSubmission?.totalScore != null)
+      .map(s => s.codingSubmission.totalScore);
+
+    const mcqPerformance = mcqScores.length > 0
+      ? (mcqScores.reduce((a, b) => a + b, 0) / mcqScores.length).toFixed(1)
+      : 0;
+    const codingPerformance = codingScores.length > 0
+      ? (codingScores.reduce((a, b) => a + b, 0) / codingScores.length).toFixed(1)
+      : 0;
+
+    // Calculate performance metrics by category
+    const performanceMetrics = submissions.reduce((metrics, submission) => {
+      // Add null check for test and category
+      const category = submission?.test?.category;
+      if (!category) return metrics; // Skip if no category
+
+      if (!metrics[category]) {
+        metrics[category] = { count: 0, totalScore: 0, passedCount: 0 };
+      }
+      metrics[category].count += 1;
+      if (submission.totalScore != null) {
+        metrics[category].totalScore += submission.totalScore;
+        if (submission.status === 'passed') {
+          metrics[category].passedCount += 1;
+        }
+      }
+      return metrics;
+    }, {});
+
+    // If no metrics were collected, provide default categories
+    if (Object.keys(performanceMetrics).length === 0) {
+      performanceMetrics['General'] = {
+        count: 0,
+        totalScore: 0,
+        passedCount: 0,
+        avgScore: 0,
+        successRate: 0
+      };
+    }
+
+    // Convert totals to averages
+    Object.keys(performanceMetrics).forEach(category => {
+      const metrics = performanceMetrics[category];
+      metrics.avgScore = metrics.count > 0 
+        ? (metrics.totalScore / metrics.count).toFixed(1)
+        : 0;
+      metrics.successRate = metrics.count > 0
+        ? ((metrics.passedCount / metrics.count) * 100).toFixed(1)
+        : 0;
+      delete metrics.totalScore;
+      delete metrics.passedCount;
+    });
+
+    res.json({
+      overview: {
+        totalTestsTaken,
+        upcomingTests: upcomingTests.length,
+        averageScore: parseFloat(averageScore),
+        lastTestScore: scores[0] || 0,
+        mcqPerformance: parseFloat(mcqPerformance),
+        codingPerformance: parseFloat(codingPerformance),
+        successRate: parseFloat(codingSuccessRate),
+        thisMonthTests: thisMonthSubmissions.length,
+        improvement: ((averageScore - (scores[scores.length - 1] || 0)) / (scores[scores.length - 1] || 1) * 100).toFixed(1)
+      },
+      recentTests: submissions.slice(0, 5),
+      upcomingSchedule: upcomingTests.map(reg => ({
+        testId: reg.test._id,
+        title: reg.test.title,
+        startTime: reg.testDate,
+        duration: reg.test.duration
+      })),
+      performanceMetrics
+    });
+
+  } catch (error) {
+    console.error('Error in getDashboardData:', error);
+    res.status(500).json({ 
+      error: "Failed to fetch dashboard data",
+      details: error.message 
+    });
+  }
+};
+
+// Helper function to determine badge level
+const getBadgeLevel = (score) => {
+  if (score >= 90) return 'Expert';
+  if (score >= 80) return 'Advanced';
+  if (score >= 70) return 'Intermediate';
+  return 'Beginner';
 }; 

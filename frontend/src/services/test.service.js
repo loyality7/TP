@@ -35,6 +35,7 @@ export const testService = {
       throw error;
     }
   },
+  
 
   // Add coding challenges to a test
   addCodingChallenges: async (testId, challenges) => {
@@ -114,5 +115,21 @@ export const testService = {
       console.error('Failed to update test visibility:', error);
       throw error;
     }
+  },
+
+  // Get user's test results
+  getUserTests: async (filters = {}) => {
+    try {
+      const queryString = new URLSearchParams(filters).toString();
+      const response = await apiService.get(`/user/tests/all?${queryString}`);
+      
+      return { 
+        data: response?.data || [] 
+      };
+    } catch (error) {
+      // Removed error logging and just return empty array
+      return { data: [] };
+    }
   }
 }; 
+

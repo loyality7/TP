@@ -9,7 +9,7 @@ import VendorDashboard from './components/vendor/Dashboard/Dashboard';
 import Home from './pages/home/home';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
-import Profile from './pages/profile/profile';
+import Profile from './components/user/Profile';
 // import UserDashboardPage from './pages/dashboard/candidate/UserDashboard';
 import AdminDashboardPage from './pages/dashboard/admin/AdminDashboard';
 import CreateTest from './components/vendor/Assessments/CreateTest';
@@ -48,6 +48,11 @@ import ResetPassword from './pages/auth/ResetPassword';
 import { QueryProvider } from './providers/QueryProvider';
 import Wallet from './components/vendor/Payments/Wallet';
 import EditTest from './components/vendor/Assessments/EditTest';
+import UserDashboard from './components/user/UserDashboard';
+import Ai from './components/user/Ai';
+import UserTests from './components/user/UserTests';
+import UserReports from './components/user/UserReports';
+import UserTestResult from './components/user/UserTestResult';
 
 // Create a wrapper component to handle header visibility
 const AppContent = () => {
@@ -59,7 +64,7 @@ const AppContent = () => {
     '/test/shared',
     '/test/completed',
     '/test/proctoring',
-    '/vendor/dashboard'
+    '/vendor/dashboard',
     
   ];
 
@@ -76,18 +81,25 @@ const AppContent = () => {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route 
             path="/profile" 
-            
-            element={<ProtectedRoute element={<Profile />} allowedRoles={['user', 'vendor', 'admin']} />} 
+            element={
+              <ProtectedRoute 
+                element={<Profile />} 
+                allowedRoles={['user', 'vendor', 'admin']} 
+              />
+            } 
           />
-          {/* <Route 
-            path="/dashboard/user" 
-            element={<ProtectedRoute element={<UserDashboardPage />} allowedRoles={['user', 'admin']} />} 
-          /> */}
           <Route 
-            path="/dashboard/admin" 
-            element={<ProtectedRoute element={<AdminDashboardPage />} allowedRoles={['admin']} />} 
+            path="/dashboard/admin/*" 
+            element={
+              <ProtectedRoute 
+                element={<AdminDashboardPage />} 
+                allowedRoles={['admin']} 
+              />
+            } 
           />
           <Route 
             path="/vendor/*" 
@@ -131,11 +143,35 @@ const AppContent = () => {
             } 
           />
           <Route path="/test/shared/:uuid" element={<SharedTest />} />
-          <Route path="/test/take/:uuid" element={<TakeTest />} />
+          <Route 
+            path="/test/take/:uuid" 
+            element={
+              <ProtectedRoute 
+                element={<TakeTest />} 
+                allowedRoles={['user', 'admin']} 
+              />
+            } 
+          />
           <Route path="/test/completed" element={<TestCompleted />} />
           <Route path="/test/proctoring/:testId" element={<Proctoring />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route 
+            path="/dashboard/user/*" 
+            element={
+              <ProtectedRoute 
+                element={
+                  <Routes>
+                    <Route path="/" element={<UserDashboard />} />
+                    <Route path="ai" element={<Ai />} />
+                    <Route path="tests" element={<UserTests />} />
+                    <Route path="reports" element={<UserReports />} />
+                    <Route path="profile" element={<Profile />} />
+                    <Route path="test-results/:testId" element={<UserTestResult />} />
+                  </Routes>
+                } 
+                allowedRoles={['user', 'admin']} 
+              />
+            } 
+          />
         </Routes>
       </div>
       <Toaster position="top-right" />

@@ -220,8 +220,8 @@ const Sidebar = ({ isOpen, setIsOpen, onLogout }) => {
             <Code className="h-5 w-5 text-emerald-600" />
           </div>
           <span className="font-semibold text-gray-800">
-            Assessment Pro
-          </span>
+            Eval8
+            </span>
         </div>
         
         {/* Updated Menu Items container with new scrollbar class */}

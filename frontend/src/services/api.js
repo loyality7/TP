@@ -1,8 +1,7 @@
 import axios from 'axios';
-import { toast } from 'react-hot-toast';
 
-const API_URL = 'https://testapi.nexterchat.com/api';
-// const API_URL = 'http://localhost:5000/api';
+// const API_URL = 'https://testapi.nexterchat.com/api';
+const API_URL = 'http://localhost:5000/api';
 
 
 // Create axios instance with default config
@@ -64,22 +63,18 @@ axiosInstance.interceptors.response.use(
       
       switch (errorCode) {
         case 'TOKEN_EXPIRED':
-          toast.error('Your session has expired. Please log in again.');
           localStorage.removeItem('token');
           window.location.href = '/login';
           break;
         case 'TOKEN_INVALID':
-          toast.error('Invalid authentication. Please log in again.');
           localStorage.removeItem('token');
           window.location.href = '/login';
           break;
         case 'USER_NOT_FOUND':
-          toast.error('Account not found. Please log in again.');
           localStorage.removeItem('token');
           window.location.href = '/login';
           break;
         default:
-          toast.error('Authentication failed. Please log in again.');
           localStorage.removeItem('token');
           window.location.href = '/login';
       }
@@ -88,14 +83,11 @@ axiosInstance.interceptors.response.use(
 
     // Handle other errors
     if (error.response) {
-      toast.error(error.response.data.error || 'An error occurred');
       return Promise.reject(error.response.data);
     } else if (error.request) {
-      toast.error('Network error. Please check your connection.');
       return Promise.reject({ message: 'Network error occurred' });
     }
     
-    toast.error('An unexpected error occurred');
     return Promise.reject({ message: error.message });
   }
 );

@@ -6,7 +6,29 @@ import { Filter } from 'lucide-react';
 import { apiService } from '../../../services/api';
 
 const TestAnalytics = () => {
-  const [analyticsData, setAnalyticsData] = useState(null);
+  const defaultAnalytics = {
+    overview: {
+      tests: { total: 0, active: 0 },
+      submissions: { 
+        total: 0, 
+        uniqueCandidates: 0, 
+        averageScore: 0,
+        recent: 0 
+      },
+      trends: { 
+        daily: [
+          { date: 'No data', count: 0 }
+        ] 
+      },
+      performance: {
+        recentActivity: [
+          { candidateName: 'No data', score: 0, testTitle: 'No data', completedAt: new Date() }
+        ]
+      }
+    }
+  };
+
+  const [analyticsData, setAnalyticsData] = useState(defaultAnalytics);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState('all');
 
@@ -32,7 +54,7 @@ const TestAnalytics = () => {
     fetchAnalytics();
   }, [period]);
 
-  if (loading || !analyticsData) {
+  if (!analyticsData) {
     return <div>Loading...</div>;
   }
 

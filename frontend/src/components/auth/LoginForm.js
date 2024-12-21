@@ -15,7 +15,6 @@ const LoginForm = ({ onLoginSuccess }) => {
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    console.log('Form field updated:', e.target.name, e.target.value);
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
@@ -25,8 +24,6 @@ const LoginForm = ({ onLoginSuccess }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-
     setLoading(true);
     setError('');
     
@@ -37,24 +34,31 @@ const LoginForm = ({ onLoginSuccess }) => {
       });
       
       if (result?.user) {
-        console.log('Login successful:', result);
         toast.success('Successfully logged in!');
         if (onLoginSuccess) {
           onLoginSuccess();
         }
         
-        // Check if user is a vendor
-        if (result.user.role === 'vendor') {
-          navigate('/vendor/dashboard');
-        } else {
-          // Existing redirect logic for non-vendor users
-          const redirectUrl = localStorage.getItem('redirectAfterLogin');
-          if (redirectUrl) {
-            localStorage.removeItem('redirectAfterLogin'); // Clean up
-            navigate(redirectUrl);
-          } else {
-            navigate('/dashboard'); // Default fallback
-          }
+        // Redirect based on user role
+        switch (result.user.role) {
+          case 'vendor':
+            navigate('/vendor/dashboard');
+            break;
+          case 'admin':
+            navigate('/dashboard/admin');
+            break;
+          case 'user':
+            navigate('/dashboard/user');
+            break;
+          default:
+            // Check for stored redirect or go to user dashboard
+            const redirectUrl = localStorage.getItem('redirectAfterLogin');
+            if (redirectUrl) {
+              localStorage.removeItem('redirectAfterLogin');
+              navigate(redirectUrl);
+            } else {
+              navigate('/dashboard/user');
+            }
         }
       }
     } catch (error) {

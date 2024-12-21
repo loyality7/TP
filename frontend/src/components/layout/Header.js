@@ -10,10 +10,7 @@ import {
   Users, 
   BookOpen, 
   Layout,
-  Clock,
-  Award,
   HelpCircle,
-  Calendar
 } from 'lucide-react';
 import './Header.css';
 
@@ -31,11 +28,9 @@ const Header = () => {
       { name: 'Candidates', path: '/vendor/candidates', icon: Users },
     ],
     candidate: [
-      { name: 'Dashboard', path: '/candidate/dashboard', icon: Layout },
-      { name: 'Available Tests', path: '/tests', icon: BookOpen },
-      { name: 'My Results', path: '/results', icon: Award },
-      { name: 'Upcoming Tests', path: '/upcoming', icon: Calendar },
-      { name: 'Test History', path: '/history', icon: Clock },
+      { name: 'Dashboard', path: '/dashboard/user', icon: Layout },
+      // { name: 'Available Tests', path: '/tests', icon: BookOpen },
+      
     ]
   };
 

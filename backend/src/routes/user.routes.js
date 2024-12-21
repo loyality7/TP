@@ -12,7 +12,8 @@ import {
   getPerformanceHistory,
   getProfile,
   createProfile,
-  getPracticeHistory
+  getPracticeHistory,
+  getDashboardData
 } from "../controllers/user.controller.js";
 
 const router = express.Router();
@@ -416,7 +417,7 @@ router.post("/tests/:testId/register", auth, registerForTest);
 
 /**
  * @swagger
- * /api/user/tests/results:
+ * /api/user/tests/all:
  *   get:
  *     tags: [User]
  *     summary: Get user's test results
@@ -611,7 +612,7 @@ router.post("/tests/:testId/register", auth, registerForTest);
  *       404:
  *         description: Test result not found
  */
-router.get("/tests/results", auth, getTestResults);
+router.get("/tests/all", auth, getTestResults);
 
 /**
  * @swagger
@@ -775,5 +776,63 @@ router.put("/profile", auth, updateProfile);
  *         description: Unauthorized
  */
 router.get("/practice/history", auth, getPracticeHistory);
+
+/**
+ * @swagger
+ * /api/user/dashboard:
+ *   get:
+ *     tags: [User]
+ *     summary: Get user dashboard data
+ *     description: Retrieves comprehensive dashboard data including overview stats, recent tests, upcoming schedule, and performance metrics
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Dashboard data retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 overview:
+ *                   type: object
+ *                   properties:
+ *                     totalTestsTaken: 
+ *                       type: number
+ *                     upcomingTests:
+ *                       type: number
+ *                     averageScore:
+ *                       type: number
+ *                     lastTestScore:
+ *                       type: number
+ *                     mcqPerformance:
+ *                       type: number
+ *                     codingPerformance:
+ *                       type: number
+ *                     successRate:
+ *                       type: number
+ *                 recentTests:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/TestResult'
+ *                 upcomingSchedule:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/UpcomingTest'
+ *                 performanceMetrics:
+ *                   type: object
+ *                   additionalProperties:
+ *                     type: object
+ *                     properties:
+ *                       count:
+ *                         type: number
+ *                       avgScore:
+ *                         type: number
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
+ */
+router.get("/dashboard", auth, getDashboardData);
 
 export default router; 

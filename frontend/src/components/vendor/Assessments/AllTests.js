@@ -172,7 +172,7 @@ const AllTests = () => {
               <Popover.Panel className="absolute right-0 z-10 mt-2 w-48 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
                 <div className="py-1">
                   <button
-                    onClick={() => handleDelete(test.id)}
+                    onClick={() => handleDelete(test._id)}
                     className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                   >
                     <Trash2 className="h-4 w-4 mr-2" />
@@ -302,11 +302,18 @@ const AllTests = () => {
 
   // Handle test deletion
   const handleDelete = async (testId) => {
+    if (!testId) {
+      toast.error('Invalid test ID');
+      return;
+    }
+
     try {
       await testService.deleteTest(testId);
       toast.success('Test deleted successfully');
-      fetchTests(); // Refresh the list
+      // Update the local state to remove the deleted test
+      setTests(prevTests => prevTests.filter(test => test._id !== testId));
     } catch (error) {
+      console.error('Error deleting test:', error);
       toast.error('Failed to delete test');
     }
   };
