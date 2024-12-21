@@ -199,29 +199,6 @@ const AllTests = () => {
     );
   });
 
-  // Move fetchTests inside component
-  const fetchTests = async () => {
-    try {
-      setLoading(true);
-      const response = await testService.getAllTests({
-        search: searchTerm,
-        category: selectedCategory,
-        status: filterStatus
-      });
-      
-      // Debug log to see the structure of the test objects
-      console.log('Test objects:', response.data);
-      
-      setTests(response.data);
-    } catch (error) {
-      setError(error.message);
-      toast.error('Failed to fetch tests');
-      console.error('Error fetching tests:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   // Add calculateTrend function before useEffect
   const calculateTrend = (trendData) => {
     if (!trendData || trendData.length < 2) return 0;
@@ -272,6 +249,7 @@ const AllTests = () => {
       } catch (error) {
         console.error('Error fetching data:', error);
         toast.error('Failed to load data');
+        setError(error.message);
       } finally {
         setLoading(false);
       }
