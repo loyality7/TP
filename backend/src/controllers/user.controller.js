@@ -199,10 +199,13 @@ export const getTestResults = async (req, res) => {
         .populate({
           path: 'test',
           select: 'title totalMarks passingMarks mcqs codingChallenges',
-          populate: {
+          populate: [{
             path: 'codingChallenges.testCases',
             select: 'input expectedOutput isHidden'
-          }
+          }, {
+            path: 'mcqs',
+            select: 'question options correctOptions marks'
+          }]
         })
         .sort({ createdAt: -1 });
 
@@ -230,18 +233,22 @@ export const getTestResults = async (req, res) => {
           correct: submission.mcqSubmission?.answers?.filter(a => a.isCorrect)?.length || 0,
           score: submission.mcqSubmission?.totalScore || 0,
           questions: submission.mcqSubmission?.answers?.map(answer => {
-            const question = submission.test.mcqs.find(q => q._id.toString() === answer.questionId.toString());
+            const question = submission.test.mcqs?.find(q => 
+              q._id.toString() === answer.questionId.toString()
+            );
             return {
               questionId: answer.questionId,
               question: question?.question,
+              options: question?.options,
               selectedOptions: answer.selectedOptions,
               correctOptions: question?.correctOptions,
               isCorrect: answer.isCorrect,
               marks: answer.marks,
               maxMarks: question?.marks,
-              timeTaken: answer.timeTaken
+              timeTaken: answer.timeTaken,
+              explanation: question?.explanation
             };
-          })
+          }) || []
         },
         coding: {
           total: submission.codingSubmission?.challenges?.length || 0,
