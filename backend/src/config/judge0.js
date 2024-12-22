@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const JUDGE0_API_URL = "http://13.233.232.168:2358";
+const JUDGE0_API_URL = "http://52.66.190.220:2358";
 
 const judge0 = {
   async submitCode(languageId, sourceCode, stdin = '') {
