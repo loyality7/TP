@@ -57,21 +57,6 @@ const RegisterForm = () => {
       
       {error && <div className="error-message">{error}</div>}
       
-      <div className="social-buttons">
-        <button className="social-button">
-          <i className="fab fa-github"></i>
-          GitHub
-        </button>
-        <button className="social-button">
-          <i className="fab fa-google"></i>
-          Google
-        </button>
-      </div>
-
-      <div className="divider">
-        <span>or</span>
-      </div>
-
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="name">Name:</label>

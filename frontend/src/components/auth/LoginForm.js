@@ -73,21 +73,6 @@ const LoginForm = ({ onLoginSuccess }) => {
     <div className="login-form">
       <h2>Welcome Back</h2>
       
-      <div className="social-buttons">
-        <button className="social-button" disabled={loading}>
-          <i className="fab fa-github"></i>
-          GitHub
-        </button>
-        <button className="social-button" disabled={loading}>
-          <i className="fab fa-google"></i>
-          Google
-        </button>
-      </div>
-
-      <div className="divider">
-        <span>or</span>
-      </div>
-
       {error && <div className="error-message">{error}</div>}
 
       <form onSubmit={handleSubmit}>
