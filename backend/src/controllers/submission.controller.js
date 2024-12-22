@@ -127,8 +127,20 @@ export const submitCoding = async (req, res) => {
       submission = new Submission({
         test: testId,
         user: req.user._id,
-        status: 'in_progress'
+        status: 'in_progress',
+        codingSubmission: {
+          challenges: [],
+          completed: false
+        }
       });
+    }
+
+    // Initialize codingSubmission if it doesn't exist
+    if (!submission.codingSubmission) {
+      submission.codingSubmission = {
+        challenges: [],
+        completed: false
+      };
     }
 
     // Process each coding challenge submission
@@ -146,7 +158,6 @@ export const submitCoding = async (req, res) => {
         memory: sub.memory,
         output: sub.output,
         error: sub.error,
-        // Server-side computed fields
         status: sub.testCaseResults.every(tc => tc.passed) ? 'passed' : 'partial',
         marks: calculateMarks(sub.testCaseResults)
       };
@@ -161,30 +172,35 @@ export const submitCoding = async (req, res) => {
       }
     }
 
-    // Calculate total coding score
+    // Calculate total coding score and update completion status
     submission.codingSubmission.totalScore = submission.codingSubmission.challenges.reduce((total, challenge) => {
       const latestSubmission = challenge.submissions[challenge.submissions.length - 1];
       return total + (latestSubmission?.marks || 0);
     }, 0);
 
-    // Update submission status and total score
+    // Mark coding submission as completed
     submission.codingSubmission.completed = true;
     submission.codingSubmission.submittedAt = new Date();
+
+    // Update submission status based on MCQ and coding completion
+    if (submission.mcqSubmission?.completed) {
+      submission.status = 'completed';
+      submission.endTime = new Date();
+    } else {
+      submission.status = 'coding_completed';
+    }
 
     // Update total score (MCQ + Coding)
     submission.totalScore = (submission.mcqSubmission?.totalScore || 0) + submission.codingSubmission.totalScore;
 
-    // Update status if both sections are completed
-    if (submission.mcqSubmission?.completed && submission.codingSubmission.completed) {
-      submission.status = 'completed';
-      submission.endTime = new Date();
-    }
-
     await submission.save();
+    
     res.status(201).json({
       submissionId: submission._id,
       submission,
-      message: "Coding submissions created successfully"
+      message: "Coding submissions created successfully",
+      status: submission.status,
+      codingCompleted: submission.codingSubmission.completed
     });
 
   } catch (error) {
