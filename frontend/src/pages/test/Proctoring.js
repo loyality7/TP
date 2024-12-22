@@ -150,12 +150,12 @@ export default function Proctoring({ className }) {
         style={{ width: '100%', height: '100%', objectFit: 'contain' }}
         className="w-full h-full"
       />
-      <div className="absolute bottom-0 left-0 right-0 bg-gray-800 bg-opacity-50 text-white p-2 flex justify-between">
-        <div>Faces Detected: {faceCount}</div>
-        <div>Devices Detected: {devicesDetected}</div>
+      <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white p-2 flex justify-between">
+        <div>👤 Faces Detected: {faceCount}</div>
+        <div>📱 Devices Detected: {devicesDetected}</div>
       </div>
       {warning && (
-        <div className="absolute top-0 left-0 right-0 bg-red-500 text-white p-2 text-center">
+        <div className="absolute top-0 left-0 right-0 bg-black/70 text-white p-2 text-center">
           {warning}
         </div>
       )}

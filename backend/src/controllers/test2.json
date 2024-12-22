@@ -1,177 +1,410 @@
 {
-    "title": "Hysteresis Qualifier Test - DSA & Programming Fundamentals",
-    "description": "A comprehensive test covering Data Structures, Algorithms, and basic programming concepts. This test includes both multiple choice questions and hands-on coding challenges.",
+    "title": "MITS Placement Aptitude and Programming Test",
+    "description": "A comprehensive test for MITS students covering Quantitative Aptitude (R.S. Agarwal), Basic Programming, and Problem Solving skills. This test evaluates fundamental aptitude and coding capabilities required for placements.",
     "duration": 180,
     "proctoring": true,
-    "type": "coding_challenge",
-    "category": "Computer Science",
-    "difficulty": "intermediate",
-    "instructions": "1. Complete all MCQs and coding challenges within the time limit\n2. Each coding solution must pass all test cases\n3. You can attempt questions in any order\n4. Ensure your code handles all edge cases",
+    "type": "placement_test",
+    "category": "Aptitude and Programming",
+    "difficulty": "basic",
+    "instructions": "1. Complete all sections: Aptitude MCQs and Programming Questions\n2. Each coding solution must handle basic test cases\n3. Time management is crucial - attempt all questions\n4. Read each question carefully before answering",
     "mcqs": [
       {
-        "question": "What is the time complexity of the quicksort algorithm in its worst case?",
+        "question": "A train running at 90 kmph crosses a pole in 10 seconds. What is the length of the train?",
         "options": [
-          "O(n log n)",
-          "O(n²)",
-          "O(n)",
-          "O(log n)"
+          "200 meters",
+          "250 meters",
+          "225 meters",
+          "275 meters"
         ],
         "correctOptions": [1],
         "answerType": "single",
-        "marks": 5,
+        "marks": 4,
         "difficulty": "medium",
-        "explanation": "Quicksort's worst case occurs when the pivot is always the smallest or largest element, leading to O(n²) complexity."
+        "explanation": "Speed = 90 kmph = 25 m/s, Time = 10s, Length = Speed × Time = 25 × 10 = 250 meters"
       },
       {
-        "question": "Which of the following operations are valid for a Stack data structure?",
+        "question": "Find the average of all prime numbers between 30 and 50?",
         "options": [
-          "Push",
-          "Pop",
-          "Peek",
-          "Insert at middle"
+          "39.6",
+          "42",
+          "38",
+          "39.8"
         ],
-        "correctOptions": [0, 1, 2],
-        "answerType": "multiple",
-        "marks": 5,
-        "difficulty": "easy",
-        "explanation": "Stack follows LIFO principle and supports push (add), pop (remove), and peek (view top) operations."
+        "correctOptions": [3],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "There are five prime numbers between 30 and 50. They are 31,37,41,43 and 47. Therefore the required average=(31+37+41+43+47)/5=199/5=39.8."
+      },
+      {
+        "question": "Find the average of first 40 natural numbers?",
+        "options": [
+          "19.5",
+          "19",
+          "20.5",
+          "20"
+        ],
+        "correctOptions": [2],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "sum of first n natural numbers=n(n+1)/2; So,sum of 40 natural numbers=(40∗41)/2=820. Therefore the required average=820/40=20.5."
+      },
+      {
+        "question": "Find the average of first 20 multiples of 7?",
+        "options": [
+          "73.32",
+          "73.5",
+          "73.05",
+          "73"
+        ],
+        "correctOptions": [1],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "Required average =7*(1+2+3+…….+20)/20=(7∗20∗21)/(20∗2)=147/2=73.5."
+      },
+      {
+        "question": "The average of four consecutive even numbers is 27. find the largest of these numbers?",
+        "options": [
+          "30",
+          "24",
+          "26",
+          "28"
+        ],
+        "correctOptions": [0],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "let the numbers be x,x+2,x+4 and x+6. Then, (x+(x+2)+(x+4)+(x+6))/4 = 27, (4x+12)/4= 27, x+3=27, x=24. Therefore the largest number=(x+6)=24+6=30."
+      },
+      {
+        "question": "There are two sections A and B of a class consisting of 36 and 44 students respectively. If the average weight of section A is 40kg and that of section B is 35kg, find the average weight of the whole class?",
+        "options": [
+          "37.25",
+          "37.02",
+          "35.89",
+          "33.45"
+        ],
+        "correctOptions": [0],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "Total weight of(36+44) students=(36*40+44*35)kg =2980kg. Therefore weight of the total class=(2980/80)kg =37.25kg."
+      },
+      {
+        "question": "Nine persons went to a hotel for taking their meals 8 of them spent Rs.12 each on their meals and the ninth spent Rs.8 more than the average expenditure of all the nine. What was the total money spent by them?",
+        "options": [
+          "96",
+          "117",
+          "104",
+          "100"
+        ],
+        "correctOptions": [1],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "Let the average expenditure of all nine be Rs.x Then 12*8+(x+8)=9x or 8x=104 or x=13. Total money spent = 9x = Rs.(9*13)= Rs.117."
+      },
+      {
+        "question": "Of the three numbers, second is twice the first and is also thrice the third. If the average of the three numbers is 44. Find the largest number.",
+        "options": [
+          "25",
+          "72",
+          "24",
+          "75"
+        ],
+        "correctOptions": [1],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "Let the third number be x. Then second number = 3x. First number=3x/2. Therefore x+3x+(3x/2)=(44*3) or x=24 So largest number= 2nd number=3x=72."
+      },
+      {
+        "question": "The average of 25 result is 18. The average of 1st 12 of them is 14 & that of last 12 is 17. Find the 13th result.",
+        "options": [
+          "48",
+          "90",
+          "56",
+          "78"
+        ],
+        "correctOptions": [3],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "Clearly 13th result=(sum of 25 results)-(sum of 24 results)\n=(18*25)-(14*12)+(17*12)\n=450-(168+204)\n=450-372\n=78"
+      },
+      {
+        "question": "The Average of 11 results is 16, if the average of the 1st 6 results is 58 & that of the last 63. Find the 6th result.",
+        "options": [
+          "63",
+          "64",
+          "65",
+          "66"
+        ],
+        "correctOptions": [3],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "6th result = (58*6+63*6-60*11)=66"
+      },
+      {
+        "question": "The average waight of A,B,C is 45 Kg. The avg wgt of A & B be 40Kg & that of B,C be 43Kg. Find the wgt of B.",
+        "options": [
+          "29",
+          "30",
+          "31",
+          "32"
+        ],
+        "correctOptions": [2],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "Let A,B,c represent their individual wgts. Then, A+B+C=(45*3)Kg=135Kg\nA+B=(40*2)Kg=80Kg & B+C=(43*2)Kg=86Kg\nB=(A+B)+(B+C)-(A+B+C) =(80+86-135)Kg =31Kg."
+      },
+      {
+        "question": "The average age of a class of 39 students is 15 years. If the age of the teacher be included, then the average increases by 3 months. Find the age of the teacher.",
+        "options": [
+          "25",
+          "39",
+          "44",
+          "30"
+        ],
+        "correctOptions": [0],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "Total age of 39 persons = (39 * 15) years = 585 years. Average age of 40 persons = 15 yrs 3 months = 61/4 years. Total age of 40 persons = ((61/4)*40) years = 610 years. Age of the teacher = (610 - 585) years = 25 years."
+      },
+      {
+        "question": "The average weight of 10 oarsmen in a boat is increased by 1.8 kg when one of the crew, who weighs 53 kg is replaced by a new man. Find the weight of the new man.",
+        "options": [
+          "41",
+          "53",
+          "67",
+          "71"
+        ],
+        "correctOptions": [3],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "Total weight increased = (1.8 x 10) kg = 18 kg. Weight of the new man = (53 + 18) kg = 71 kg."
+      },
+      {
+        "question": "There were 35 students in a hostel. Due to the admission of 7 new students, the expenses of the mess were increased by Rs. 42 per day while the average expenditure per head diminished by Rs 1. What was the original expenditure of the mess?",
+        "options": [
+          "295",
+          "420",
+          "150",
+          "345"
+        ],
+        "correctOptions": [1],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "Let the original average expenditure be Rs. x. Then, 42(x - 1) - 35x = 42 --> 7x = 84 --> x = 12 --> Original expenditure = Rs. (35 x 12) = Rs. 420."
+      },
+      {
+        "question": "A batsman makes a score of 87 runs in the 17th inning and thus increases his avg by 3. Find his average after 17th inning.",
+        "options": [
+          "45",
+          "40",
+          "38",
+          "39"
+        ],
+        "correctOptions": [3],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "Let the average after 17th inning = x. Then, average after 16th inning = (x - 3) 16(x - 3) + 87 = 17x or x = (87 - 48) = 39"
+      },
+      {
+        "question": "Distance between two stations A and B is 778 km. A train covers the journey from A to B at 84 km per hour and returns back to A with a uniform speed of 56 km per hour. Find the average speed of the train during the whole journey.",
+        "options": [
+          "67.2",
+          "58.8",
+          "48.9",
+          "65"
+        ],
+        "correctOptions": [0],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "Required average speed = ((2xy)/(x+y)) km/hr = (2 x 84 x 56)/(84+56) km/hr = (2*84*56)/140 km/hr = 67.2 km/hr."
+      },
+      {
+        "question": "If the sum of five consecutive numbers is 225, what is the middle number?",
+        "options": [
+          "43",
+          "45",
+          "47",
+          "49"
+        ],
+        "correctOptions": [1],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "Let the middle number be x. Then the five consecutive numbers are (x-2), (x-1), x, (x+1), (x+2). Sum = 5x = 225. Therefore x = 45."
+      },
+      {
+        "question": "A shopkeeper sells an item at Rs. 800 with 25% profit. What is the cost price of the item?",
+        "options": [
+          "600",
+          "640",
+          "680",
+          "720"
+        ],
+        "correctOptions": [1],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "Let CP = x. Then SP = 800 and profit = 25%. Using formula: SP = CP + (CP × profit%), 800 = x + (x × 25/100), 800 = 1.25x, x = 640."
+      },
+      {
+        "question": "What is 15% of 120?",
+        "options": [
+          "15",
+          "16",
+          "17",
+          "18"
+        ],
+        "correctOptions": [3],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "15% of 120 = (15/100) × 120 = 18"
+      },
+      {
+        "question": "If 6 workers can complete a work in 12 days, how many days will 9 workers take to complete the same work?",
+        "options": [
+          "6",
+          "8",
+          "9",
+          "10"
+        ],
+        "correctOptions": [1],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "Using formula: M1D1 = M2D2, where M is men and D is days. 6 × 12 = 9 × D2, 72 = 9D2, D2 = 8 days"
+      },
+      {
+        "question": "A car travels 300 km in 4 hours. What is its speed in meters per second?",
+        "options": [
+          "20.83",
+          "20.75",
+          "20.85",
+          "20.80"
+        ],
+        "correctOptions": [0],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "Speed in km/hr = 300/4 = 75 km/hr. Converting to m/s: 75 × (1000/3600) = 20.83 m/s"
+      },
+      {
+        "question": "What is the simple interest on Rs. 5000 at 8% per annum for 2 years?",
+        "options": [
+          "700",
+          "800",
+          "900",
+          "1000"
+        ],
+        "correctOptions": [1],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "Simple Interest = (Principal × Rate × Time)/100 = (5000 × 8 × 2)/100 = 800"
+      },
+      {
+        "question": "If 3x + 4 = 19, what is the value of x?",
+        "options": [
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "correctOptions": [2],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "3x + 4 = 19, 3x = 15, x = 5"
+      },
+      {
+        "question": "What is 25% of 25% of 400?",
+        "options": [
+          "20",
+          "25",
+          "30",
+          "35"
+        ],
+        "correctOptions": [1],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "First 25% of 400 = 100, then 25% of 100 = 25"
+      },
+      {
+        "question": "If the perimeter of a square is 40 cm, what is its area?",
+        "options": [
+          "100 sq cm",
+          "64 sq cm",
+          "81 sq cm",
+          "121 sq cm"
+        ],
+        "correctOptions": [0],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "Side of square = Perimeter/4 = 40/4 = 10 cm. Area = side² = 10² = 100 sq cm"
+      },
+      {
+        "question": "A number is increased by 20% and then decreased by 20%. What is the net change?",
+        "options": [
+          "0% decrease",
+          "4% decrease",
+          "2% decrease",
+          "No change"
+        ],
+        "correctOptions": [1],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "Let initial number be 100. After 20% increase = 120. After 20% decrease = 120 × 0.8 = 96. Net change = 4% decrease"
       }
     ],
     "codingChallenges": [
       {
-        "title": "Sum of N Natural Numbers",
-        "description": "Calculate the sum of first n natural numbers efficiently",
-        "problemStatement": "Given an integer n, return the sum of numbers from 1 to n.",
-        "constraints": "1. 1 <= n <= 10^9\n2. Time Complexity should be O(1)\n3. Space Complexity should be O(1)",
-        "allowedLanguages": ["javascript", "python", "java","c","cpp"],
+        "title": "Check Even or Odd",
+        "description": "Write a program to check if a number is even or odd",
+        "problemStatement": "Given an integer n, determine if it is even or odd.",
+        "constraints": "1. -10^9 <= n <= 10^9",
+        "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
         "languageImplementations": {
           "javascript": {
-            "visibleCode": "function sumNaturalNumbers(n) {\n    // Write your code here\n    // Try to submit your code in O(1) complexity\n    \n}",
-            "invisibleCode": "module.exports = sumNaturalNumbers;"
-          },
-          "python": {
-            "visibleCode": "def sum_n_natural_numbers_optimised(n):\n    # Write your code here\n    # Try to submit your code in O(1) complexity\n    pass",
-            "invisibleCode": "# Test helper code here"
-          },
-          "java": {
-            "visibleCode": "public class Solution {\n    public long sumNaturalNumbers(int n) {\n        // Write your code here\n        // Try to submit your code in O(1) complexity\n        \n    }\n}",
-            "invisibleCode": "// Test helper code here"
-          },
-          "c": {
-            "visibleCode": "long sumNaturalNumbers(int n) {\n    // Write your code here\n    // Try to submit your code in O(1) complexity\n    \n}",
-            "invisibleCode": "// Test helper code here"
-          },
-          "cpp": {
-            "visibleCode": "long sumNaturalNumbers(int n) {\n    // Write your code here\n    // Try to submit your code in O(1) complexity\n    \n}",
-            "invisibleCode": "// Test helper code here"
-          } 
+            "visibleCode": "function checkEvenOdd(n) {\n    // Write your code here\n    // Return 'Even' or 'Odd'\n    \n}",
+            "invisibleCode": "module.exports = checkEvenOdd;"
+          }
+          // ... other language implementations
         },
         "testCases": [
           {
-            "input": "10",
-            "output": "55",
-            "isVisible": true,
-            "explanation": "Sum of numbers from 1 to 10 = 1 + 2 + 3 + ... + 10 = 55"
+            "input": "4",
+            "output": "Even",
+            "isVisible": true
           },
           {
-            "input": "5",
-            "output": "15",
-            "isVisible": true,
-            "explanation": "Sum of numbers from 1 to 5 = 1 + 2 + 3 + 4 + 5 = 15"
-          },
-          {
-            "input": "100",
-            "output": "5050",
-            "isVisible": false,
-            "explanation": "Hidden test case for larger numbers"
-          },
-          {
-            "input": "1000",
-            "output": "500500",
-            "isVisible": false,
-            "explanation": "Hidden test case to test performance"
-          },
-          {
-            "input": "1",
-            "output": "1",
-            "isVisible": true,
-            "explanation": "Edge case with single number"
+            "input": "7",
+            "output": "Odd",
+            "isVisible": true
           }
-        ],
-        "marks": 15,
-        "timeLimit": 1000,
-        "memoryLimit": 128,
-        "difficulty": "easy",
-        "tags": ["math", "algorithms"]
+          // ... more test cases
+        ]
       },
-      {
-        "title": "Find Unique Element",
-        "description": "Find the unique element in an array where all other elements appear exactly twice",
-        "problemStatement": "You have been given an integer array/list(ARR) of size N, where N is equal to [2M + 1]. In the given array/list, 'M' numbers are present twice and one number is present only once. You need to find and return that number which is unique in the array/list.",
-        "constraints": "1. 1 <= t <= 10^2\n2. 0 <= N <= 10^6\n3. Time Complexity should be O(n)\n4. Space Complexity should be O(1)",
-        "allowedLanguages": ["javascript", "python", "java", "cpp", "c"],
-        "languageImplementations": {
-          "javascript": {
-            "visibleCode": "function findUnique(arr) {\n    // Write your code here\n    // Try to submit your code in O(n) Time complexity\n    \n}",
-            "invisibleCode": "module.exports = findUnique;"
-          },
-          "python": {
-            "visibleCode": "def findUnique(arr, n):\n    # Write your code here\n    # Try to submit your code in O(n) Time complexity\n    pass",
-            "invisibleCode": "# Test helper code here"
-          },
-          "java": {
-            "visibleCode": "public class Solution {\n    public static int findUnique(int[] arr) {\n        //Your code goes here\n        \n    }\n}",
-            "invisibleCode": "// Test helper code here"
-          },
-          "cpp": {
-            "visibleCode": "int findUnique(int *arr, int n) {\n    // Write your code here\n    \n}",
-            "invisibleCode": "// Test helper code here"
-          },
-          "c": {
-            "visibleCode": "int FindDuplicate(int arr[], int size) {\n    /* Don't write main().\n     * Don't read input, it is passed as function argument.\n     * Return output and don't print it.\n     * Taking input and printing output is handled automatically.\n     */\n    \n}",
-            "invisibleCode": "// Test helper code here"
-          }
-        },
-        "testCases": [
-          {
-            "input": "[2, 3, 1, 6, 3, 6, 2]",
-            "output": "1",
-            "isVisible": true,
-            "explanation": "1 appears once while all other numbers appear twice"
-          },
-          {
-            "input": "[2, 4, 7, 2, 7]",
-            "output": "4",
-            "isVisible": true,
-            "explanation": "4 is the only element that appears once"
-          },
-          {
-            "input": "[1, 3, 1, 3, 6, 6, 7, 10, 7]",
-            "output": "10",
-            "isVisible": true,
-            "explanation": "10 appears once while all other numbers appear twice"
-          },
-          {
-            "input": "[5, 2, 5, 2, 8, 9, 9]",
-            "output": "8",
-            "isVisible": false,
-            "explanation": "Hidden test case for larger array"
-          },
-          {
-            "input": "[1, 1, 2]",
-            "output": "2",
-            "isVisible": false,
-            "explanation": "Hidden test case for minimum size array"
-          }
-        ],
-        "marks": 15,
-        "timeLimit": 1000,
-        "memoryLimit": 128,
-        "difficulty": "medium",
-        "tags": ["arrays", "bit manipulation", "algorithms"]
-      }
-    ],
-    "accessControl": {
-      "type": "private"
-    }
-  }  
+      // Add 4 more coding challenges:
+      // 1. Basic Calculator (arithmetic operations)
+      // 2. Leap Year Checker
+      // 3. Simple Interest Calculator
+      // 4. Greatest of Three Numbers
+    ]
+}  
