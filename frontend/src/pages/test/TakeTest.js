@@ -215,10 +215,36 @@ export default function TakeTest() {
     }
   }, [test, showInstructions, handleSubmit]);
 
-  // Update handleStartTest to initialize the timer
+  // Update handleStartTest to remove camera check since it will be done beforehand
   const handleStartTest = useCallback(async () => {
     try {
-      // Check if proctoring is enabled and verify camera access
+      setShowInstructions(false);
+      
+      // Initialize test end time if not already set
+      if (!getTestEndTime() && test?.duration) {
+        const endTime = Date.now() + (test.duration * 60 * 1000);
+        localStorage.setItem('testEndTime', endTime.toString());
+      }
+      
+      // Request fullscreen
+      try {
+        await document.documentElement.requestFullscreen();
+        setIsFullScreen(true);
+      } catch (error) {
+        toast.error('Fullscreen mode is required. Please allow fullscreen to continue.');
+        return;
+      }
+      
+    } catch (error) {
+      console.error('Error starting test:', error);
+      toast.error('Failed to start test. Please ensure all permissions are granted.');
+    }
+  }, [test]);
+
+  // Update the useEffect for requesting permissions to run immediately when test loads
+  useEffect(() => {
+    const requestPermissions = async () => {
+      // Only request camera if proctoring is enabled
       if (test?.proctoring) {
         try {
           const stream = await navigator.mediaDevices.getUserMedia({ 
@@ -231,14 +257,17 @@ export default function TakeTest() {
           // Verify we actually got a video track
           if (!stream.getVideoTracks().length) {
             toast.error('No camera detected. Please connect a camera to continue.');
+            setPermissionsGranted(false);
             return;
           }
 
           // Stop the test stream - the Proctoring component will create its own
           stream.getTracks().forEach(track => track.stop());
           setPermissionsGranted(true);
+          toast.success('Camera access granted successfully!');
         } catch (error) {
           console.error('Camera access error:', error);
+          setPermissionsGranted(false);
           if (error.name === 'NotAllowedError') {
             toast.error('Camera access was denied. Please allow camera access to continue.');
           } else if (error.name === 'NotFoundError') {
@@ -246,30 +275,16 @@ export default function TakeTest() {
           } else {
             toast.error('Failed to access camera. Please check your device settings.');
           }
-          return;
         }
+      } else {
+        // Auto-grant permissions if proctoring is disabled
+        setPermissionsGranted(true);
       }
+    };
 
-      setShowInstructions(false);
-      
-      // Initialize test end time if not already set
-      if (!getTestEndTime() && test?.duration) {
-        const endTime = Date.now() + (test.duration * 60 * 1000);
-        localStorage.setItem('testEndTime', endTime.toString());
-      }
-      
-      // Request fullscreen after camera permission is granted
-      try {
-        await document.documentElement.requestFullscreen();
-        setIsFullScreen(true);
-      } catch (error) {
-        toast.error('Fullscreen mode is required. Please allow fullscreen to continue.');
-        return;
-      }
-      
-    } catch (error) {
-      console.error('Error starting test:', error);
-      toast.error('Failed to start test. Please ensure all permissions are granted.');
+    // Request permissions as soon as test data is available
+    if (test) {
+      requestPermissions();
     }
   }, [test]);
 
@@ -388,31 +403,6 @@ export default function TakeTest() {
 
     loadTest();
   }, [uuid, navigate]);
-
-  // Update the useEffect for requesting permissions
-  useEffect(() => {
-    const requestPermissions = async () => {
-      // Only request camera if proctoring is enabled
-      if (test?.proctoring) {
-        try {
-          await navigator.mediaDevices.getUserMedia({ video: true });
-          console.log('Camera access granted');
-          setPermissionsGranted(true);
-        } catch (error) {
-          console.error('Camera access denied:', error);
-          setPermissionsGranted(false);
-          toast.error('Camera access is required for proctored tests');
-        }
-      } else {
-        // Auto-grant permissions if proctoring is disabled
-        setPermissionsGranted(true);
-      }
-    };
-
-    if (test) {
-      requestPermissions();
-    }
-  }, [test]);
 
   // Update the fullscreen effect with stricter controls
   useEffect(() => {
