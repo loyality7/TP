@@ -79,7 +79,7 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
     }
   };
 
-  // All useEffect hooks together at the top level
+  // Move ALL useEffect hooks to be together at the top
   useEffect(() => {
     const parseTestUUID = async () => {
       try {
@@ -100,10 +100,19 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
         setIsLoadingTestId(false);
       }
     };
-
-    // Clear existing test ID when component mounts
     parseTestUUID();
   }, []);
+
+  useEffect(() => {
+    if (challenges?.length > 0) {
+      // Initialize submission status for all challenges
+      const initialStatus = {};
+      challenges.forEach(challenge => {
+        initialStatus[challenge._id] = undefined;
+      });
+      setSubmissionStatus(initialStatus);
+    }
+  }, [challenges]);
 
   // Update useEffect for challenge changes to prevent infinite loops
   useEffect(() => {
@@ -819,18 +828,6 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
       monaco.editor.setModelLanguage(editor.getModel(), language.toLowerCase());
     }
   };
-
-  // 3. Update useEffect to initialize submission status for all challenges
-  useEffect(() => {
-    if (challenges?.length > 0) {
-      // Initialize submission status for all challenges
-      const initialStatus = {};
-      challenges.forEach(challenge => {
-        initialStatus[challenge._id] = undefined;
-      });
-      setSubmissionStatus(initialStatus);
-    }
-  }, [challenges]);
 
   return (
     <div className="relative h-full">
