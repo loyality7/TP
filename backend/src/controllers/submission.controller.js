@@ -6,6 +6,19 @@ import TestRegistration from '../models/testRegistration.model.js';
 import mongoose from 'mongoose';
 
 // Add this helper function at the top
+const getTestWithAnswers = async (testId) => {
+  const test = await Test.findById(testId)
+    .select('mcqs')
+    .lean();
+   
+  if (!test) {
+    throw new Error('Test not found');
+  }
+   
+  return test;
+};
+
+// Add this helper function at the top
 const validateTestAccess = async (testId, userId, userRole) => {
   const test = await Test.findById(testId)
     .populate('vendor')
@@ -276,25 +289,31 @@ export const getUserSubmissions = async (req, res) => {
       query.test = { $in: testIds };
     }
 
-    // Get submissions with the applied query
+    // Update the populate to include MCQ questions with correct options
     const submissions = await Submission.find(query)
       .populate({
         path: 'test',
-        select: 'title type category difficulty totalMarks passingMarks vendor',
-        populate: {
-          path: 'vendor',
-          select: 'name email'
-        }
+        select: 'title type category difficulty totalMarks passingMarks vendor mcqs',
+        populate: [
+          {
+            path: 'vendor',
+            select: 'name email'
+          },
+          {
+            path: 'mcqs',
+            select: 'question options correctOptions marks'
+          }
+        ]
       })
       .sort({ submittedAt: -1 })
       .lean();
 
-    // Additional vendor check on the results
+    // Filter submissions based on vendor access
     const filteredSubmissions = isVendor ? 
       submissions.filter(sub => sub.test?.vendor?._id.toString() === req.user._id.toString()) :
       submissions;
 
-    // Transform the response
+    // Transform the response with corrected array comparison
     const transformedSubmissions = {
       mcq: filteredSubmissions
         .filter(sub => sub.mcqSubmission?.answers?.length > 0)
@@ -309,7 +328,26 @@ export const getUserSubmissions = async (req, res) => {
           passingMarks: sub.test?.passingMarks,
           status: sub.status,
           submittedAt: sub.mcqSubmission?.submittedAt,
-          answers: sub.mcqSubmission?.answers,
+          answers: sub.mcqSubmission?.answers.map(answer => {
+            const question = sub.test?.mcqs?.find(q => q._id.toString() === answer.questionId.toString());
+            const correctOptions = question?.correctOptions || [];
+            const selectedOptions = answer.selectedOptions || [];
+            
+            // Sort both arrays before comparison
+            const isCorrect = Array.isArray(correctOptions) && 
+              Array.isArray(selectedOptions) &&
+              correctOptions.length === selectedOptions.length &&
+              [...correctOptions].sort().every((opt, idx) => opt === [...selectedOptions].sort()[idx]);
+
+            return {
+              ...answer,
+              question: question?.question,
+              options: question?.options,
+              correctOptions: question?.correctOptions,
+              maxMarks: question?.marks,
+              isCorrect
+            };
+          }),
           vendor: {
             id: sub.test?.vendor?._id,
             name: sub.test?.vendor?.name,
@@ -363,49 +401,96 @@ export const getTestSubmissions = async (req, res) => {
   try {
     const { testId } = req.params;
     
-    // Instead of querying separate collections, query the main Submission collection
+    // Get test details with correct answers
+    const test = await Test.findById(testId)
+      .select('mcqs codingChallenges')
+      .lean();
+    
+    if (!test) {
+      return res.status(404).json({ error: 'Test not found' });
+    }
+
+    // Get all submissions for this test
     const submissions = await Submission.find({ 
       test: testId,
-      $or: [
-        { 'mcqSubmission.completed': true },
-        { 'codingSubmission.completed': true }
-      ]
+      status: { $in: ['completed', 'mcq_completed', 'coding_completed'] }
     })
     .populate('user', 'name email')
     .lean();
 
-    // Transform the submissions into the expected format
-    const response = {
-      mcq: submissions
-        .filter(sub => sub.mcqSubmission?.completed)
-        .map(sub => ({
-          testId: sub.test,
-          userId: sub.user._id,
-          answers: sub.mcqSubmission.answers,
-          totalScore: sub.mcqSubmission.totalScore,
-          submittedAt: sub.mcqSubmission.submittedAt
-        })),
-      coding: submissions
-        .filter(sub => sub.codingSubmission?.completed)
-        .map(sub => ({
-          testId: sub.test,
-          userId: sub.user._id,
-          challenges: sub.codingSubmission.challenges,
-          totalScore: sub.codingSubmission.totalScore,
-          submittedAt: sub.codingSubmission.submittedAt
+    // Process MCQ submissions with corrected array comparison
+    const mcqSubmissions = submissions
+      .filter(sub => sub.mcqSubmission?.completed)
+      .map(sub => ({
+        submissionId: sub._id,
+        userId: sub.user._id,
+        userName: sub.user.name,
+        userEmail: sub.user.email,
+        totalScore: sub.mcqSubmission.totalScore,
+        submittedAt: sub.mcqSubmission.submittedAt,
+        answers: sub.mcqSubmission.answers.map(answer => {
+          const question = test.mcqs?.find(q => 
+            q._id.toString() === answer.questionId.toString()
+          );
+          const correctOptions = question?.correctOptions || [];
+          const selectedOptions = answer.selectedOptions || [];
+          
+          // Updated array comparison logic
+          const isCorrect = Array.isArray(correctOptions) && 
+            Array.isArray(selectedOptions) &&
+            correctOptions.length === selectedOptions.length &&
+            [...correctOptions].sort().every((opt, idx) => 
+              opt === [...selectedOptions].sort()[idx]
+            );
+
+          return {
+            questionId: answer.questionId,
+            selectedOptions: selectedOptions,
+            isCorrect: isCorrect,
+            marks: isCorrect ? (question?.marks || 0) : 0
+          };
+        })
+      }));
+
+    // Process coding submissions
+    const codingSubmissions = submissions
+      .filter(sub => sub.codingSubmission?.completed)
+      .map(sub => ({
+        submissionId: sub._id,
+        userId: sub.user._id,
+        userName: sub.user.name,
+        userEmail: sub.user.email,
+        totalScore: sub.codingSubmission.totalScore,
+        submittedAt: sub.codingSubmission.submittedAt,
+        challenges: sub.codingSubmission.challenges.map(challenge => ({
+          challengeId: challenge.challengeId,
+          submissions: challenge.submissions.map(submission => ({
+            code: submission.code,
+            language: submission.language,
+            status: submission.status,
+            marks: submission.marks,
+            testCaseResults: submission.testCaseResults,
+            executionTime: submission.executionTime,
+            memory: submission.memory
+          }))
         }))
-    };
+      }));
 
-    // Add debug logging
-    console.log(`Found ${submissions.length} submissions for test ${testId}`);
-    console.log('Response:', response);
+    res.json({
+      mcq: mcqSubmissions,
+      coding: codingSubmissions,
+      summary: {
+        totalSubmissions: submissions.length,
+        mcqSubmissions: mcqSubmissions.length,
+        codingSubmissions: codingSubmissions.length
+      }
+    });
 
-    res.status(200).json(response);
   } catch (error) {
     console.error('Error in getTestSubmissions:', error);
     res.status(500).json({ 
-      message: 'Error fetching test submissions', 
-      error: error.message 
+      error: 'Failed to retrieve submissions',
+      details: error.message 
     });
   }
 };
@@ -414,6 +499,16 @@ export const getTestSubmissions = async (req, res) => {
 export const getTestMCQSubmissions = async (req, res) => {
   try {
     const { testId } = req.params;
+    
+    // Get test details for correct answers
+    const test = await Test.findById(testId)
+      .select('mcqs')
+      .lean();
+
+    if (!test) {
+      return res.status(404).json({ error: 'Test not found' });
+    }
+
     const submissions = await Submission.find({ 
       test: testId,
       'mcqSubmission.completed': true 
@@ -426,7 +521,27 @@ export const getTestMCQSubmissions = async (req, res) => {
       userId: sub.user._id,
       userName: sub.user.name,
       userEmail: sub.user.email,
-      answers: sub.mcqSubmission.answers,
+      answers: sub.mcqSubmission.answers.map(answer => {
+        const question = test.mcqs?.find(q => 
+          q._id.toString() === answer.questionId.toString()
+        );
+        const correctOptions = question?.correctOptions || [];
+        const selectedOptions = answer.selectedOptions || [];
+        
+        // Updated array comparison logic
+        const isCorrect = Array.isArray(correctOptions) && 
+          Array.isArray(selectedOptions) &&
+          correctOptions.length === selectedOptions.length &&
+          [...correctOptions].sort().every((opt, idx) => 
+            opt === [...selectedOptions].sort()[idx]
+          );
+
+        return {
+          ...answer,
+          isCorrect,
+          marks: isCorrect ? (question?.marks || 0) : 0
+        };
+      }),
       totalScore: sub.mcqSubmission.totalScore,
       submittedAt: sub.mcqSubmission.submittedAt
     }));
@@ -499,12 +614,16 @@ export const getTestResults = async (req, res) => {
   try {
     const { testId } = req.params;
     
-    // Validate testId
     if (!testId || !mongoose.Types.ObjectId.isValid(testId)) {
       return res.status(400).json({ 
         message: 'Invalid test ID format'
       });
     }
+
+    // Get test details for correct answers
+    const test = await Test.findById(testId)
+      .select('mcqs')
+      .lean();
 
     // Get all completed submissions for this test
     const submissions = await Submission.find({ 
@@ -514,7 +633,7 @@ export const getTestResults = async (req, res) => {
     .populate('user', 'name email')
     .lean();
 
-    // Transform submissions into the expected format
+    // Transform submissions with corrected array comparison
     const results = submissions.map(sub => ({
       candidateId: sub.user._id,
       candidateName: sub.user.name,
@@ -524,15 +643,31 @@ export const getTestResults = async (req, res) => {
       totalScore: sub.totalScore || 0,
       submittedAt: sub.endTime || sub.updatedAt,
       status: sub.status,
-      duration: sub.endTime ? Math.round((sub.endTime - sub.startTime) / (1000 * 60)) : null, // in minutes
+      duration: sub.endTime ? Math.round((sub.endTime - sub.startTime) / (1000 * 60)) : null,
       details: {
-        mcqAnswers: sub.mcqSubmission?.answers?.map(answer => ({
-          questionId: answer.questionId,
-          selectedAnswer: answer.selectedOptions,
-          isCorrect: answer.isCorrect,
-          marks: answer.marksObtained,
-          maxMarks: answer.maxMarks
-        })) || [],
+        mcqAnswers: sub.mcqSubmission?.answers?.map(answer => {
+          const question = test.mcqs?.find(q => 
+            q._id.toString() === answer.questionId.toString()
+          );
+          const correctOptions = question?.correctOptions || [];
+          const selectedOptions = answer.selectedOptions || [];
+          
+          // Updated array comparison logic
+          const isCorrect = Array.isArray(correctOptions) && 
+            Array.isArray(selectedOptions) &&
+            correctOptions.length === selectedOptions.length &&
+            [...correctOptions].sort().every((opt, idx) => 
+              opt === [...selectedOptions].sort()[idx]
+            );
+
+          return {
+            questionId: answer.questionId,
+            selectedAnswer: answer.selectedOptions,
+            isCorrect: isCorrect,
+            marks: isCorrect ? (question?.marks || 0) : 0,
+            maxMarks: question?.marks || 0
+          };
+        }) || [],
         codingChallenges: sub.codingSubmission?.challenges?.map(challenge => ({
           challengeId: challenge.challengeId,
           submissions: challenge.submissions.map(submission => ({
@@ -603,8 +738,8 @@ export const getTestResults = async (req, res) => {
   } catch (error) {
     console.error('Error in getTestResults:', error);
     res.status(500).json({ 
-      message: 'Error retrieving test results',
-      error: error.message 
+      error: 'Failed to retrieve test results',
+      details: error.message 
     });
   }
 };

@@ -2,13 +2,20 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { CheckCircle2, Circle, Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { apiService } from '../../../services/api';
+import { CheckCircle } from 'lucide-react';
 
-export default function MCQPage({ mcqs, testId, onSubmitMCQs, analytics, setAnalytics }) {
-  const [currentMcq, setCurrentMcq] = useState(0);
+export default function MCQPage({ mcqs, testId, onSubmitMCQs, setAnalytics }) {
+  const [currentMcq, setCurrentMcq] = useState(() => {
+    const savedIndex = localStorage.getItem('currentMcqIndex');
+    return savedIndex ? parseInt(savedIndex, 0) : 0;
+  });
   const [answers, setAnswers] = useState({});
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(() => {
+    const submissionId = localStorage.getItem('submissionId');
+    return !!submissionId;
+  });
 
   const updateLocalAnalytics = useCallback((analytics) => {
     try {
@@ -59,6 +66,7 @@ export default function MCQPage({ mcqs, testId, onSubmitMCQs, analytics, setAnal
         setIsSubmitted(true);
         toast.success('MCQs submitted successfully!');
         localStorage.removeItem('mcq_answers');
+        localStorage.removeItem('currentMcqIndex');
         
         localStorage.setItem('submissionId', response.data.submissionId);
         
@@ -184,6 +192,26 @@ export default function MCQPage({ mcqs, testId, onSubmitMCQs, analytics, setAnal
     }
     setCurrentMcq(prev => prev + 1);
   };
+
+  // Add this effect to save current question index
+  useEffect(() => {
+    localStorage.setItem('currentMcqIndex', currentMcq.toString());
+  }, [currentMcq]);
+
+  // If MCQs are already submitted, show completion message
+  if (isSubmitted) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full p-8">
+        <div className="bg-white shadow-sm rounded-lg p-8 text-center max-w-md">
+          <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold mb-2">MCQs Completed!</h2>
+          <p className="text-gray-600 mb-4">
+            You have already submitted the MCQ section. Please proceed to the Coding section.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-full max-w-4xl mx-auto px-2 py-2">

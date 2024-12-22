@@ -721,33 +721,35 @@ export default function TakeTest() {
     return test?.mcqSubmission && test?.codingSubmission;
   }, [test]);
 
-  // Update handleConfirmedSubmit to be simpler and more direct
+  // Update handleConfirmedSubmit to be more direct
   const handleConfirmedSubmit = async () => {
     setShowSubmitConfirmation(false);
     
-    try {
-      // Show loading toast
-      toast.loading('Submitting your test...');
+    // Show loading toast
+    const loadingToast = toast.loading('Submitting your test...');
 
+    try {
       // Calculate total score from existing submissions
       const totalScore = (test?.mcqSubmission?.totalScore || 0) + 
                         (test?.codingSubmission?.totalScore || 0);
 
       // Submit analytics
-      try {
-        await apiService.post(`analytics/test/${testId}`, {
-          analyticsData: {
-            ...analytics,
-            timeSpent: Math.floor((Date.now() - new Date(localStorage.getItem('testStartTime'))) / 1000),
-            endTime: new Date().toISOString(),
-            testStatus: 'completed',
-            finalScore: totalScore,
-            submissionType: 'manual'
-          }
-        });
-      } catch (error) {
-        console.error('Analytics submission error:', error);
-        // Continue with navigation even if analytics fails
+      if (testId) {
+        try {
+          await apiService.post(`analytics/test/${testId}`, {
+            analyticsData: {
+              ...analytics,
+              timeSpent: Math.floor((Date.now() - new Date(localStorage.getItem('testStartTime'))) / 1000),
+              endTime: new Date().toISOString(),
+              testStatus: 'completed',
+              finalScore: totalScore,
+              submissionType: 'manual'
+            }
+          });
+        } catch (error) {
+          console.error('Analytics submission error:', error);
+          // Continue even if analytics fails
+        }
       }
 
       // Clear all test-related localStorage items
@@ -758,25 +760,26 @@ export default function TakeTest() {
       localStorage.removeItem('currentTestId');
       localStorage.removeItem('currentTestData');
 
+      // Exit fullscreen if active
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+      }
+
+      // Remove event listeners by updating showInstructions
+      setShowInstructions(true);
+
       // Dismiss loading toast
-      toast.dismiss();
+      toast.dismiss(loadingToast);
       toast.success('Test submitted successfully!');
 
-      // Navigate to completion page
-      navigate('/test/completed', { 
-        state: { 
-          testId: uuid,
-          submission: {
-            mcq: answers.mcq,
-            coding: answers.coding,
-            totalScore,
-            testType: test?.type
-          }
-        }
-      });
+      // Force navigation to completion page
+      window.location.href = `/test/completed`;
+      window.location.reload(true); // Force reload from server, not cache
+
 
     } catch (error) {
       console.error('Final submission error:', error);
+      toast.dismiss(loadingToast);
       toast.error('An error occurred during submission. Please try again.');
     }
   };

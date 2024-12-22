@@ -23,15 +23,15 @@ const UserTests = () => {
     const fetchTests = async () => {
       try {
         const response = await testService.getUserTests();
-        // Only set tests if response.data exists and is an array
-        if (response?.data && Array.isArray(response.data)) {
-          setTests(response.data);
+        // Update to handle the new response structure with results array
+        if (response?.data?.results && Array.isArray(response.data.results)) {
+          setTests(response.data.results);
         } else {
           setTests([]);
         }
       } catch (error) {
         console.error('Error fetching tests:', error);
-        setTests([]); // Set empty array on error
+        setTests([]);
       }
     };
 
@@ -78,16 +78,18 @@ const UserTests = () => {
             Passing Score: {test.passingScore}/{test.maxScore}
           </div>
 
-          {test.score !== undefined && (
+          {test.totalScore !== undefined && (
             <div className="mt-4">
               <div className="flex justify-between mb-1">
                 <span className="text-sm font-medium text-gray-700">Score</span>
-                <span className="text-sm font-medium text-gray-700">{test.score}%</span>
+                <span className="text-sm font-medium text-gray-700">
+                  {((test.totalScore / test.maxScore) * 100).toFixed(1)}%
+                </span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div 
                   className="bg-emerald-500 h-2 rounded-full transition-all duration-300"
-                  style={{ width: `${test.score}%` }}
+                  style={{ width: `${(test.totalScore / test.maxScore) * 100}%` }}
                 />
               </div>
             </div>

@@ -21,23 +21,24 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "../common/Card";
 
 const getColorForCategory = (category) => {
-  if (!category) return 'gray';
+  if (!category) return { name: 'gray', classes: { bg: 'bg-gray-500', light: 'bg-gray-50', text: 'text-gray-600' } };
   
-  const colors = [
-    'blue',
-    'emerald',
-    'violet',
-    'amber',
-    'rose',
-    'cyan',
-    'fuchsia',
-    'lime',
-    'orange',
-    'teal'
-  ];
+  const colors = {
+    blue: { bg: 'bg-blue-500', light: 'bg-blue-50', text: 'text-blue-600' },
+    emerald: { bg: 'bg-emerald-500', light: 'bg-emerald-50', text: 'text-emerald-600' },
+    violet: { bg: 'bg-violet-500', light: 'bg-violet-50', text: 'text-violet-600' },
+    amber: { bg: 'bg-amber-500', light: 'bg-amber-50', text: 'text-amber-600' },
+    rose: { bg: 'bg-rose-500', light: 'bg-rose-50', text: 'text-rose-600' },
+    cyan: { bg: 'bg-cyan-500', light: 'bg-cyan-50', text: 'text-cyan-600' },
+    fuchsia: { bg: 'bg-fuchsia-500', light: 'bg-fuchsia-50', text: 'text-fuchsia-600' },
+    lime: { bg: 'bg-lime-500', light: 'bg-lime-50', text: 'text-lime-600' },
+    orange: { bg: 'bg-orange-500', light: 'bg-orange-50', text: 'text-orange-600' },
+    teal: { bg: 'bg-teal-500', light: 'bg-teal-50', text: 'text-teal-600' }
+  };
   
-  const index = [...category].reduce((acc, char) => acc + char.charCodeAt(0), 0) % colors.length;
-  return colors[index];
+  const colorNames = Object.keys(colors);
+  const index = [...category].reduce((acc, char) => acc + char.charCodeAt(0), 0) % colorNames.length;
+  return { name: colorNames[index], classes: colors[colorNames[index]] };
 };
 
 const getBadgeForDifficulty = (difficulty) => {
@@ -175,14 +176,23 @@ const DashboardHome = () => {
     id: test?._id,
     title: test?.test?.title || 'Untitled Test',
     type: test?.test?.type || 'unknown',
-    date: test?.endTime || test?.startTime || new Date(),
+    date: test?.startTime || new Date(),
     duration: test?.test?.duration,
-    score: {
-      total: test?.totalScore || 0,
-      mcq: test?.mcqSubmission?.totalScore || 0,
-      coding: test?.codingSubmission?.totalScore || 0
-    },
     status: test?.status || 'unknown',
+    progress: {
+      mcq: {
+        completed: test?.progress?.answeredMCQs || 0,
+        total: test?.progress?.totalMCQs || 0,
+        percentage: test?.progress?.totalMCQs ? 
+          Math.round((test?.progress?.answeredMCQs / test?.progress?.totalMCQs) * 100) : 0
+      },
+      coding: {
+        completed: test?.progress?.completedChallenges || 0,
+        total: test?.progress?.totalCodingChallenges || 0,
+        percentage: test?.progress?.totalCodingChallenges ? 
+          Math.round((test?.progress?.completedChallenges / test?.progress?.totalCodingChallenges) * 100) : 0
+      }
+    },
     topics: [test?.test?.category].filter(Boolean),
     badge: getBadgeForDifficulty(test?.test?.difficulty)
   }));
@@ -262,8 +272,14 @@ const DashboardHome = () => {
                         <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-blue-50 text-blue-700">
                           {test.badge}
                         </span>
-                        <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-green-50 text-green-700">
-                          {test.score.total}%
+                        <span className={`px-2.5 py-1 text-xs font-medium rounded-full ${
+                          test.status === 'completed' ? 'bg-green-50 text-green-700' :
+                          test.status === 'in_progress' ? 'bg-yellow-50 text-yellow-700' :
+                          'bg-gray-50 text-gray-700'
+                        }`}>
+                          {test.status === 'in_progress' ? 'In Progress' : 
+                           test.status === 'completed' ? 'Completed' : 
+                           test.status}
                         </span>
                       </div>
                     </div>
@@ -280,44 +296,44 @@ const DashboardHome = () => {
                       </p>
                     </div>
 
-                    {/* Scores */}
+                    {/* Progress Bars */}
                     <div className="space-y-2">
-                      {/* MCQ Score */}
+                      {/* MCQ Progress */}
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-medium text-gray-600 w-12">MCQ</span>
                         <div className="flex-1">
                           <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
                             <div 
                               className="h-full bg-violet-500 rounded-full transition-all duration-500"
-                              style={{ width: `${test.score.mcq}%` }}
+                              style={{ width: `${test.progress.mcq.percentage}%` }}
                             />
                           </div>
                         </div>
-                        <span className="text-xs font-medium text-gray-900 w-8 text-right">
-                          {test.score.mcq}%
+                        <span className="text-xs font-medium text-gray-900 w-16 text-right">
+                          {test.progress.mcq.completed}/{test.progress.mcq.total}
                         </span>
                       </div>
 
-                      {/* Coding Score */}
+                      {/* Coding Progress */}
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-medium text-gray-600 w-12">Coding</span>
                         <div className="flex-1">
                           <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
                             <div 
                               className="h-full bg-emerald-500 rounded-full transition-all duration-500"
-                              style={{ width: `${test.score.coding}%` }}
+                              style={{ width: `${test.progress.coding.percentage}%` }}
                             />
                           </div>
                         </div>
-                        <span className="text-xs font-medium text-gray-900 w-8 text-right">
-                          {test.score.coding}%
+                        <span className="text-xs font-medium text-gray-900 w-16 text-right">
+                          {test.progress.coding.completed}/{test.progress.coding.total}
                         </span>
                       </div>
                     </div>
 
                     {/* Topics */}
                     <div className="mt-3 flex flex-wrap gap-1">
-                      {test.topics.slice(0, 3).map((topic, i) => (
+                      {test.topics.map((topic, i) => (
                         <span 
                           key={i}
                           className="px-2 py-0.5 text-xs font-medium rounded-full bg-gray-100 text-gray-600"
@@ -325,11 +341,6 @@ const DashboardHome = () => {
                           {topic}
                         </span>
                       ))}
-                      {test.topics.length > 3 && (
-                        <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-gray-100 text-gray-600">
-                          +{test.topics.length - 3}
-                        </span>
-                      )}
                     </div>
                   </div>
                 </motion.div>
@@ -411,27 +422,30 @@ const DashboardHome = () => {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.1 }}
-                      className={`bg-${category.color}-50 rounded-lg p-3`}
+                      className={`${category.color.classes.light} rounded-lg p-3`}
                     >
                       <div className="flex items-center justify-between mb-2">
                         <span className="font-medium text-gray-800">
                           {category.category}
                         </span>
-                        <span className={`text-xs font-medium text-${category.color}-600 bg-${category.color}-100 px-2 py-1 rounded-full`}>
+                        <span className={`text-xs font-medium ${category.color.classes.text} ${category.color.classes.light} px-2 py-1 rounded-full`}>
                           {category.count} tests
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="flex-1">
-                          <div className={`h-1.5 bg-${category.color}-100 rounded-full overflow-hidden`}>
+                          <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
                             <div 
-                              className={`h-full bg-${category.color}-500 rounded-full transition-all duration-500`}
-                              style={{ width: `${category.avgScore}%` }}
+                              className={`h-full ${category.color.classes.bg} rounded-full transition-all duration-500`}
+                              style={{ 
+                                width: `${Math.max(category.avgScore, 2)}%`,
+                                transition: 'width 1s ease-in-out'
+                              }}
                             />
                           </div>
                         </div>
                         <span className="text-sm font-medium text-gray-700">
-                          {category.avgScore}%
+                          {category.avgScore.toFixed(1)}%
                         </span>
                       </div>
                     </motion.div>

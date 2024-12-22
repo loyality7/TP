@@ -305,7 +305,8 @@ const Profile = () => {
                   <div className="mt-2 flex flex-wrap gap-2">
                     {profile.skills.map((skill, index) => (
                       <span key={index} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
-                        {skill}
+                        {skill.name}
+                        {skill.level && <span className="ml-1 text-blue-600">({skill.level})</span>}
                       </span>
                     ))}
                   </div>
