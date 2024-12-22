@@ -151,8 +151,8 @@ export default function Proctoring({ className }) {
         className="w-full h-full"
       />
       <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white p-2 flex justify-between">
-        <div>👤 Faces Detected: {faceCount}</div>
-        <div>📱 Devices Detected: {devicesDetected}</div>
+        <div>👤 : {faceCount}</div>
+        <div>📱 : {devicesDetected}</div>
       </div>
       {warning && (
         <div className="absolute top-0 left-0 right-0 bg-black/70 text-white p-2 text-center">
