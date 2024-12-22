@@ -238,6 +238,7 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
         return;
       }
 
+      // Set submitting status
       setSubmissionStatus(prev => ({ ...prev, [challenge._id]: 'submitting' }));
       
       const currentAnswer = answers[challenge._id];
@@ -318,8 +319,9 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
       
       const response = await apiService.post('submissions/submit/coding', submissionData);
 
-      // Check for successful submission (status 201 or statusText "Created")
+      // Check response status and update submission status
       if (response?.status === 201 || response?.statusText === 'Created') {
+        // Update submission status for this challenge
         setSubmissionStatus(prev => ({
           ...prev,
           [challenge._id]: 'submitted'
@@ -327,38 +329,33 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
         
         toast.success('Challenge submitted successfully!');
         
-        // Handle completion and navigation
+        // Check if all challenges are completed
         const allChallengesCompleted = challenges.every(ch => 
-          ch._id === challenge._id ? true : submissionStatus[ch._id] === 'submitted'
+          submissionStatus[ch._id] === 'submitted' || ch._id === challenge._id
         );
-        
+
         if (allChallengesCompleted) {
           toast.success('All coding challenges completed!');
           onSubmitCoding({
             codingSubmission: response.data.submission.codingSubmission,
             totalScore: response.data.submission.totalScore || 0
           });
-        }
-
-        if (currentChallenge < challenges.length - 1) {
+        } else if (currentChallenge < challenges.length - 1) {
+          // Move to next challenge after successful submission
           setTimeout(() => setCurrentChallenge(prev => prev + 1), 1500);
         }
       } else {
-        // If response status is not 201/Created, treat as error
-        throw new Error('Submission failed: Invalid response status');
+        throw new Error('Submission failed');
       }
 
     } catch (error) {
       console.error('Submission Error:', error);
-      if (error.response?.data?.requiresRegistration) {
-        toast.error('Please register or login to submit your solution');
-      } else {
-        toast.error('Failed to submit: ' + (error.response?.data?.error || error.message));
-      }
+      // Reset submission status on error
       setSubmissionStatus(prev => ({
         ...prev,
         [challenge._id]: undefined
       }));
+      toast.error('Failed to submit: ' + (error.response?.data?.error || error.message));
     }
   };
 
@@ -822,6 +819,18 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
       monaco.editor.setModelLanguage(editor.getModel(), language.toLowerCase());
     }
   };
+
+  // 3. Update useEffect to initialize submission status for all challenges
+  useEffect(() => {
+    if (challenges?.length > 0) {
+      // Initialize submission status for all challenges
+      const initialStatus = {};
+      challenges.forEach(challenge => {
+        initialStatus[challenge._id] = undefined;
+      });
+      setSubmissionStatus(initialStatus);
+    }
+  }, [challenges]);
 
   return (
     <div className="relative h-full">
