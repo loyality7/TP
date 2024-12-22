@@ -3,9 +3,9 @@
     "description": "A comprehensive test for MITS students covering Quantitative Aptitude (R.S. Agarwal), Basic Programming, and Problem Solving skills. This test evaluates fundamental aptitude and coding capabilities required for placements.",
     "duration": 180,
     "proctoring": true,
-    "type": "placement_test",
+    "type": "coding_challenge",
     "category": "Aptitude and Programming",
-    "difficulty": "basic",
+    "difficulty": "beginner",
     "instructions": "1. Complete all sections: Aptitude MCQs and Programming Questions\n2. Each coding solution must handle basic test cases\n3. Time management is crucial - attempt all questions\n4. Read each question carefully before answering",
     "mcqs": [
       {
@@ -375,36 +375,289 @@
     ],
     "codingChallenges": [
       {
-        "title": "Check Even or Odd",
-        "description": "Write a program to check if a number is even or odd",
-        "problemStatement": "Given an integer n, determine if it is even or odd.",
-        "constraints": "1. -10^9 <= n <= 10^9",
+        "title": "Basic Calculator",
+        "description": "Implement a basic calculator that performs arithmetic operations",
+        "problemStatement": "Write a function that takes two numbers and an operator (+, -, *, /) as input and returns the result of the operation. Return 'Error' for division by zero.",
+        "constraints": "1. -10^5 <= numbers <= 10^5\n2. operator can be '+', '-', '*', or '/'",
         "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
         "languageImplementations": {
           "javascript": {
-            "visibleCode": "function checkEvenOdd(n) {\n    // Write your code here\n    // Return 'Even' or 'Odd'\n    \n}",
-            "invisibleCode": "module.exports = checkEvenOdd;"
+            "visibleCode": "function calculate(num1, operator, num2) {\n    // Write your code here\n    // Return the result of the arithmetic operation\n    \n}",
+            "invisibleCode": "module.exports = calculate;"
+          },
+          "python": {
+            "visibleCode": "def calculate(num1, operator, num2):\n    # Write your code here\n    # Return the result of the arithmetic operation\n    pass",
+            "invisibleCode": "# No additional code needed"
+          },
+          "java": {
+            "visibleCode": "public class Solution {\n    public static double calculate(double num1, String operator, double num2) {\n        // Write your code here\n        // Return the result of the arithmetic operation\n    }\n}",
+            "invisibleCode": "// No additional code needed"
+          },
+          "c": {
+            "visibleCode": "double calculate(double num1, char operator, double num2) {\n    // Write your code here\n    // Return the result of the arithmetic operation\n}",
+            "invisibleCode": "#include <stdio.h>\n#include <stdlib.h>"
+          },
+          "cpp": {
+            "visibleCode": "double calculate(double num1, char operator, double num2) {\n    // Write your code here\n    // Return the result of the arithmetic operation\n}",
+            "invisibleCode": "#include <iostream>\nusing namespace std;"
           }
-          // ... other language implementations
         },
         "testCases": [
           {
-            "input": "4",
-            "output": "Even",
+            "input": "10 + 5",
+            "output": "15",
             "isVisible": true
           },
           {
-            "input": "7",
-            "output": "Odd",
+            "input": "20 - 8",
+            "output": "12",
+            "isVisible": true
+          },
+          {
+            "input": "6 * 4",
+            "output": "24",
+            "isVisible": true
+          },
+          {
+            "input": "15 / 3",
+            "output": "5",
+            "isVisible": true
+          },
+          {
+            "input": "10 / 0",
+            "output": "Error",
             "isVisible": true
           }
-          // ... more test cases
-        ]
+        ],
+        "marks": 10,
+        "timeLimit": 2,
+        "memoryLimit": 256,
+        "difficulty": "medium",
+        "tags": ["arithmetic", "basic-math"]
       },
-      // Add 4 more coding challenges:
-      // 1. Basic Calculator (arithmetic operations)
-      // 2. Leap Year Checker
-      // 3. Simple Interest Calculator
-      // 4. Greatest of Three Numbers
+      {
+        "title": "Percentage Calculator",
+        "description": "Calculate percentage and grade based on marks",
+        "problemStatement": "Write a function that takes obtained marks and total marks as input, calculates the percentage, and returns both the percentage and grade. Grade criteria: A (>= 90%), B (>= 80%), C (>= 70%), D (>= 60%), F (< 60%)",
+        "constraints": "1. 0 <= obtained marks <= total marks\n2. total marks > 0",
+        "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+        "languageImplementations": {
+          "javascript": {
+            "visibleCode": "function calculateGrade(obtainedMarks, totalMarks) {\n    // Write your code here\n    // Return [percentage, grade]\n    \n}",
+            "invisibleCode": "module.exports = calculateGrade;"
+          },
+          "python": {
+            "visibleCode": "def calculate_grade(obtained_marks, total_marks):\n    # Write your code here\n    # Return [percentage, grade]\n    pass",
+            "invisibleCode": "# No additional code needed"
+          },
+          "java": {
+            "visibleCode": "public class Solution {\n    public static String[] calculateGrade(int obtainedMarks, int totalMarks) {\n        // Write your code here\n        // Return [percentage, grade]\n    }\n}",
+            "invisibleCode": "// No additional code needed"
+          },
+          "c": {
+            "visibleCode": "void calculateGrade(int obtainedMarks, int totalMarks, char* result) {\n    // Write your code here\n    // Store result in format \"percentage,grade\"\n}",
+            "invisibleCode": "#include <stdio.h>\n#include <string.h>"
+          },
+          "cpp": {
+            "visibleCode": "vector<string> calculateGrade(int obtainedMarks, int totalMarks) {\n    // Write your code here\n    // Return {percentage, grade}\n}",
+            "invisibleCode": "#include <vector>\n#include <string>"
+          }
+        },
+        "testCases": [
+          {
+            "input": "90 100",
+            "output": "[90, 'A']",
+            "isVisible": true
+          },
+          {
+            "input": "75 100",
+            "output": "[75, 'C']",
+            "isVisible": true
+          },
+          {
+            "input": "45 100",
+            "output": "[45, 'F']",
+            "isVisible": true
+          }
+        ],
+        "marks": 10,
+        "timeLimit": 2,
+        "memoryLimit": 256,
+        "difficulty": "medium",
+        "tags": ["arithmetic", "conditions"]
+      },
+      {
+        "title": "Leap Year Checker",
+        "description": "Check if a given year is a leap year",
+        "problemStatement": "Write a function that determines whether a given year is a leap year. A leap year is divisible by 4, but century years must be divisible by 400 to be leap years.",
+        "constraints": "1. 1 <= year <= 9999",
+        "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+        "languageImplementations": {
+          "javascript": {
+            "visibleCode": "function isLeapYear(year) {\n    // Write your code here\n    // Return true for leap year, false otherwise\n    \n}",
+            "invisibleCode": "module.exports = isLeapYear;"
+          },
+          "python": {
+            "visibleCode": "def is_leap_year(year):\n    # Write your code here\n    # Return True for leap year, False otherwise\n    pass",
+            "invisibleCode": "# No additional code needed"
+          },
+          "java": {
+            "visibleCode": "public class Solution {\n    public static boolean isLeapYear(int year) {\n        // Write your code here\n        // Return true for leap year, false otherwise\n    }\n}",
+            "invisibleCode": "// No additional code needed"
+          },
+          "c": {
+            "visibleCode": "int isLeapYear(int year) {\n    // Write your code here\n    // Return 1 for leap year, 0 otherwise\n}",
+            "invisibleCode": "#include <stdio.h>"
+          },
+          "cpp": {
+            "visibleCode": "bool isLeapYear(int year) {\n    // Write your code here\n    // Return true for leap year, false otherwise\n}",
+            "invisibleCode": "#include <iostream>"
+          }
+        },
+        "testCases": [
+          {
+            "input": "2000",
+            "output": "true",
+            "isVisible": true
+          },
+          {
+            "input": "2100",
+            "output": "false",
+            "isVisible": true
+          },
+          {
+            "input": "2024",
+            "output": "true",
+            "isVisible": true
+          },
+          {
+            "input": "2023",
+            "output": "false",
+            "isVisible": true
+          }
+        ],
+        "marks": 10,
+        "timeLimit": 2,
+        "memoryLimit": 256,
+        "difficulty": "medium",
+        "tags": ["conditions", "date-time"]
+      },
+      {
+        "title": "Age Category Classifier",
+        "description": "Classify age into different categories",
+        "problemStatement": "Write a function that takes age as input and returns the category: 'Child' (0-12), 'Teen' (13-19), 'Adult' (20-59), 'Senior' (60+). Return 'Invalid' for negative ages.",
+        "constraints": "1. -infinity <= age <= infinity",
+        "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+        "languageImplementations": {
+          "javascript": {
+            "visibleCode": "function classifyAge(age) {\n    // Write your code here\n    // Return age category\n    \n}",
+            "invisibleCode": "module.exports = classifyAge;"
+          },
+          "python": {
+            "visibleCode": "def classify_age(age):\n    # Write your code here\n    # Return age category\n    pass",
+            "invisibleCode": "# No additional code needed"
+          },
+          "java": {
+            "visibleCode": "public class Solution {\n    public static String classifyAge(int age) {\n        // Write your code here\n        // Return age category\n    }\n}",
+            "invisibleCode": "// No additional code needed"
+          },
+          "c": {
+            "visibleCode": "void classifyAge(int age, char* result) {\n    // Write your code here\n    // Store category in result string\n}",
+            "invisibleCode": "#include <stdio.h>\n#include <string.h>"
+          },
+          "cpp": {
+            "visibleCode": "string classifyAge(int age) {\n    // Write your code here\n    // Return age category\n}",
+            "invisibleCode": "#include <string>"
+          }
+        },
+        "testCases": [
+          {
+            "input": "8",
+            "output": "Child",
+            "isVisible": true
+          },
+          {
+            "input": "15",
+            "output": "Teen",
+            "isVisible": true
+          },
+          {
+            "input": "35",
+            "output": "Adult",
+            "isVisible": true
+          },
+          {
+            "input": "65",
+            "output": "Senior",
+            "isVisible": true
+          },
+          {
+            "input": "-1",
+            "output": "Invalid",
+            "isVisible": true
+          }
+        ],
+        "marks": 10,
+        "timeLimit": 2,
+        "memoryLimit": 256,
+        "difficulty": "medium",
+        "tags": ["conditions", "classification"]
+      },
+      {
+        "title": "Number Range Validator",
+        "description": "Validate if a number falls within specific ranges and categories",
+        "problemStatement": "Write a function that takes a number and checks: if it's negative ('Negative'), if it's between 0-100 ('In Range'), if it's greater than 100 ('Too High'). Also check if it's even or odd and append that to the result.",
+        "constraints": "1. -10^9 <= number <= 10^9",
+        "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+        "languageImplementations": {
+          "javascript": {
+            "visibleCode": "function validateNumber(num) {\n    // Write your code here\n    // Return 'Category - Even/Odd'\n    \n}",
+            "invisibleCode": "module.exports = validateNumber;"
+          },
+          "python": {
+            "visibleCode": "def validate_number(num):\n    # Write your code here\n    # Return 'Category - Even/Odd'\n    pass",
+            "invisibleCode": "# No additional code needed"
+          },
+          "java": {
+            "visibleCode": "public class Solution {\n    public static String validateNumber(int num) {\n        // Write your code here\n        // Return 'Category - Even/Odd'\n    }\n}",
+            "invisibleCode": "// No additional code needed"
+          },
+          "c": {
+            "visibleCode": "void validateNumber(int num, char* result) {\n    // Write your code here\n    // Store 'Category - Even/Odd' in result\n}",
+            "invisibleCode": "#include <stdio.h>\n#include <string.h>"
+          },
+          "cpp": {
+            "visibleCode": "string validateNumber(int num) {\n    // Write your code here\n    // Return 'Category - Even/Odd'\n}",
+            "invisibleCode": "#include <string>"
+          }
+        },
+        "testCases": [
+          {
+            "input": "-5",
+            "output": "Negative - Odd",
+            "isVisible": true
+          },
+          {
+            "input": "50",
+            "output": "In Range - Even",
+            "isVisible": true
+          },
+          {
+            "input": "75",
+            "output": "In Range - Odd",
+            "isVisible": true
+          },
+          {
+            "input": "150",
+            "output": "Too High - Even",
+            "isVisible": true
+          }
+        ],
+        "marks": 10,
+        "timeLimit": 2,
+        "memoryLimit": 256,
+        "difficulty": "medium",
+        "tags": ["conditions", "number-theory"]
+      }
     ]
 }  

@@ -39,7 +39,15 @@ const LoginForm = ({ onLoginSuccess }) => {
           onLoginSuccess();
         }
         
-        // Redirect based on user role
+        // First check for stored redirect URL (e.g., from test link)
+        const redirectUrl = localStorage.getItem('redirectAfterLogin');
+        if (redirectUrl) {
+          localStorage.removeItem('redirectAfterLogin');
+          navigate(redirectUrl);
+          return; // Exit early after redirect
+        }
+        
+        // If no stored redirect, handle role-based navigation
         switch (result.user.role) {
           case 'vendor':
             navigate('/vendor/dashboard');
@@ -51,14 +59,7 @@ const LoginForm = ({ onLoginSuccess }) => {
             navigate('/dashboard/user');
             break;
           default:
-            // Check for stored redirect or go to user dashboard
-            const redirectUrl = localStorage.getItem('redirectAfterLogin');
-            if (redirectUrl) {
-              localStorage.removeItem('redirectAfterLogin');
-              navigate(redirectUrl);
-            } else {
-              navigate('/dashboard/user');
-            }
+            navigate('/dashboard/user');
         }
       }
     } catch (error) {
