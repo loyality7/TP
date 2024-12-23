@@ -30,6 +30,8 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
   });
   const [isExecuting, setIsExecuting] = useState(false);
   const [challengeStartTime, setChallengeStartTime] = useState(Date.now());
+  const [hasError, setHasError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   // Constants
   const MIN_PANEL_WIDTH = 20;
@@ -228,14 +230,159 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
     };
   }, [layout.isDragging, handleLeftResize, handleRightResize]);
 
-  // Now your early returns are after all state declarations
-  if (!challenges || challenges.length === 0) {
-    return <div>No challenges available</div>;
-  }
+  // Move ALL hooks to the top, before any conditional returns
+  const handleRecoverFromError = useCallback(() => {
+    try {
+      setHasError(false);
+      setErrorMessage('');
+      // Reset critical states
+      setIsExecuting(false);
+      setExecutingTests(new Set());
+      setIsLoadingTestId(false);
+      
+      // Attempt to restore last known good state
+      const lastKnownChallenge = localStorage.getItem('lastKnownChallenge');
+      if (lastKnownChallenge) {
+        setCurrentChallenge(parseInt(lastKnownChallenge));
+      }
+    } catch (error) {
+      console.error('Recovery failed:', error);
+    }
+  }, [setIsExecuting, setExecutingTests, setIsLoadingTestId]);
 
-  if (!challenge) {
-    return <div>Challenge not found</div>;
-  }
+  // Move error boundary effect to top
+  useEffect(() => {
+    const handleWindowError = (event) => {
+      event.preventDefault();
+      setHasError(true);
+      setErrorMessage(event.message || 'An unexpected error occurred');
+      console.error('Window error:', event);
+    };
+
+    window.addEventListener('error', handleWindowError);
+    window.addEventListener('unhandledrejection', handleWindowError);
+
+    return () => {
+      window.removeEventListener('error', handleWindowError);
+      window.removeEventListener('unhandledrejection', handleWindowError);
+    };
+  }, []);
+
+  // Update handleExecuteCode with better error handling
+  const handleExecuteCode = async () => {
+    try {
+      if (!language) {
+        toast.error('Please select a language first');
+        return;
+      }
+
+      if (!challenge?._id) {
+        toast.error('Challenge not found');
+        return;
+      }
+
+      setIsExecuting(true);
+      setShowTestPanel(true);
+      
+      const currentCode = answers[challenge._id]?.code;
+      
+      if (!currentCode) {
+        toast.error('Please write some code before running');
+        return;
+      }
+
+      // Save current state to localStorage for recovery
+      localStorage.setItem('lastKnownChallenge', currentChallenge);
+      localStorage.setItem('lastKnownCode', currentCode);
+
+      const visibleTestCases = challenge.testCases?.filter(test => !test.isHidden);
+
+      if (!visibleTestCases?.length) {
+        toast.error('No test cases available');
+        return;
+      }
+
+      const results = [];
+
+      for (const testCase of visibleTestCases) {
+        setExecutingTests(prev => new Set(prev).add(testCase.id));
+        
+        const executionPayload = {
+          code: currentCode,
+          language: language.toLowerCase(),
+          inputs: testCase.input
+        };
+        
+        try {
+          const response = await apiService.post('code/execute', executionPayload);
+          const data = response.data;
+          
+          // Ensure we're getting numeric values for time and memory
+          const executionTime = parseFloat(data?.executionTime) || 0;
+          const memory = parseFloat(data?.memory) || 0;
+          
+          // Clean and compare outputs
+          const actualOutput = (data?.output || '').trim();
+          const expectedOutput = (testCase.output || '').trim();
+          
+          // Test case passes only if status is Accepted AND outputs match exactly
+          const passed = data?.status === 'Accepted' && actualOutput === expectedOutput;
+
+          results.push({
+            input: testCase.input || '',
+            expectedOutput: expectedOutput,
+            actualOutput: actualOutput,
+            error: data?.error || '',
+            passed: passed,  // Using our new passed condition
+            executionTime: executionTime,
+            memory: memory,
+            status: data?.status || 'Error'
+          });
+
+        } catch (error) {
+          console.error('Test case execution error:', error);
+          results.push({
+            input: testCase.input || '',
+            expectedOutput: testCase.output || '',
+            actualOutput: '',
+            error: error.message || 'Execution failed',
+            passed: false,
+            executionTime: 0,
+            memory: 0,
+            status: 'Error'
+          });
+        } finally {
+          setExecutingTests(prev => {
+            const newSet = new Set(prev);
+            newSet.delete(testCase.id);
+            return newSet;
+          });
+        }
+      }
+
+      setTestResults(prev => ({
+        ...prev,
+        [challenge._id]: {
+          status: results.every(r => r.passed) ? 'Passed' : 'Failed',
+          executionTime: results.reduce((sum, r) => sum + r.executionTime, 0),
+          memory: Math.max(...results.map(r => r.memory)),
+          testCaseResults: results
+        }
+      }));
+
+    } catch (error) {
+      console.error('Code execution error:', error);
+      setHasError(true);
+      setErrorMessage('Failed to execute code: ' + (error.message || 'Unknown error'));
+      toast.error('Something went wrong. Trying to recover...');
+      
+      // Attempt recovery
+      setTimeout(handleRecoverFromError, 2000);
+    } finally {
+      setIsExecuting(false);
+      setExecutingTests(new Set());
+    }
+  };
 
   // Update handleSubmitChallenge to properly handle successful submissions
   const handleSubmitChallenge = async () => {
@@ -365,113 +512,6 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
         [challenge._id]: undefined
       }));
       toast.error('Failed to submit: ' + (error.response?.data?.error || error.message));
-    }
-  };
-
-  // Update handleExecuteCode to properly handle the response
-  const handleExecuteCode = async () => {
-    try {
-      if (!language) {
-        toast.error('Please select a language first');
-        return;
-      }
-
-      if (!challenge?._id) {
-        toast.error('Challenge not found');
-        return;
-      }
-
-      setIsExecuting(true);
-      setShowTestPanel(true);
-      
-      const currentCode = answers[challenge._id]?.code;
-      
-      if (!currentCode) {
-        toast.error('Please write some code before running');
-        return;
-      }
-
-      const visibleTestCases = challenge.testCases?.filter(test => !test.isHidden);
-
-      if (!visibleTestCases?.length) {
-        toast.error('No test cases available');
-        return;
-      }
-
-      const results = [];
-
-      for (const testCase of visibleTestCases) {
-        setExecutingTests(prev => new Set(prev).add(testCase.id));
-        
-        const executionPayload = {
-          code: currentCode,
-          language: language.toLowerCase(),
-          inputs: testCase.input
-        };
-        
-        try {
-          const response = await apiService.post('code/execute', executionPayload);
-          const data = response.data;
-          
-          // Ensure we're getting numeric values for time and memory
-          const executionTime = parseFloat(data?.executionTime) || 0;
-          const memory = parseFloat(data?.memory) || 0;
-          
-          // Clean and compare outputs
-          const actualOutput = (data?.output || '').trim();
-          const expectedOutput = (testCase.output || '').trim();
-          
-          // Test case passes only if status is Accepted AND outputs match exactly
-          const passed = data?.status === 'Accepted' && actualOutput === expectedOutput;
-
-          results.push({
-            input: testCase.input || '',
-            expectedOutput: expectedOutput,
-            actualOutput: actualOutput,
-            error: data?.error || '',
-            passed: passed,  // Using our new passed condition
-            executionTime: executionTime,
-            memory: memory,
-            status: data?.status || 'Error'
-          });
-
-        } catch (error) {
-          console.error('Test case execution error:', error);
-          results.push({
-            input: testCase.input || '',
-            expectedOutput: testCase.output || '',
-            actualOutput: '',
-            error: error.message || 'Execution failed',
-            passed: false,
-            executionTime: 0,
-            memory: 0,
-            status: 'Error'
-          });
-        } finally {
-          setExecutingTests(prev => {
-            const newSet = new Set(prev);
-            newSet.delete(testCase.id);
-            return newSet;
-          });
-        }
-      }
-
-      setTestResults(prev => ({
-        ...prev,
-        [challenge._id]: {
-          status: results.every(r => r.passed) ? 'Passed' : 'Failed',
-          executionTime: results.reduce((sum, r) => sum + r.executionTime, 0),
-          memory: Math.max(...results.map(r => r.memory)),
-          testCaseResults: results
-        }
-      }));
-
-    } catch (error) {
-      console.error('Code execution error:', error);
-      toast.error('Failed to execute code: ' + (error.message || 'Unknown error'));
-    } finally {
-      setIsExecuting(false);
-      setExecutingTests(new Set());
     }
   };
 
@@ -820,6 +860,59 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
       </select>
     );
   };
+
+  // AFTER all hooks, we can have conditional returns
+  if (hasError) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen bg-[#1e1e1e] text-white p-4">
+        <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-6 max-w-lg w-full text-center">
+          <h2 className="text-xl font-semibold mb-4">Something went wrong</h2>
+          <p className="text-gray-300 mb-4">{errorMessage}</p>
+          <div className="space-y-2">
+            <button
+              onClick={handleRecoverFromError}
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-white w-full"
+            >
+              Try to Recover
+            </button>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded text-white w-full"
+            >
+              Reload Page
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isLoadingTestId) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-[#1e1e1e]">
+        <div className="text-center text-white">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+          <p>Loading challenge...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!challenges || !Array.isArray(challenges) || challenges.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-[#1e1e1e] text-white">
+        <div className="text-center">
+          <p className="text-xl">No challenges available</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded"
+          >
+            Reload Page
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative h-full">
