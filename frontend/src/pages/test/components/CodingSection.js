@@ -821,14 +821,6 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
     );
   };
 
-  // Update the editor mount handler to use the refs
-  const handleEditorMount = (editor, monaco) => {
-    if (language) {
-      editor.focus();
-      monaco.editor.setModelLanguage(editor.getModel(), language.toLowerCase());
-    }
-  };
-
   return (
     <div className="relative h-full">
       {isLoadingTestId && (
