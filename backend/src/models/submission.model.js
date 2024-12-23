@@ -90,22 +90,20 @@ submissionSchema.index({ test: 1, status: 1 });
 
 // Make sure this method works correctly
 submissionSchema.statics.getNextVersion = async function(testId, userId) {
-  const lastSubmission = await this.findOne({ 
-    test: testId, 
-    user: userId 
-  })
-  .sort({ version: -1 })
-  .select('version');
+  const lastSubmission = await this.findOne({
+    test: testId,
+    user: userId
+  }).sort({ version: -1 });
   
-  return lastSubmission ? (lastSubmission.version + 1) : 1;
+  return (lastSubmission?.version || 0) + 1;
 };
 
 // Add a new method to check if a submission exists
 submissionSchema.statics.findExistingSubmission = async function(testId, userId) {
-  return await this.findOne({ 
-    test: testId, 
+  return this.findOne({
+    test: testId,
     user: userId,
-    status: { $ne: 'completed' }  // Only find incomplete submissions
+    status: { $in: ['in_progress', 'mcq_completed'] }
   });
 };
 

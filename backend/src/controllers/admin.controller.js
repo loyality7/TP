@@ -77,3 +77,26 @@ export const approveVendor = async (req, res) => {
     });
   }
 };
+
+export const removeAllTestSubmissions = async (req, res) => {
+  try {
+    const { testId } = req.params;
+
+    // Delete all submissions for the specified test
+    const result = await TestSubmission.deleteMany({ test: testId });
+
+    res.json({
+      success: true,
+      message: `Successfully deleted ${result.deletedCount} submissions`,
+      deletedCount: result.deletedCount
+    });
+
+  } catch (error) {
+    console.error('Error in removeAllTestSubmissions:', error);
+    res.status(500).json({
+      error: 'Failed to remove test submissions',
+      message: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+};

@@ -5,8 +5,19 @@ import MCQSection from './components/MCQSection';
 import CodingSection from './components/CodingSection';
 import Proctoring from './Proctoring';
 import WarningModal from './components/WarningModal';
-import { Clock, FileText, CheckCircle } from 'lucide-react';
+import { 
+  FileText, 
+  Camera,
+  Wifi,
+  Maximize,
+  Play,
+  ArrowRight,
+  CheckCircle,
+  Clock // Add any other icons you need
+} from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { Progress } from './components/Progress';
+import { NetworkSpeed } from './components/NetworkSpeed';
 
 // Add this helper function at the top of the file
 const updateLocalAnalytics = (newAnalytics) => {
@@ -21,6 +32,43 @@ const updateLocalAnalytics = (newAnalytics) => {
 const getTestEndTime = () => {
   const savedEndTime = localStorage.getItem('testEndTime');
   return savedEndTime ? parseInt(savedEndTime) : null;
+};
+
+// Add these steps configuration
+const SETUP_STEPS = [
+  { label: 'Test Details', icon: FileText },
+  { label: 'Camera Setup', icon: Camera },
+  { label: 'Network Test', icon: Wifi },
+  { label: 'Full Screen', icon: Maximize },
+  { label: 'Start Test', icon: Play }
+];
+
+// Update FullscreenButton component
+const FullscreenButton = ({ isFullScreen }) => {
+  const handleFullscreen = async () => {
+    try {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen();
+      }
+    } catch (error) {
+      toast.error('Failed to enter fullscreen mode');
+    }
+  };
+
+  // Don't render the button if already in fullscreen
+  if (isFullScreen) {
+    return null;
+  }
+
+  return (
+    <button
+      onClick={handleFullscreen}
+      className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm flex items-center gap-1.5 transition-colors"
+    >
+      <Maximize className="w-4 h-4" />
+      Fullscreen
+    </button>
+  );
 };
 
 export default function TakeTest() {
@@ -38,7 +86,6 @@ export default function TakeTest() {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [showWarningModal, setShowWarningModal] = useState(false);
   const [warningMessage, setWarningMessage] = useState('');
-  const [permissionsGranted, setPermissionsGranted] = useState(false);
   const [showInstructions, setShowInstructions] = useState(true);
 
   // Ref to track last warning time
@@ -186,6 +233,7 @@ export default function TakeTest() {
     if (test && !showInstructions) {
       let endTime = getTestEndTime();
       
+      // If no end time is set, initialize it
       if (!endTime) {
         endTime = Date.now() + (test.duration * 60 * 1000);
         localStorage.setItem('testEndTime', endTime.toString());
@@ -193,17 +241,29 @@ export default function TakeTest() {
       
       const updateTimer = () => {
         const now = Date.now();
-        const remaining = endTime - now;
+        const remaining = Math.max(0, endTime - now);
+        
+        setTimeRemaining(remaining);
         
         if (remaining <= 0) {
           clearInterval(timerRef.current);
-          handleSubmit();
+          toast.error('Time is up!');
+          handleSubmit(); // Auto submit when time is up
           return;
         }
         
-        setTimeRemaining(remaining);
+        // Show warning when 5 minutes remaining
+        if (remaining <= 300000 && remaining > 299000) {
+          toast.warning('5 minutes remaining!');
+        }
+        
+        // Show warning when 1 minute remaining
+        if (remaining <= 60000 && remaining > 59000) {
+          toast.warning('1 minute remaining!');
+        }
       };
 
+      // Update immediately and then set interval
       updateTimer();
       timerRef.current = setInterval(updateTimer, 1000);
 
@@ -215,15 +275,24 @@ export default function TakeTest() {
     }
   }, [test, showInstructions, handleSubmit]);
 
-  // Update handleStartTest to remove camera check since it will be done beforehand
+  // Add new state to track if test has been started
+  const [hasStartedTest, setHasStartedTest] = useState(() => {
+    return localStorage.getItem('testStarted') === 'true';
+  });
+
+  // Update handleStartTest to initialize test start time
   const handleStartTest = useCallback(async () => {
     try {
       setShowInstructions(false);
+      localStorage.setItem('testStarted', 'true');
+      setHasStartedTest(true);
       
-      // Initialize test end time if not already set
+      // Initialize test end time and start time
       if (!getTestEndTime() && test?.duration) {
-        const endTime = Date.now() + (test.duration * 60 * 1000);
+        const startTime = Date.now();
+        const endTime = startTime + (test.duration * 60 * 1000);
         localStorage.setItem('testEndTime', endTime.toString());
+        localStorage.setItem('testStartTime', startTime.toString());
       }
       
       // Request fullscreen
@@ -517,6 +586,18 @@ export default function TakeTest() {
   // Update keyboard shortcuts prevention
   useEffect(() => {
     const preventDefaultKeys = (e) => {
+      // Block ESC key completely
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        e.stopPropagation();
+        handleWarning('ESC key is disabled during the test');
+        // Force fullscreen if needed
+        if (!document.fullscreenElement && !showInstructions) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        }
+        return false;
+      }
+
       // Block all Ctrl/Cmd combinations
       if (e.ctrlKey || e.metaKey) {
         e.preventDefault();
@@ -524,9 +605,9 @@ export default function TakeTest() {
         return false;
       }
 
-      // Block specific keys
+      // Block other specific keys - removed 'Tab' from the list
       const blockedKeys = [
-        'F12', 'Tab', 'Alt', 'Meta', 'ContextMenu',
+        'F12', 'Alt', 'Meta', 'ContextMenu',
         'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11'
       ];
       if (blockedKeys.includes(e.key)) {
@@ -536,22 +617,15 @@ export default function TakeTest() {
       }
     };
 
-    // Prevent right-click
-    const preventContextMenu = (e) => {
-      e.preventDefault();
-      handleWarning('Right-click is not allowed during the test');
-      return false;
-    };
-
-    // Add event listeners
+    // Add event listener with capture phase to intercept keys early
     document.addEventListener('keydown', preventDefaultKeys, true);
-    document.addEventListener('contextmenu', preventContextMenu);
-
+    document.addEventListener('keyup', preventDefaultKeys, true);
+    
     return () => {
       document.removeEventListener('keydown', preventDefaultKeys, true);
-      document.removeEventListener('contextmenu', preventContextMenu);
+      document.removeEventListener('keyup', preventDefaultKeys, true);
     };
-  }, [handleWarning]);
+  }, [handleWarning, showInstructions]);
 
   // Add detection for developer tools
   useEffect(() => {
@@ -582,7 +656,7 @@ export default function TakeTest() {
   // Update tab/window switching detection
   useEffect(() => {
     const handleVisibilityChange = () => {
-      if (document.hidden && !showInstructions) {
+      if (document.hidden && !showInstructions && hasStartedTest) {
         handleWarning('Warning: Tab switching detected!');
         
         updateAnalytics(prev => ({
@@ -594,8 +668,14 @@ export default function TakeTest() {
     };
 
     const handleBlur = () => {
-      if (!showInstructions) {
-        handleWarning('Warning: Window switching detected!');
+      if (!showInstructions && hasStartedTest) {
+        handleWarning('Warning: Window focus lost!');
+        
+        updateAnalytics(prev => ({
+          ...prev,
+          focusLostCount: (prev.focusLostCount || 0) + 1,
+          warnings: prev.warnings + 1
+        }));
       }
     };
 
@@ -606,7 +686,7 @@ export default function TakeTest() {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('blur', handleBlur);
     };
-  }, [showInstructions, handleWarning, updateAnalytics]);
+  }, [showInstructions, hasStartedTest, handleWarning, updateAnalytics]);
 
   // Update timer effect to auto-submit when time expires
   useEffect(() => {
@@ -683,7 +763,7 @@ export default function TakeTest() {
     return test?.mcqSubmission && test?.codingSubmission;
   }, [test]);
 
-  // Update handleConfirmedSubmit to be more direct
+  // Update handleConfirmedSubmit to force reload after navigation
   const handleConfirmedSubmit = async () => {
     setShowSubmitConfirmation(false);
     
@@ -714,30 +794,52 @@ export default function TakeTest() {
         }
       }
 
-      // Clear all test-related localStorage items
-      localStorage.removeItem('testEndTime');
-      localStorage.removeItem('testAnalytics');
-      localStorage.removeItem('mcq_answers');
-      localStorage.removeItem('coding_answers');
-      localStorage.removeItem('currentTestId');
-      localStorage.removeItem('currentTestData');
+      // Clear ALL test-related localStorage items
+      const itemsToClear = [
+        'testEndTime',
+        'testAnalytics',
+        'mcq_answers',
+        'coding_answers',
+        'currentTestId',
+        'currentTestData',
+        'submissionId',
+        'currentMcqIndex',
+        'currentChallengeIndex',
+        'testStartTime',
+        'currentTest',
+        'analytics_' + testId
+      ];
+
+      itemsToClear.forEach(item => localStorage.removeItem(item));
 
       // Exit fullscreen if active
       if (document.fullscreenElement) {
         await document.exitFullscreen();
       }
 
-      // Remove event listeners by updating showInstructions
-      setShowInstructions(true);
-
       // Dismiss loading toast
       toast.dismiss(loadingToast);
       toast.success('Test submitted successfully!');
 
-      // Force navigation to completion page
-      window.location.href = `/test/completed`;
-      window.location.reload(true); // Force reload from server, not cache
+      // Store completion data in sessionStorage
+      sessionStorage.setItem('testCompletion', JSON.stringify({
+        testId: uuid,
+        submission: {
+          mcq: answers.mcq,
+          coding: answers.coding,
+          totalScore,
+          testType: test?.type
+        }
+      }));
 
+      // Navigate and force reload
+      navigate('/test/completed', { replace: true });
+      setTimeout(() => {
+        window.location.reload();
+      }, 100); // Small delay to ensure navigation happens first
+
+      // Clear test started state
+      localStorage.removeItem('testStarted');
 
     } catch (error) {
       console.error('Final submission error:', error);
@@ -828,6 +930,220 @@ export default function TakeTest() {
     }
   }, []);
 
+  // Add these new state variables
+  const [currentSetupStep, setCurrentSetupStep] = useState(0);
+  const [isCameraReady, setCameraReady] = useState(false);
+  const [isNetworkReady, setIsNetworkReady] = useState(false);
+
+  // Add this state for camera stream
+  const [cameraStream, setCameraStream] = useState(null);
+  const videoRef = useRef(null);
+
+  // Add this new component for setup steps
+  const SetupStepContent = ({ step, onNext }) => {
+    switch (step) {
+      case 0:
+        return (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold">Test Details</h2>
+            <div className="bg-white p-6 rounded-lg shadow-sm space-y-4">
+              <h3 className="text-xl font-semibold">{test?.title}</h3>
+              <p className="text-gray-600">{test?.description}</p>
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span className="font-medium">Duration:</span> {test?.duration} minutes
+                </div>
+                <div>
+                  <span className="font-medium">Total Marks:</span> {test?.totalMarks}
+                </div>
+                <div>
+                  <span className="font-medium">MCQs:</span> {test?.mcqs?.length || 0}
+                </div>
+                <div>
+                  <span className="font-medium">Coding Questions:</span> {test?.codingChallenges?.length || 0}
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={onNext}
+              className="flex items-center justify-center w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            >
+              Next <ArrowRight className="ml-2 w-4 h-4" />
+            </button>
+          </div>
+        );
+
+      case 1:
+        return (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold">Camera Setup</h2>
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <div className="aspect-video bg-gray-900 rounded-lg overflow-hidden mb-4">
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                  muted
+                  style={{ 
+                    width: '100%', 
+                    height: '100%', 
+                    objectFit: 'cover',
+                    transform: 'scaleX(-1)' // Mirror the video
+                  }}
+                />
+              </div>
+              <p className="text-sm text-gray-600 mb-4">
+                Please ensure your face is clearly visible and well-lit.
+              </p>
+              
+              {!isCameraReady && (
+                <button
+                  onClick={async () => {
+                    try {
+                      console.log('Requesting camera access...');
+                      const stream = await navigator.mediaDevices.getUserMedia({
+                        video: true  // Simplified video constraints
+                      });
+                      
+                      console.log('Camera access granted, setting up video...');
+                      const video = videoRef.current;
+                      if (video) {
+                        video.srcObject = stream;
+                        video.onloadedmetadata = () => {
+                          video.play().then(() => {
+                            console.log('Video playing successfully');
+                            setCameraStream(stream);
+                            setCameraReady(true);
+                            toast.success('Camera enabled!');
+                          }).catch(err => {
+                            console.error('Error playing video:', err);
+                            toast.error('Failed to start video');
+                          });
+                        };
+                      }
+                    } catch (error) {
+                      console.error('Camera setup error:', error);
+                      toast.error(
+                        error.name === 'NotAllowedError' 
+                          ? 'Please allow camera access to continue' 
+                          : 'Camera setup failed'
+                      );
+                    }
+                  }}
+                  className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                >
+                  Enable Camera
+                </button>
+              )}
+            </div>
+            
+            {isCameraReady && (
+              <button
+                onClick={onNext}
+                className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2"
+              >
+                Continue <ArrowRight className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        );
+
+      case 2:
+        return (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold">Network Test</h2>
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <NetworkSpeed
+                onTestComplete={(speed) => {
+                  setIsNetworkReady(speed >= 1); // Minimum 1 Mbps required
+                }}
+              />
+            </div>
+            <button
+              onClick={onNext}
+              disabled={!isNetworkReady}
+              className={`flex items-center justify-center w-full px-4 py-2 rounded-lg
+                ${isNetworkReady 
+                  ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
+            >
+              Next <ArrowRight className="ml-2 w-4 h-4" />
+            </button>
+          </div>
+        );
+
+      case 3:
+        return (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold">Full Screen Mode</h2>
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <p className="text-gray-600 mb-4">
+                The test must be taken in full screen mode. Click the button below to enter full screen.
+              </p>
+              <button
+                onClick={async () => {
+                  try {
+                    await document.documentElement.requestFullscreen();
+                    setIsFullScreen(true);
+                    onNext();
+                  } catch (error) {
+                    toast.error('Failed to enter full screen mode');
+                  }
+                }}
+                className="flex items-center justify-center w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              >
+                Enter Full Screen <Maximize className="ml-2 w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        );
+
+      case 4:
+        return (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold">Ready to Begin</h2>
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <div className="space-y-4">
+                <h3 className="font-semibold text-lg">Final Checklist:</h3>
+                <ul className="space-y-2">
+                  <li className="flex items-center text-green-600">
+                    <CheckCircle className="w-5 h-5 mr-2" /> Camera is working
+                  </li>
+                  <li className="flex items-center text-green-600">
+                    <CheckCircle className="w-5 h-5 mr-2" /> Network connection is stable
+                  </li>
+                  <li className="flex items-center text-green-600">
+                    <CheckCircle className="w-5 h-5 mr-2" /> Full screen mode enabled
+                  </li>
+                </ul>
+                <p className="text-sm text-gray-600 mt-4">
+                  Click Start Test when you're ready to begin. The timer will start immediately.
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={handleStartTest}
+              className="flex items-center justify-center w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+            >
+              Start Test <Play className="ml-2 w-4 h-4" />
+            </button>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  // Clean up camera stream when component unmounts
+  useEffect(() => {
+    return () => {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, [cameraStream]);
+
   // Render Loading State
   if (loading) {
     return (
@@ -850,138 +1166,22 @@ export default function TakeTest() {
   }
 
   // Render Instructions
-  if (showInstructions) {
+  if (showInstructions && !hasStartedTest) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="max-w-2xl w-full p-8 bg-white rounded-lg shadow-lg">
-          {test && (
-            <div className="mb-6">
-              <h1 className="text-3xl font-bold text-center">{test.title}</h1>
-              <div className="mt-4 space-y-2 text-gray-600">
-                <p className="text-center">{test.description}</p>
-                <div className="flex justify-between text-sm">
-                  <p>Duration: {test.duration} minutes</p>
-                  <p>Total Marks: {test.totalMarks}</p>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <p>MCQs: {test.mcqs?.length || 0}</p>
-                  <p>Coding Questions: {test.codingChallenges?.length || 0}</p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <h2 className="text-2xl font-bold text-center mb-6">Test Instructions</h2>
-          
-          <div className="space-y-4 mb-8">
-            <p className="text-lg font-semibold text-gray-700">Before you begin:</p>
-            <ul className="list-disc pl-6 space-y-2 text-gray-600">
-              <li>Ensure you are in a quiet environment</li>
-              <li>Close all other applications and browser tabs</li>
-              {test?.proctoring && (
-                <li className="font-medium text-blue-600">
-                  Your camera must remain on throughout the test
-                </li>
-              )}
-              <li>Switching tabs or applications is not allowed</li>
-              <li>The test must be completed in full-screen mode</li>
-              {test?.proctoring && (
-                <li className="font-medium text-blue-600">
-                  Multiple faces in camera view will be flagged
-                </li>
-              )}
-            </ul>
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="max-w-2xl mx-auto px-4">
+          <div className="mb-8">
+            <Progress 
+              steps={SETUP_STEPS} 
+              currentStep={currentSetupStep} 
+            />
           </div>
-
-          {test?.proctoring && (
-            <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-              <h2 className="text-lg font-semibold text-blue-800 mb-2">
-                Camera Access Required
-              </h2>
-              <div className="space-y-4">
-                <div className="flex items-center">
-                  <svg 
-                    className={`w-6 h-6 ${permissionsGranted ? 'text-green-500' : 'text-red-500'}`}
-                    fill="none" 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    strokeWidth="2" 
-                    viewBox="0 0 24 24" 
-                    stroke="currentColor"
-                  >
-                    <path d="M5 13l4 4L19 7"></path>
-                  </svg>
-                  <span className="ml-2">
-                    Camera Status: {permissionsGranted ? 'Active' : 'Not Active'}
-                  </span>
-                </div>
-                
-                {!permissionsGranted && (
-                  <>
-                    <button
-                      onClick={async () => {
-                        try {
-                          const stream = await navigator.mediaDevices.getUserMedia({ 
-                            video: { 
-                              width: { ideal: 1280 },
-                              height: { ideal: 720 }
-                            } 
-                          });
-                          
-                          if (stream.getVideoTracks().length) {
-                            setPermissionsGranted(true);
-                            // Stop the test stream - Proctoring component will create its own
-                            stream.getTracks().forEach(track => track.stop());
-                            toast.success('Camera access granted successfully!');
-                          }
-                        } catch (error) {
-                          console.error('Camera access error:', error);
-                          toast.error(
-                            error.name === 'NotAllowedError' 
-                              ? 'Camera access denied. Please allow camera access to continue.'
-                              : 'Failed to access camera. Please check your device settings.'
-                          );
-                        }
-                      }}
-                      className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                    >
-                      Enable Camera Access
-                    </button>
-                    <p className="text-sm text-red-600">
-                      ⚠️ Camera access is required for this proctored test. You must enable your camera to continue.
-                    </p>
-                  </>
-                )}
-              </div>
-            </div>
-          )}
-
-          <div className="text-center">
-            <button
-              onClick={handleStartTest}
-              disabled={test?.proctoring && !permissionsGranted}
-              className={`
-                px-6 py-3 text-lg font-semibold rounded-lg transition-all
-                ${(!test?.proctoring || permissionsGranted)
-                  ? 'bg-blue-600 text-white hover:bg-blue-700 transform hover:scale-105' 
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'}
-              `}
-            >
-              {test?.proctoring && !permissionsGranted 
-                ? 'Camera Access Required' 
-                : 'Start Test'}
-            </button>
-            
-            {test?.proctoring && !permissionsGranted && (
-              <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-sm text-red-600 font-medium">
-                  Camera access is required to start this proctored test
-                </p>
-                <p className="text-xs text-red-500 mt-1">
-                  Please enable your camera using the button above
-                </p>
-              </div>
-            )}
+          
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <SetupStepContent
+              step={currentSetupStep}
+              onNext={() => setCurrentSetupStep(prev => prev + 1)}
+            />
           </div>
         </div>
       </div>
@@ -1005,9 +1205,9 @@ export default function TakeTest() {
                   <div className="flex items-center text-gray-600 text-sm">
                     <Clock className="w-4 h-4 mr-1" />
                     <span className="font-mono">
-                      {Math.floor(timeRemaining / (1000 * 60 * 60)).toString().padStart(2, '0')}:
-                      {Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0')}:
-                      {Math.floor((timeRemaining % (1000 * 60)) / 1000).toString().padStart(2, '0')}
+                      {String(Math.floor(timeRemaining / (1000 * 60 * 60))).padStart(2, '0')}:
+                      {String(Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0')}:
+                      {String(Math.floor((timeRemaining % (1000 * 60)) / 1000)).padStart(2, '0')}
                     </span>
                   </div>
                   <div className="flex items-center text-gray-600 text-sm">
@@ -1032,6 +1232,7 @@ export default function TakeTest() {
 
             {/* Add Submit button before the camera */}
             <div className="flex items-center gap-4">
+              <FullscreenButton isFullScreen={isFullScreen} />
               <button
                 onClick={handleFinalSubmitClick}
                 className="px-4 py-2 flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors"
@@ -1040,7 +1241,7 @@ export default function TakeTest() {
                 Final Submit
               </button>
               
-              {/* Existing camera div */}
+              {/* Camera div */}
               <div className="w-[180px] h-[135px] bg-black rounded-lg overflow-hidden shadow-lg">
                 <Proctoring
                   testId={uuid}

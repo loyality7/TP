@@ -116,11 +116,11 @@ export const submitCoding = async (req, res) => {
   try {
     const { testId, submissions } = req.body;
     
-    // Find or create submission document
+    // Find existing submission - include 'coding_completed' status
     let submission = await Submission.findOne({
       test: testId,
       user: req.user._id,
-      status: { $in: ['in_progress', 'mcq_completed'] }
+      status: { $in: ['in_progress', 'mcq_completed', 'coding_completed'] }
     });
 
     if (!submission) {
@@ -163,36 +163,35 @@ export const submitCoding = async (req, res) => {
       };
 
       if (challengeIndex === -1) {
+        // Add new challenge
         submission.codingSubmission.challenges.push({
           challengeId: sub.challengeId,
           submissions: [newSubmissionData]
         });
       } else {
+        // Update existing challenge
         submission.codingSubmission.challenges[challengeIndex].submissions.push(newSubmissionData);
       }
     }
 
-    // Calculate total coding score and update completion status
-    submission.codingSubmission.totalScore = submission.codingSubmission.challenges.reduce((total, challenge) => {
-      const latestSubmission = challenge.submissions[challenge.submissions.length - 1];
-      return total + (latestSubmission?.marks || 0);
-    }, 0);
+    // Check if all coding challenges are completed
+    const test = await Test.findById(testId);
+    const totalCodingChallenges = test.codingChallenges.length;
+    const submittedChallenges = new Set(
+      submission.codingSubmission.challenges.map(c => c.challengeId.toString())
+    );
+    
+    submission.codingSubmission.completed = submittedChallenges.size === totalCodingChallenges;
 
-    // Mark coding submission as completed
-    submission.codingSubmission.completed = true;
-    submission.codingSubmission.submittedAt = new Date();
-
-    // Update submission status based on MCQ and coding completion
-    if (submission.mcqSubmission?.completed) {
+    // Update submission status based on completion
+    if (submission.mcqSubmission?.completed && submission.codingSubmission.completed) {
       submission.status = 'completed';
       submission.endTime = new Date();
-    } else {
+    } else if (submission.codingSubmission.completed) {
       submission.status = 'coding_completed';
     }
 
-    // Update total score (MCQ + Coding)
-    submission.totalScore = (submission.mcqSubmission?.totalScore || 0) + submission.codingSubmission.totalScore;
-
+    // Save the submission
     await submission.save();
     
     res.status(201).json({
@@ -200,7 +199,8 @@ export const submitCoding = async (req, res) => {
       submission,
       message: "Coding submissions created successfully",
       status: submission.status,
-      codingCompleted: submission.codingSubmission.completed
+      codingCompleted: submission.codingSubmission.completed,
+      version: submission.version
     });
 
   } catch (error) {

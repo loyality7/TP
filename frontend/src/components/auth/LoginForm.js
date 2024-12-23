@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LoginForm.css';
 import { useAuth } from '../../hooks/auth/useAuth';
 import { toast } from 'react-toastify';
 
 const LoginForm = ({ onLoginSuccess }) => {
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     emailOrUsername: '',
@@ -13,6 +13,12 @@ const LoginForm = ({ onLoginSuccess }) => {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      navigate('/');
+    }
+  }, [user, navigate]);
 
   const handleChange = (e) => {
     setFormData({

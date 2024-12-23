@@ -9,6 +9,7 @@ import TestResult from '../models/testResult.model.js';
 import bcrypt from 'bcryptjs';
 import SystemSettings from '../models/systemSettings.model.js';
 import { adminAddFunds } from '../controllers/vendorWallet.controller.js';
+import { removeAllTestSubmissions } from '../controllers/admin.controller.js';
 
 const router = express.Router();
 
@@ -2034,5 +2035,44 @@ router.post(
   checkRole(["admin"]),
   adminAddFunds
 );
+
+/**
+ * @swagger
+ * /api/admin/tests/{testId}/submissions:
+ *   delete:
+ *     summary: Remove all submissions for a test (Admin only)
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: testId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Submissions removed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 deletedCount:
+ *                   type: number
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - Admin access required
+ *       404:
+ *         description: Test not found
+ *       500:
+ *         description: Server error
+ */
+router.delete('/tests/:testId/submissions', auth, isAdmin, removeAllTestSubmissions);
 
 export default router; 
