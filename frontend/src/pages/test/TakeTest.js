@@ -326,17 +326,14 @@ export default function TakeTest() {
           // Verify we actually got a video track
           if (!stream.getVideoTracks().length) {
             toast.error('No camera detected. Please connect a camera to continue.');
-            setPermissionsGranted(false);
             return;
           }
 
           // Stop the test stream - the Proctoring component will create its own
           stream.getTracks().forEach(track => track.stop());
-          setPermissionsGranted(true);
           toast.success('Camera access granted successfully!');
         } catch (error) {
           console.error('Camera access error:', error);
-          setPermissionsGranted(false);
           if (error.name === 'NotAllowedError') {
             toast.error('Camera access was denied. Please allow camera access to continue.');
           } else if (error.name === 'NotFoundError') {
@@ -345,9 +342,6 @@ export default function TakeTest() {
             toast.error('Failed to access camera. Please check your device settings.');
           }
         }
-      } else {
-        // Auto-grant permissions if proctoring is disabled
-        setPermissionsGranted(true);
       }
     };
 
