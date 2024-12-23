@@ -581,43 +581,22 @@ export default function TakeTest() {
 
   // Update tab/window switching detection
   useEffect(() => {
-    let switchAttempts = 0;
-    const maxSwitchAttempts = 3;
-    let lastWarningTime = Date.now();
-    const warningCooldown = 2000; // 2 seconds
-
     const handleVisibilityChange = () => {
       if (document.hidden && !showInstructions) {
         const now = Date.now();
-        if (now - lastWarningTime >= warningCooldown) {
-          switchAttempts++;
-          lastWarningTime = now;
-          
-          handleWarning(`Warning ${switchAttempts}/${maxSwitchAttempts}: Tab switching detected! Test will be auto-submitted after ${maxSwitchAttempts} attempts.`);
-          
-          updateAnalytics(prev => ({
-            ...prev,
-            tabSwitches: (prev.tabSwitches || 0) + 1,
-            warnings: prev.warnings + 1
-          }));
-
-          if (switchAttempts >= maxSwitchAttempts) {
-            toast.error('Maximum tab switching attempts reached. Test will be submitted.');
-            setTimeout(() => handleSubmit(), 3000);
-          }
-        }
+        handleWarning('Warning: Tab switching detected!');
+        
+        updateAnalytics(prev => ({
+          ...prev,
+          tabSwitches: (prev.tabSwitches || 0) + 1,
+          warnings: prev.warnings + 1
+        }));
       }
     };
 
     const handleBlur = () => {
       if (!showInstructions) {
-        switchAttempts++;
-        handleWarning(`Warning ${switchAttempts}/${maxSwitchAttempts}: Window switching detected!`);
-        
-        if (switchAttempts >= maxSwitchAttempts) {
-          toast.error('Maximum window switching attempts reached. Test will be submitted.');
-          setTimeout(() => handleSubmit(), 3000);
-        }
+        handleWarning('Warning: Window switching detected!');
       }
     };
 
@@ -628,7 +607,7 @@ export default function TakeTest() {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('blur', handleBlur);
     };
-  }, [showInstructions, handleWarning, handleSubmit, updateAnalytics]);
+  }, [showInstructions, handleWarning, updateAnalytics]);
 
   // Update timer effect to auto-submit when time expires
   useEffect(() => {
@@ -646,8 +625,7 @@ export default function TakeTest() {
         
         if (remaining <= 0) {
           clearInterval(timerRef.current);
-          toast.error('Time is up! Your test will be submitted automatically.');
-          handleSubmit();
+          toast.error('Time is up!');
           return;
         }
         
@@ -673,34 +651,19 @@ export default function TakeTest() {
         }
       };
     }
-  }, [test, showInstructions, handleSubmit]);
+  }, [test, showInstructions]);
 
   // Add detection for tab visibility and window focus
   useEffect(() => {
-    let warningCount = 0;
-    const maxWarnings = 5;
-
     const handleVisibilityChange = () => {
       if (document.hidden && !showInstructions) {
-        warningCount++;
-        handleWarning(`Warning ${warningCount}/${maxWarnings}: Switching tabs is not allowed`);
-        
-        if (warningCount >= maxWarnings) {
-          toast.error('Maximum warnings reached. Your test will be submitted.');
-          handleSubmit();
-        }
+        handleWarning('Warning: Switching tabs is not allowed');
       }
     };
 
     const handleBlur = () => {
       if (!showInstructions) {
-        warningCount++;
-        handleWarning(`Warning ${warningCount}/${maxWarnings}: Leaving the test window is not allowed`);
-        
-        if (warningCount >= maxWarnings) {
-          toast.error('Maximum warnings reached. Your test will be submitted.');
-          handleSubmit();
-        }
+        handleWarning('Warning: Leaving the test window is not allowed');
       }
     };
 
@@ -709,9 +672,9 @@ export default function TakeTest() {
 
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.addEventListener('blur', handleBlur);
+      window.removeEventListener('blur', handleBlur);
     };
-  }, [showInstructions, handleWarning, handleSubmit]);
+  }, [showInstructions, handleWarning]);
 
   // Inside TakeTest component, add new state for confirmation dialog
   const [showSubmitConfirmation, setShowSubmitConfirmation] = useState(false);
