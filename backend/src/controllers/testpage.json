@@ -1,387 +1,663 @@
 {
-  "title": "Hysteresis Qualifier Test 2",
-  "description": "A comprehensive test covering Data Structures, Algorithms, and basic programming concepts. This test includes both multiple choice questions and hands-on coding challenges.",
-  "duration": 120,
+  "title": "Aptitude and Programming Test",
+  "description": "A comprehensive test for MITS students covering Quantitative Aptitude (R.S. Agarwal), Basic Programming, and Problem Solving skills. This test evaluates fundamental aptitude and coding capabilities required for placements.",
+  "duration": 60,
   "proctoring": true,
-  "type": "assessment",
-  "category": "Computer Science",
-  "difficulty": "intermediate",
-  "instructions": "1. Complete all coding challenges within the time limit\n2. Each coding solution must pass all test cases\n3. You can attempt questions in any order\n4. Ensure your code handles all edge cases",
-  "codingChallenges": [
+  "type": "coding_challenge",
+  "category": "Aptitude and Programming",
+  "difficulty": "beginner",
+  "instructions": "1. Complete all sections: Aptitude MCQs and Programming Questions\n2. Each coding solution must handle basic test cases\n3. Time management is crucial - attempt all questions\n4. Read each question carefully before answering",
+  "mcqs": [
     {
-      "title": "Caesar Cipher Decoder",
-      "description": "Implement a Caesar cipher decryption algorithm",
-      "problemStatement": "Given an encrypted string and a shift value (key), implement the Caesar cipher decryption. In Caesar cipher, each letter in the plaintext is shifted a certain number of places down the alphabet. For example, with a shift of 3, 'D' would be replaced by 'A', 'E' would become 'B', and so on.\n\nNote:\n- The string will only contain uppercase letters and spaces\n- Spaces should remain unchanged\n- The shift value will be between 1 and 25",
-      "constraints": "1. 1 <= message.length <= 1000\n2. 1 <= shift <= 25\n3. message contains only uppercase letters and spaces",
-      "allowedLanguages": ["javascript", "python", "java", "cpp"],
-      "languageImplementations": {
-        "javascript": {
-          "visibleCode": "/**\n * @param {string} message - encrypted message\n * @param {number} shift - shift value\n * @return {string} - decrypted message\n */\nfunction caesarDecrypt(message, shift) {\n    // Write your code here\n    \n}",
-          "invisibleCode": "module.exports = caesarDecrypt;"
-        },
-        "python": {
-          "visibleCode": "def caesar_decrypt(message: str, shift: int) -> str:\n    # Write your code here\n    pass",
-          "invisibleCode": "# Test helper code here"
-        },
-        "java": {
-          "visibleCode": "class Solution {\n    public String caesarDecrypt(String message, int shift) {\n        // Write your code here\n        \n    }\n}",
-          "invisibleCode": "// Test helper code here"
-        },
-        "cpp": {
-          "visibleCode": "class Solution {\npublic:\n    string caesarDecrypt(string message, int shift) {\n        // Write your code here\n        \n    }\n};",
-          "invisibleCode": "// Test helper code here"
-        }
-      },
-      "testCases": [
-        {
-          "input": "KHOOR 3",
-          "output": "HELLO",
-          "isVisible": true,
-          "explanation": "Each letter is shifted back 3 positions"
-        },
-        {
-          "input": "DWWDFN DW GDZQ 3",
-          "output": "ATTACK AT DAWN",
-          "isVisible": true,
-          "explanation": "Spaces remain unchanged, letters shifted back 3"
-        },
-        {
-          "input": "ZZZZ 1",
-          "output": "YYYY",
-          "isVisible": true,
-          "explanation": "Testing wrap-around from Z to Y"
-        },
-        {
-          "input": "ABCDEFGHIJKLMNOPQRSTUVWXYZ 23",
-          "output": "DEFGHIJKLMNOPQRSTUVWXYZABC",
-          "isVisible": false,
-          "explanation": "Hidden test case with all alphabet letters"
-        },
-        {
-          "input": "SECURITY BASICS 15",
-          "output": "DPNFCTEK MLDTND",
-          "isVisible": false,
-          "explanation": "Hidden test case with larger shift"
-        }
+      "question": "A train running at 90 kmph crosses a pole in 10 seconds. What is the length of the train?",
+      "options": [
+        "200 meters",
+        "250 meters",
+        "225 meters",
+        "275 meters"
       ],
-      "marks": 20,
-      "timeLimit": 1000,
-      "memoryLimit": 128,
-      "difficulty": "easy",
-      "tags": ["cryptography", "string manipulation", "security"]
-    },
-    {
-      "title": "Password Strength Validator",
-      "description": "Implement a password strength checker",
-      "problemStatement": "Implement a password strength validator that returns a score from 0 to 5 based on the following criteria:\n\n+1 point for length >= 8\n+1 point for containing both upper and lowercase letters\n+1 point for containing numbers\n+1 point for containing special characters (!@#$%^&*)\n+1 point for not containing common patterns (123, abc, qwerty)\n\nReturn the final score of the password.",
-      "constraints": "1. 1 <= password.length <= 50\n2. password contains only printable ASCII characters\n3. Time Complexity should be O(n)",
-      "allowedLanguages": ["javascript", "python", "java", "cpp"],
-      "languageImplementations": {
-        "javascript": {
-          "visibleCode": "/**\n * @param {string} password\n * @return {number} strength score (0-5)\n */\nfunction checkPasswordStrength(password) {\n    // Write your code here\n    \n}",
-          "invisibleCode": "module.exports = checkPasswordStrength;"
-        },
-        "python": {
-          "visibleCode": "def check_password_strength(password: str) -> int:\n    # Write your code here\n    pass",
-          "invisibleCode": "# Test helper code here"
-        },
-        "java": {
-          "visibleCode": "class Solution {\n    public int checkPasswordStrength(String password) {\n        // Write your code here\n        \n    }\n}",
-          "invisibleCode": "// Test helper code here"
-        },
-        "cpp": {
-          "visibleCode": "class Solution {\npublic:\n    int checkPasswordStrength(string password) {\n        // Write your code here\n        \n    }\n};",
-          "invisibleCode": "// Test helper code here"
-        }
-      },
-      "testCases": [
-        {
-          "input": "Password123!",
-          "output": "5",
-          "isVisible": true,
-          "explanation": "Meets all criteria: length, upper/lower, numbers, special chars, no patterns"
-        },
-        {
-          "input": "abc123",
-          "output": "2",
-          "isVisible": true,
-          "explanation": "Only has numbers and contains common pattern 'abc'"
-        },
-        {
-          "input": "ADMIN123",
-          "output": "2",
-          "isVisible": true,
-          "explanation": "Has length and numbers, but missing lowercase and special chars"
-        },
-        {
-          "input": "P@ssw0rd",
-          "output": "4",
-          "isVisible": false,
-          "explanation": "Hidden test case: common password pattern"
-        },
-        {
-          "input": "!@#$%^&*()",
-          "output": "2",
-          "isVisible": false,
-          "explanation": "Hidden test case: only special characters"
-        }
-      ],
-      "marks": 20,
-      "timeLimit": 1000,
-      "memoryLimit": 128,
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 4,
       "difficulty": "medium",
-      "tags": ["security", "string manipulation", "validation"]
+      "explanation": "Speed = 90 kmph = 25 m/s, Time = 10s, Length = Speed × Time = 25 × 10 = 250 meters"
     },
     {
-      "title": "Excel Sheet Column Number",
-      "description": "Convert Excel column title to its corresponding column number",
-      "problemStatement": "Given a string columnTitle that represents the column title as appears in an Excel sheet, return its corresponding column number.\n\nFor example:\nA -> 1\nB -> 2\nC -> 3\n...\nZ -> 26\nAA -> 27\nAB -> 28\n...",
-      "constraints": "1. 1 <= columnTitle.length <= 7\n2. columnTitle consists only of uppercase English letters\n3. columnTitle is in the range ['A', 'FXSHRXW']\n4. Time Complexity should be O(n)",
-      "allowedLanguages": ["javascript", "python", "java", "cpp"],
-      "languageImplementations": {
-        "javascript": {
-          "visibleCode": "/**\n * @param {string} columnTitle\n * @return {number}\n */\nfunction titleToNumber(columnTitle) {\n    // Write your code here\n    \n}",
-          "invisibleCode": "module.exports = titleToNumber;"
-        },
-        "python": {
-          "visibleCode": "def titleToNumber(columnTitle: str) -> int:\n    # Write your code here\n    pass",
-          "invisibleCode": "# Test helper code here"
-        },
-        "java": {
-          "visibleCode": "class Solution {\n    public int titleToNumber(String columnTitle) {\n        // Write your code here\n        \n    }\n}",
-          "invisibleCode": "// Test helper code here"
-        },
-        "cpp": {
-          "visibleCode": "class Solution {\npublic:\n    int titleToNumber(string columnTitle) {\n        // Write your code here\n        \n    }\n};",
-          "invisibleCode": "// Test helper code here"
-        }
-      },
-      "testCases": [
-        {
-          "input": "A",
-          "output": "1",
-          "isVisible": true,
-          "explanation": "A is the first column"
-        },
-        {
-          "input": "AB",
-          "output": "28",
-          "isVisible": true,
-          "explanation": "A = 1, B = 2. AB = 26 * 1 + 2 = 28"
-        },
-        {
-          "input": "ZY",
-          "output": "701",
-          "isVisible": true,
-          "explanation": "Z = 26, Y = 25. ZY = 26 * 26 + 25 = 701"
-        },
-        {
-          "input": "AAA",
-          "output": "703",
-          "isVisible": false,
-          "explanation": "Hidden test case for three-letter column"
-        },
-        {
-          "input": "FXSHRXW",
-          "output": "2147483647",
-          "isVisible": false,
-          "explanation": "Hidden test case for maximum possible value"
-        }
+      "question": "Find the average of all prime numbers between 30 and 50?",
+      "options": [
+        "39.6",
+        "42",
+        "38",
+        "39.8"
       ],
-      "marks": 20,
-      "timeLimit": 1000,
-      "memoryLimit": 128,
-      "difficulty": "easy",
-      "tags": ["math", "string", "algorithms"]
-    },
-    {
-      "title": "Decode Ways",
-      "description": "Find the number of ways to decode a string of digits into letters",
-      "problemStatement": "You have intercepted a secret message encoded as a string of numbers. The message is decoded via the following mapping:\n\n'1' -> 'A'\n'2' -> 'B'\n...\n'25' -> 'Y'\n'26' -> 'Z'\n\nGiven a string s containing only digits, return the number of ways to decode it. If the entire string cannot be decoded in any valid way, return 0.\n\nNote:\n- A code starting with '0' is invalid\n- The answer will fit in a 32-bit integer",
-      "constraints": "1. 1 <= s.length <= 100\n2. s contains only digits\n3. s may contain leading zero(s)\n4. Time Complexity should be O(n)",
-      "allowedLanguages": ["javascript", "python", "java", "cpp","c"],
-      "languageImplementations": {
-        "javascript": {
-          "visibleCode": "/**\n * @param {string} s\n * @return {number}\n */\nfunction numDecodings(s) {\n    // Write your code here\n    \n}",
-          "invisibleCode": "module.exports = numDecodings;"
-        },
-        "python": {
-          "visibleCode": "def numDecodings(s: str) -> int:\n    # Write your code here\n    pass",
-          "invisibleCode": "# Test helper code here"
-        },
-        "java": {
-          "visibleCode": "class Solution {\n    public int numDecodings(String s) {\n        // Write your code here\n        \n    }\n}",
-          "invisibleCode": "// Test helper code here"
-        },
-        "cpp": {
-          "visibleCode": "class Solution {\npublic:\n    int numDecodings(string s) {\n        // Write your code here\n        \n    }\n};",
-          "invisibleCode": "// Test helper code here"
-        }
-      },
-      "testCases": [
-        {
-          "input": "12",
-          "output": "2",
-          "isVisible": true,
-          "explanation": "'12' can be decoded as 'AB' (1 2) or 'L' (12)"
-        },
-        {
-          "input": "226",
-          "output": "3",
-          "isVisible": true,
-          "explanation": "'226' can be decoded as 'BZ' (2 26), 'VF' (22 6), or 'BBF' (2 2 6)"
-        },
-        {
-          "input": "06",
-          "output": "0",
-          "isVisible": true,
-          "explanation": "'06' is invalid due to leading zero"
-        },
-        {
-          "input": "27",
-          "output": "1",
-          "isVisible": false,
-          "explanation": "Hidden test case: only one way as 27 > 26"
-        },
-        {
-          "input": "1201234",
-          "output": "3",
-          "isVisible": false,
-          "explanation": "Hidden test case with zero in middle"
-        }
-      ],
-      "marks": 20,
-      "timeLimit": 1000,
-      "memoryLimit": 128,
+      "correctOptions": [3],
+      "answerType": "single",
+      "marks": 4,
       "difficulty": "medium",
-      "tags": ["dynamic programming", "string", "algorithms"]
+      "explanation": "There are five prime numbers between 30 and 50. They are 31,37,41,43 and 47. Therefore the required average=(31+37+41+43+47)/5=199/5=39.8."
     },
     {
-      "title": "Array Sum Calculator",
-      "description": "Calculate the sum of all elements in an array",
-      "problemStatement": "Given an array of integers, write a function to calculate the sum of all elements in the array.\n\nFor example:\n[1, 2, 3] → 6\n[-1, 5, 2] → 6\n[0] → 0",
-      "constraints": "1. 1 <= array.length <= 1000\n2. -1000 <= array[i] <= 1000\n3. Time Complexity should be O(n)",
-      "allowedLanguages": ["javascript", "python", "java", "cpp"],
-      "languageImplementations": {
-        "javascript": {
-          "visibleCode": "/**\n * @param {number[]} numbers\n * @return {number}\n */\nfunction calculateSum(numbers) {\n    // Write your code here\n    \n}",
-          "invisibleCode": "module.exports = calculateSum;"
-        },
-        "python": {
-          "visibleCode": "def calculate_sum(numbers: List[int]) -> int:\n    # Write your code here\n    pass",
-          "invisibleCode": "# Test helper code here"
-        },
-        "java": {
-          "visibleCode": "class Solution {\n    public int calculateSum(int[] numbers) {\n        // Write your code here\n        \n    }\n}",
-          "invisibleCode": "// Test helper code here"
-        },
-        "cpp": {
-          "visibleCode": "class Solution {\npublic:\n    int calculateSum(vector<int>& numbers) {\n        // Write your code here\n        \n    }\n};",
-          "invisibleCode": "// Test helper code here"
-        }
-      },
-      "testCases": [
-        {
-          "input": "[1, 2, 3, 4, 5]",
-          "output": "15",
-          "isVisible": true,
-          "explanation": "1 + 2 + 3 + 4 + 5 = 15"
-        },
-        {
-          "input": "[-1, -2, 5]",
-          "output": "2",
-          "isVisible": true,
-          "explanation": "-1 + (-2) + 5 = 2"
-        },
-        {
-          "input": "[0]",
-          "output": "0",
-          "isVisible": true,
-          "explanation": "Single element array"
-        },
-        {
-          "input": "[-10, -20, -30, -40]",
-          "output": "-100",
-          "isVisible": false,
-          "explanation": "Hidden test case with all negative numbers"
-        },
-        {
-          "input": "[100, 200, 300, 400, 500]",
-          "output": "1500",
-          "isVisible": false,
-          "explanation": "Hidden test case with larger numbers"
-        }
+      "question": "Find the average of first 40 natural numbers?",
+      "options": [
+        "19.5",
+        "19",
+        "20.5",
+        "20"
       ],
-      "marks": 10,
-      "timeLimit": 1000,
-      "memoryLimit": 128,
-      "difficulty": "easy",
-      "tags": ["arrays", "loops", "basic"]
+      "correctOptions": [2],
+      "answerType": "single",
+      "marks": 4,
+      "difficulty": "medium",
+      "explanation": "sum of first n natural numbers=n(n+1)/2; So,sum of 40 natural numbers=(40∗41)/2=820. Therefore the required average=820/40=20.5."
     },
     {
-      "title": "String Reversal",
-      "description": "Reverse a given string",
-      "problemStatement": "Write a function that reverses a string. The input string is given as an array of characters.\n\nFor example:\n'hello' → 'olleh'\n'world' → 'dlrow'\n'12345' → '54321'",
-      "constraints": "1. 1 <= s.length <= 100\n2. s consists of printable ASCII characters\n3. Time Complexity should be O(n)",
-      "allowedLanguages": ["javascript", "python", "java", "cpp"],
-      "languageImplementations": {
-        "javascript": {
-          "visibleCode": "/**\n * @param {string} s\n * @return {string}\n */\nfunction reverseString(s) {\n    // Write your code here\n    \n}",
-          "invisibleCode": "module.exports = reverseString;"
-        },
-        "python": {
-          "visibleCode": "def reverse_string(s: str) -> str:\n    # Write your code here\n    pass",
-          "invisibleCode": "# Test helper code here"
-        },
-        "java": {
-          "visibleCode": "class Solution {\n    public String reverseString(String s) {\n        // Write your code here\n        \n    }\n}",
-          "invisibleCode": "// Test helper code here"
-        },
-        "cpp": {
-          "visibleCode": "class Solution {\npublic:\n    string reverseString(string s) {\n        // Write your code here\n        \n    }\n};",
-          "invisibleCode": "// Test helper code here"
-        }
-      },
-      "testCases": [
-        {
-          "input": "hello",
-          "output": "olleh",
-          "isVisible": true,
-          "explanation": "Basic string reversal"
-        },
-        {
-          "input": "12345",
-          "output": "54321",
-          "isVisible": true,
-          "explanation": "Numeric string reversal"
-        },
-        {
-          "input": "a",
-          "output": "a",
-          "isVisible": true,
-          "explanation": "Single character string"
-        },
-        {
-          "input": "Hello World!",
-          "output": "!dlroW olleH",
-          "isVisible": false,
-          "explanation": "Hidden test case with spaces and special characters"
-        },
-        {
-          "input": "RaceCar",
-          "output": "raCecaR",
-          "isVisible": false,
-          "explanation": "Hidden test case with mixed case letters"
-        }
+      "question": "Find the average of first 20 multiples of 7?",
+      "options": [
+        "73.32",
+        "73.5",
+        "73.05",
+        "73"
       ],
-      "marks": 10,
-      "timeLimit": 1000,
-      "memoryLimit": 128,
-      "difficulty": "easy",
-      "tags": ["strings", "arrays", "basic"]
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 4,
+      "difficulty": "medium",
+      "explanation": "Required average =7*(1+2+3+…….+20)/20=(7∗20∗21)/(20∗2)=147/2=73.5."
+    },
+    {
+      "question": "The average of four consecutive even numbers is 27. find the largest of these numbers?",
+      "options": [
+        "30",
+        "24",
+        "26",
+        "28"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 4,
+      "difficulty": "medium",
+      "explanation": "let the numbers be x,x+2,x+4 and x+6. Then, (x+(x+2)+(x+4)+(x+6))/4 = 27, (4x+12)/4= 27, x+3=27, x=24. Therefore the largest number=(x+6)=24+6=30."
+    },
+    {
+      "question": "There are two sections A and B of a class consisting of 36 and 44 students respectively. If the average weight of section A is 40kg and that of section B is 35kg, find the average weight of the whole class?",
+      "options": [
+        "37.25",
+        "37.02",
+        "35.89",
+        "33.45"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 4,
+      "difficulty": "medium",
+      "explanation": "Total weight of(36+44) students=(36*40+44*35)kg =2980kg. Therefore weight of the total class=(2980/80)kg =37.25kg."
+    },
+    {
+      "question": "Nine persons went to a hotel for taking their meals 8 of them spent Rs.12 each on their meals and the ninth spent Rs.8 more than the average expenditure of all the nine. What was the total money spent by them?",
+      "options": [
+        "96",
+        "117",
+        "104",
+        "100"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 4,
+      "difficulty": "medium",
+      "explanation": "Let the average expenditure of all nine be Rs.x Then 12*8+(x+8)=9x or 8x=104 or x=13. Total money spent = 9x = Rs.(9*13)= Rs.117."
+    },
+    {
+      "question": "Of the three numbers, second is twice the first and is also thrice the third. If the average of the three numbers is 44. Find the largest number.",
+      "options": [
+        "25",
+        "72",
+        "24",
+        "75"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 4,
+      "difficulty": "medium",
+      "explanation": "Let the third number be x. Then second number = 3x. First number=3x/2. Therefore x+3x+(3x/2)=(44*3) or x=24 So largest number= 2nd number=3x=72."
+    },
+    {
+      "question": "The average of 25 result is 18. The average of 1st 12 of them is 14 & that of last 12 is 17. Find the 13th result.",
+      "options": [
+        "48",
+        "90",
+        "56",
+        "78"
+      ],
+      "correctOptions": [3],
+      "answerType": "single",
+      "marks": 4,
+      "difficulty": "medium",
+      "explanation": "Clearly 13th result=(sum of 25 results)-(sum of 24 results)\n=(18*25)-(14*12)+(17*12)\n=450-(168+204)\n=450-372\n=78"
+    },
+    {
+      "question": "The Average of 11 results is 16, if the average of the 1st 6 results is 58 & that of the last 63. Find the 6th result.",
+      "options": [
+        "63",
+        "64",
+        "65",
+        "66"
+      ],
+      "correctOptions": [3],
+      "answerType": "single",
+      "marks": 4,
+      "difficulty": "medium",
+      "explanation": "6th result = (58*6+63*6-60*11)=66"
+    },
+    {
+      "question": "The average waight of A,B,C is 45 Kg. The avg wgt of A & B be 40Kg & that of B,C be 43Kg. Find the wgt of B.",
+      "options": [
+        "29",
+        "30",
+        "31",
+        "32"
+      ],
+      "correctOptions": [2],
+      "answerType": "single",
+      "marks": 4,
+      "difficulty": "medium",
+      "explanation": "Let A,B,c represent their individual wgts. Then, A+B+C=(45*3)Kg=135Kg\nA+B=(40*2)Kg=80Kg & B+C=(43*2)Kg=86Kg\nB=(A+B)+(B+C)-(A+B+C) =(80+86-135)Kg =31Kg."
+    },
+    {
+      "question": "The average age of a class of 39 students is 15 years. If the age of the teacher be included, then the average increases by 3 months. Find the age of the teacher.",
+      "options": [
+        "25",
+        "39",
+        "44",
+        "30"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 4,
+      "difficulty": "medium",
+      "explanation": "Total age of 39 persons = (39 * 15) years = 585 years. Average age of 40 persons = 15 yrs 3 months = 61/4 years. Total age of 40 persons = ((61/4)*40) years = 610 years. Age of the teacher = (610 - 585) years = 25 years."
+    },
+    {
+      "question": "The average weight of 10 oarsmen in a boat is increased by 1.8 kg when one of the crew, who weighs 53 kg is replaced by a new man. Find the weight of the new man.",
+      "options": [
+        "41",
+        "53",
+        "67",
+        "71"
+      ],
+      "correctOptions": [3],
+      "answerType": "single",
+      "marks": 4,
+      "difficulty": "medium",
+      "explanation": "Total weight increased = (1.8 x 10) kg = 18 kg. Weight of the new man = (53 + 18) kg = 71 kg."
+    },
+    {
+      "question": "There were 35 students in a hostel. Due to the admission of 7 new students, the expenses of the mess were increased by Rs. 42 per day while the average expenditure per head diminished by Rs 1. What was the original expenditure of the mess?",
+      "options": [
+        "295",
+        "420",
+        "150",
+        "345"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 4,
+      "difficulty": "medium",
+      "explanation": "Let the original average expenditure be Rs. x. Then, 42(x - 1) - 35x = 42 --> 7x = 84 --> x = 12 --> Original expenditure = Rs. (35 x 12) = Rs. 420."
+    },
+    {
+      "question": "A batsman makes a score of 87 runs in the 17th inning and thus increases his avg by 3. Find his average after 17th inning.",
+      "options": [
+        "45",
+        "40",
+        "38",
+        "39"
+      ],
+      "correctOptions": [3],
+      "answerType": "single",
+      "marks": 4,
+      "difficulty": "medium",
+      "explanation": "Let the average after 17th inning = x. Then, average after 16th inning = (x - 3) 16(x - 3) + 87 = 17x or x = (87 - 48) = 39"
+    },
+    {
+      "question": "Distance between two stations A and B is 778 km. A train covers the journey from A to B at 84 km per hour and returns back to A with a uniform speed of 56 km per hour. Find the average speed of the train during the whole journey.",
+      "options": [
+        "67.2",
+        "58.8",
+        "48.9",
+        "65"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 4,
+      "difficulty": "medium",
+      "explanation": "Required average speed = ((2xy)/(x+y)) km/hr = (2 x 84 x 56)/(84+56) km/hr = (2*84*56)/140 km/hr = 67.2 km/hr."
+    },
+    {
+      "question": "If the sum of five consecutive numbers is 225, what is the middle number?",
+      "options": [
+        "43",
+        "45",
+        "47",
+        "49"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 4,
+      "difficulty": "medium",
+      "explanation": "Let the middle number be x. Then the five consecutive numbers are (x-2), (x-1), x, (x+1), (x+2). Sum = 5x = 225. Therefore x = 45."
+    },
+    {
+      "question": "A shopkeeper sells an item at Rs. 800 with 25% profit. What is the cost price of the item?",
+      "options": [
+        "600",
+        "640",
+        "680",
+        "720"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 4,
+      "difficulty": "medium",
+      "explanation": "Let CP = x. Then SP = 800 and profit = 25%. Using formula: SP = CP + (CP × profit%), 800 = x + (x × 25/100), 800 = 1.25x, x = 640."
+    },
+    {
+      "question": "What is 15% of 120?",
+      "options": [
+        "15",
+        "16",
+        "17",
+        "18"
+      ],
+      "correctOptions": [3],
+      "answerType": "single",
+      "marks": 4,
+      "difficulty": "medium",
+      "explanation": "15% of 120 = (15/100) × 120 = 18"
+    },
+    {
+      "question": "If 6 workers can complete a work in 12 days, how many days will 9 workers take to complete the same work?",
+      "options": [
+        "6",
+        "8",
+        "9",
+        "10"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 4,
+      "difficulty": "medium",
+      "explanation": "Using formula: M1D1 = M2D2, where M is men and D is days. 6 × 12 = 9 × D2, 72 = 9D2, D2 = 8 days"
+    },
+    {
+      "question": "A car travels 300 km in 4 hours. What is its speed in meters per second?",
+      "options": [
+        "20.83",
+        "20.75",
+        "20.85",
+        "20.80"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 4,
+      "difficulty": "medium",
+      "explanation": "Speed in km/hr = 300/4 = 75 km/hr. Converting to m/s: 75 × (1000/3600) = 20.83 m/s"
+    },
+    {
+      "question": "What is the simple interest on Rs. 5000 at 8% per annum for 2 years?",
+      "options": [
+        "700",
+        "800",
+        "900",
+        "1000"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 4,
+      "difficulty": "medium",
+      "explanation": "Simple Interest = (Principal × Rate × Time)/100 = (5000 × 8 × 2)/100 = 800"
+    },
+    {
+      "question": "If 3x + 4 = 19, what is the value of x?",
+      "options": [
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "correctOptions": [2],
+      "answerType": "single",
+      "marks": 4,
+      "difficulty": "medium",
+      "explanation": "3x + 4 = 19, 3x = 15, x = 5"
+    },
+    {
+      "question": "What is 25% of 25% of 400?",
+      "options": [
+        "20",
+        "25",
+        "30",
+        "35"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 4,
+      "difficulty": "medium",
+      "explanation": "First 25% of 400 = 100, then 25% of 100 = 25"
+    },
+    {
+      "question": "If the perimeter of a square is 40 cm, what is its area?",
+      "options": [
+        "100 sq cm",
+        "64 sq cm",
+        "81 sq cm",
+        "121 sq cm"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 4,
+      "difficulty": "medium",
+      "explanation": "Side of square = Perimeter/4 = 40/4 = 10 cm. Area = side² = 10² = 100 sq cm"
+    },
+    {
+      "question": "A number is increased by 20% and then decreased by 20%. What is the net change?",
+      "options": [
+        "0% decrease",
+        "4% decrease",
+        "2% decrease",
+        "No change"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 4,
+      "difficulty": "medium",
+      "explanation": "Let initial number be 100. After 20% increase = 120. After 20% decrease = 120 × 0.8 = 96. Net change = 4% decrease"
     }
   ],
-  "accessControl": {
-    "type": "private"
-  }
+  "codingChallenges": [
+    {
+      "title": "Basic Calculator",
+      "description": "Implement a basic calculator that performs arithmetic operations",
+      "problemStatement": "Write a function that takes two numbers and an operator (+, -, *, /) as input and returns the result of the operation. Return 'Error' for division by zero.",
+      "constraints": "1. -10^5 <= numbers <= 10^5\n2. operator can be '+', '-', '*', or '/'",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "function calculate(num1, operator, num2) {\n    // Write your code here\n    // Return the result of the arithmetic operation\n    \n}",
+          "invisibleCode": "module.exports = calculate;"
+        },
+        "python": {
+          "visibleCode": "def calculate(num1, operator, num2):\n    # Write your code here\n    # Return the result of the arithmetic operation\n    pass",
+          "invisibleCode": "# No additional code needed"
+        },
+        "java": {
+          "visibleCode": "public class Solution {\n    public static double calculate(double num1, String operator, double num2) {\n        // Write your code here\n        // Return the result of the arithmetic operation\n    }\n}",
+          "invisibleCode": "// No additional code needed"
+        },
+        "c": {
+          "visibleCode": "double calculate(double num1, char operator, double num2) {\n    // Write your code here\n    // Return the result of the arithmetic operation\n}",
+          "invisibleCode": "#include <stdio.h>\n#include <stdlib.h>"
+        },
+        "cpp": {
+          "visibleCode": "double calculate(double num1, char operator, double num2) {\n    // Write your code here\n    // Return the result of the arithmetic operation\n}",
+          "invisibleCode": "#include <iostream>\nusing namespace std;"
+        }
+      },
+      "testCases": [
+        {
+          "input": "10 + 5",
+          "output": "15",
+          "isVisible": true
+        },
+        {
+          "input": "20 - 8",
+          "output": "12",
+          "isVisible": true
+        },
+        {
+          "input": "6 * 4",
+          "output": "24",
+          "isVisible": true
+        },
+        {
+          "input": "15 / 3",
+          "output": "5",
+          "isVisible": true
+        },
+        {
+          "input": "10 / 0",
+          "output": "Error",
+          "isVisible": true
+        }
+      ],
+      "marks": 10,
+      "timeLimit": 2,
+      "memoryLimit": 256,
+      "difficulty": "medium",
+      "tags": ["arithmetic", "basic-math"]
+    },
+    {
+      "title": "Percentage Calculator",
+      "description": "Calculate percentage and grade based on marks",
+      "problemStatement": "Write a function that takes obtained marks and total marks as input, calculates the percentage, and returns both the percentage and grade. Grade criteria: A (>= 90%), B (>= 80%), C (>= 70%), D (>= 60%), F (< 60%)",
+      "constraints": "1. 0 <= obtained marks <= total marks\n2. total marks > 0",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "function calculateGrade(obtainedMarks, totalMarks) {\n    // Write your code here\n    // Return [percentage, grade]\n    \n}",
+          "invisibleCode": "module.exports = calculateGrade;"
+        },
+        "python": {
+          "visibleCode": "def calculate_grade(obtained_marks, total_marks):\n    # Write your code here\n    # Return [percentage, grade]\n    pass",
+          "invisibleCode": "# No additional code needed"
+        },
+        "java": {
+          "visibleCode": "public class Solution {\n    public static String[] calculateGrade(int obtainedMarks, int totalMarks) {\n        // Write your code here\n        // Return [percentage, grade]\n    }\n}",
+          "invisibleCode": "// No additional code needed"
+        },
+        "c": {
+          "visibleCode": "void calculateGrade(int obtainedMarks, int totalMarks, char* result) {\n    // Write your code here\n    // Store result in format \"percentage,grade\"\n}",
+          "invisibleCode": "#include <stdio.h>\n#include <string.h>"
+        },
+        "cpp": {
+          "visibleCode": "vector<string> calculateGrade(int obtainedMarks, int totalMarks) {\n    // Write your code here\n    // Return {percentage, grade}\n}",
+          "invisibleCode": "#include <vector>\n#include <string>"
+        }
+      },
+      "testCases": [
+        {
+          "input": "90 100",
+          "output": "[90, 'A']",
+          "isVisible": true
+        },
+        {
+          "input": "75 100",
+          "output": "[75, 'C']",
+          "isVisible": true
+        },
+        {
+          "input": "45 100",
+          "output": "[45, 'F']",
+          "isVisible": true
+        }
+      ],
+      "marks": 10,
+      "timeLimit": 2,
+      "memoryLimit": 256,
+      "difficulty": "medium",
+      "tags": ["arithmetic", "conditions"]
+    },
+    {
+      "title": "Leap Year Checker",
+      "description": "Check if a given year is a leap year",
+      "problemStatement": "Write a function that determines whether a given year is a leap year. A leap year is divisible by 4, but century years must be divisible by 400 to be leap years.",
+      "constraints": "1. 1 <= year <= 9999",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "function isLeapYear(year) {\n    // Write your code here\n    // Return true for leap year, false otherwise\n    \n}",
+          "invisibleCode": "module.exports = isLeapYear;"
+        },
+        "python": {
+          "visibleCode": "def is_leap_year(year):\n    # Write your code here\n    # Return True for leap year, False otherwise\n    pass",
+          "invisibleCode": "# No additional code needed"
+        },
+        "java": {
+          "visibleCode": "public class Solution {\n    public static boolean isLeapYear(int year) {\n        // Write your code here\n        // Return true for leap year, false otherwise\n    }\n}",
+          "invisibleCode": "// No additional code needed"
+        },
+        "c": {
+          "visibleCode": "int isLeapYear(int year) {\n    // Write your code here\n    // Return 1 for leap year, 0 otherwise\n}",
+          "invisibleCode": "#include <stdio.h>"
+        },
+        "cpp": {
+          "visibleCode": "bool isLeapYear(int year) {\n    // Write your code here\n    // Return true for leap year, false otherwise\n}",
+          "invisibleCode": "#include <iostream>"
+        }
+      },
+      "testCases": [
+        {
+          "input": "2000",
+          "output": "true",
+          "isVisible": true
+        },
+        {
+          "input": "2100",
+          "output": "false",
+          "isVisible": true
+        },
+        {
+          "input": "2024",
+          "output": "true",
+          "isVisible": true
+        },
+        {
+          "input": "2023",
+          "output": "false",
+          "isVisible": true
+        }
+      ],
+      "marks": 10,
+      "timeLimit": 2,
+      "memoryLimit": 256,
+      "difficulty": "medium",
+      "tags": ["conditions", "date-time"]
+    },
+    {
+      "title": "Age Category Classifier",
+      "description": "Classify age into different categories",
+      "problemStatement": "Write a function that takes age as input and returns the category: 'Child' (0-12), 'Teen' (13-19), 'Adult' (20-59), 'Senior' (60+). Return 'Invalid' for negative ages.",
+      "constraints": "1. -infinity <= age <= infinity",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "function classifyAge(age) {\n    // Write your code here\n    // Return age category\n    \n}",
+          "invisibleCode": "module.exports = classifyAge;"
+        },
+        "python": {
+          "visibleCode": "def classify_age(age):\n    # Write your code here\n    # Return age category\n    pass",
+          "invisibleCode": "# No additional code needed"
+        },
+        "java": {
+          "visibleCode": "public class Solution {\n    public static String classifyAge(int age) {\n        // Write your code here\n        // Return age category\n    }\n}",
+          "invisibleCode": "// No additional code needed"
+        },
+        "c": {
+          "visibleCode": "void classifyAge(int age, char* result) {\n    // Write your code here\n    // Store category in result string\n}",
+          "invisibleCode": "#include <stdio.h>\n#include <string.h>"
+        },
+        "cpp": {
+          "visibleCode": "string classifyAge(int age) {\n    // Write your code here\n    // Return age category\n}",
+          "invisibleCode": "#include <string>"
+        }
+      },
+      "testCases": [
+        {
+          "input": "8",
+          "output": "Child",
+          "isVisible": true
+        },
+        {
+          "input": "15",
+          "output": "Teen",
+          "isVisible": true
+        },
+        {
+          "input": "35",
+          "output": "Adult",
+          "isVisible": true
+        },
+        {
+          "input": "65",
+          "output": "Senior",
+          "isVisible": true
+        },
+        {
+          "input": "-1",
+          "output": "Invalid",
+          "isVisible": true
+        }
+      ],
+      "marks": 10,
+      "timeLimit": 2,
+      "memoryLimit": 256,
+      "difficulty": "medium",
+      "tags": ["conditions", "classification"]
+    },
+    {
+      "title": "Number Range Validator",
+      "description": "Validate if a number falls within specific ranges and categories",
+      "problemStatement": "Write a function that takes a number and checks: if it's negative ('Negative'), if it's between 0-100 ('In Range'), if it's greater than 100 ('Too High'). Also check if it's even or odd and append that to the result.",
+      "constraints": "1. -10^9 <= number <= 10^9",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "function validateNumber(num) {\n    // Write your code here\n    // Return 'Category - Even/Odd'\n    \n}",
+          "invisibleCode": "module.exports = validateNumber;"
+        },
+        "python": {
+          "visibleCode": "def validate_number(num):\n    # Write your code here\n    # Return 'Category - Even/Odd'\n    pass",
+          "invisibleCode": "# No additional code needed"
+        },
+        "java": {
+          "visibleCode": "public class Solution {\n    public static String validateNumber(int num) {\n        // Write your code here\n        // Return 'Category - Even/Odd'\n    }\n}",
+          "invisibleCode": "// No additional code needed"
+        },
+        "c": {
+          "visibleCode": "void validateNumber(int num, char* result) {\n    // Write your code here\n    // Store 'Category - Even/Odd' in result\n}",
+          "invisibleCode": "#include <stdio.h>\n#include <string.h>"
+        },
+        "cpp": {
+          "visibleCode": "string validateNumber(int num) {\n    // Write your code here\n    // Return 'Category - Even/Odd'\n}",
+          "invisibleCode": "#include <string>"
+        }
+      },
+      "testCases": [
+        {
+          "input": "-5",
+          "output": "Negative - Odd",
+          "isVisible": true
+        },
+        {
+          "input": "50",
+          "output": "In Range - Even",
+          "isVisible": true
+        },
+        {
+          "input": "75",
+          "output": "In Range - Odd",
+          "isVisible": true
+        },
+        {
+          "input": "150",
+          "output": "Too High - Even",
+          "isVisible": true
+        }
+      ],
+      "marks": 10,
+      "timeLimit": 2,
+      "memoryLimit": 256,
+      "difficulty": "medium",
+      "tags": ["conditions", "number-theory"]
+    }
+  ]
 }  

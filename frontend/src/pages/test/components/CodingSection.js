@@ -987,7 +987,7 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
         <div className="flex-1 flex flex-col">
           <MonacoEditor
             height="100%"
-            language={language.toLowerCase()}
+            language={language?.toLowerCase()}
             theme={theme}
             value={editorValue}
             onChange={handleEditorChange}
@@ -995,9 +995,17 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
               ...editorOptions,
               readOnly: !language,
               domReadOnly: !language,
+              theme: theme,
+              backgroundColor: theme === 'vs-dark' ? '#1e1e1e' : '#ffffff',
             }}
-            onMount={handleEditorMount}
-            wrapperClassName="monaco-editor-wrapper"
+            onMount={(editor, monaco) => {
+              if (language) {
+                editor.focus();
+                monaco.editor.setModelLanguage(editor.getModel(), language.toLowerCase());
+              }
+              monaco.editor.setTheme(theme);
+            }}
+            wrapperClassName={`monaco-editor-wrapper ${theme}`}
             className="monaco-editor"
           />
         </div>
