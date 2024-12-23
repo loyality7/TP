@@ -7,7 +7,7 @@ import {
 import { apiService } from '../../../services/api';
 import { toast } from 'react-hot-toast';
 
-export default function CodingSection({ challenges, answers, setAnswers, onSubmitCoding, setAnalytics }) {
+export default function CodingSection({ challenges, answers, setAnswers, onSubmitCoding, testId,  setAnalytics }) {
   // Move ALL state declarations to the top
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [language, setLanguage] = useState('');
@@ -45,23 +45,125 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
     setAnswers(newAnswers);
   }, [setAnswers]);
 
-  // Update handleEditorChange to use optional chaining
+  // Add state for storing code per challenge
+  const [codeStore, setCodeStore] = useState(() => {
+    // Try to load saved code from localStorage
+    try {
+      const saved = localStorage.getItem(`coding_progress_${testId}`);
+      return saved ? JSON.parse(saved) : {};
+    } catch (error) {
+      console.error('Error loading saved code:', error);
+      return {};
+    }
+  });
+
+  // Update editor value handling
   const handleEditorChange = useCallback((value) => {
-    if (typeof value !== 'string') return;
-    
-    setEditorValue(value);
-    
-    if (challenge?._id && language) {
-      const newAnswers = {
-        ...answers,
+    if (!challenge?._id) return;
+
+    // Update code store
+    setCodeStore(prev => {
+      const updated = {
+        ...prev,
         [challenge._id]: {
           code: value,
-          language: language
+          language: language,
+          lastModified: Date.now()
         }
       };
-      memoizedSetAnswers(newAnswers);
+      
+      // Save to localStorage
+      try {
+        localStorage.setItem(`coding_progress_${testId}`, JSON.stringify(updated));
+      } catch (error) {
+        console.error('Error saving code:', error);
+      }
+      
+      return updated;
+    });
+
+    // Update editor value
+    setEditorValue(value);
+  }, [challenge?._id, language, testId]);
+
+  // Load saved code when challenge changes
+  useEffect(() => {
+    if (challenge?._id && codeStore[challenge._id]) {
+      const saved = codeStore[challenge._id];
+      setEditorValue(saved.code);
+      if (saved.language) {
+        setLanguage(saved.language);
+      }
     }
-  }, [answers, challenge?._id, language, memoizedSetAnswers]);
+  }, [challenge?._id, codeStore]);
+
+  // Add auto-save interval
+  useEffect(() => {
+    const saveInterval = setInterval(() => {
+      if (challenge?._id && editorValue) {
+        try {
+          const currentStore = JSON.parse(localStorage.getItem(`coding_progress_${testId}`) || '{}');
+          currentStore[challenge._id] = {
+            code: editorValue,
+            language: language,
+            lastModified: Date.now()
+          };
+          localStorage.setItem(`coding_progress_${testId}`, JSON.stringify(currentStore));
+        } catch (error) {
+          console.error('Auto-save error:', error);
+        }
+      }
+    }, 10000); // Auto-save every 10 seconds
+
+    return () => clearInterval(saveInterval);
+  }, [challenge?._id, editorValue, language, testId]);
+
+  // Add recovery mechanism for blank screen
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && challenge?._id) {
+        // Try to recover code if screen is blank
+        try {
+          const saved = localStorage.getItem(`coding_progress_${testId}`);
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            if (parsed[challenge._id]?.code && !editorValue) {
+              setEditorValue(parsed[challenge._id].code);
+              if (parsed[challenge._id].language) {
+                setLanguage(parsed[challenge._id].language);
+              }
+              toast.success('Recovered your code!');
+            }
+          }
+        } catch (error) {
+          console.error('Recovery attempt failed:', error);
+        }
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [challenge?._id, testId, editorValue]);
+
+  // Add cleanup on component unmount
+  useEffect(() => {
+    return () => {
+      // Save final state before unmounting
+      if (challenge?._id && editorValue) {
+        try {
+          const currentStore = JSON.parse(localStorage.getItem(`coding_progress_${testId}`) || '{}');
+          currentStore[challenge._id] = {
+            code: editorValue,
+            language: language,
+            lastModified: Date.now()
+          };
+          localStorage.setItem(`coding_progress_${testId}`, JSON.stringify(currentStore));
+        } catch (error) {
+          console.error('Final save error:', error);
+        }
+      }
+    };
+  }, [challenge?._id, editorValue, language, testId]);
 
   // Define handleResetCode before any useEffect hooks
   const handleResetCode = () => {
@@ -485,6 +587,22 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
         
         toast.success('Challenge submitted successfully!');
         
+        // Remove the stored code for this challenge
+        setCodeStore(prev => {
+          const updated = { ...prev };
+          delete updated[challenge._id];
+          return updated;
+        });
+
+        // Also remove from localStorage
+        try {
+          const savedCode = JSON.parse(localStorage.getItem(`coding_progress_${testId}`) || '{}');
+          delete savedCode[challenge._id];
+          localStorage.setItem(`coding_progress_${testId}`, JSON.stringify(savedCode));
+        } catch (error) {
+          console.error('Error removing stored code:', error);
+        }
+
         // Check if all challenges are completed
         const allChallengesCompleted = challenges.every(ch => 
           submissionStatus[ch._id] === 'submitted' || ch._id === challenge._id
@@ -492,6 +610,8 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
 
         if (allChallengesCompleted) {
           toast.success('All coding challenges completed!');
+          // Remove all stored code when all challenges are completed
+          localStorage.removeItem(`coding_progress_${testId}`);
           onSubmitCoding({
             codingSubmission: response.data.submission.codingSubmission,
             totalScore: response.data.submission.totalScore || 0
