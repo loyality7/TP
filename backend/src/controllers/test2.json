@@ -1,13 +1,83 @@
 {
-    "title": "Aptitude and Programming Test",
+    "title": "Aptitude and Programming Test 2 ",
     "description": "A comprehensive test for MITS students covering Quantitative Aptitude (R.S. Agarwal), Basic Programming, and Problem Solving skills.",
-    "duration": 60,
+    "duration": 75,
     "proctoring": true,
     "type": "coding_challenge",
     "category": "Aptitude and Programming",
     "difficulty": "beginner",
     "instructions": "1. Complete all sections: Aptitude MCQs and Programming Questions\n2. Each coding solution must handle basic test cases\n3. Time management is crucial - attempt all questions\n4. Read each question carefully before answering",
     "mcqs": [
+      {
+        "question": "3 pumps, working 8 hours a day, can empty a tank in 2 days. How many hours a day must 4 pumps work to empty the tank in 1 day?",
+        "options": [
+          "9",
+          "10",
+          "11",
+          "12"
+        ],
+        "correctOptions": [3],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "Let the required number of working hours per day be x. More pumps, Less working hours per day (Indirect Proportion). Less days, More working hours per day (Indirect Proportion). Using proportion: 4 × 1 × x = 3 × 2 × 8, solving for x = 12"
+      },
+      {
+        "question": "If the cost of x metres of wire is d rupees, then what is the cost of y metres of wire at the same rate?",
+        "options": [
+          "Rs. xy/d",
+          "Rs. (xd)",
+          "Rs. (yd)",
+          "Rs. yd/x"
+        ],
+        "correctOptions": [3],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "Cost of x metres = Rs. d. Cost of 1 metre = Rs. d/x. Cost of y metres = Rs. (d/x) × y = Rs. yd/x"
+      },
+      {
+        "question": "Running at the same constant rate, 6 identical machines can produce a total of 270 bottles per minute. At this rate, how many bottles could 10 such machines produce in 4 minutes?",
+        "options": [
+          "648",
+          "1800",
+          "2700",
+          "10800"
+        ],
+        "correctOptions": [1],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "More machines, More bottles (Direct Proportion). More minutes, More bottles (Direct Proportion). Using proportion: 6 × 1 × x = 10 × 4 × 270, solving for x = 1800"
+      },
+      {
+        "question": "A fort had provision of food for 150 men for 45 days. After 10 days, 25 men left the fort. The number of days for which the remaining food will last, is:",
+        "options": [
+          "29 1/5",
+          "37 1/4",
+          "42",
+          "54"
+        ],
+        "correctOptions": [2],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "After 10 days: 150 men had food for 35 days. For 125 men: Less men, More days (Indirect Proportion). Using 125:150::35:x, solving gives x = 42 days"
+      },
+      {
+        "question": "39 persons can repair a road in 12 days, working 5 hours a day. In how many days will 30 persons, working 6 hours a day, complete the work?",
+        "options": [
+          "10",
+          "13",
+          "14",
+          "15"
+        ],
+        "correctOptions": [1],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "Less persons, More days (Indirect Proportion). More working hours per day, Less days (Indirect Proportion). Using proportion: 30 × 6 × x = 39 × 5 × 12, solving for x = 13"
+      },
       {
         "question": "A train running at 90 kmph crosses a pole in 10 seconds. What is the length of the train?",
         "options": [
@@ -77,69 +147,747 @@
         "marks": 4,
         "difficulty": "medium",
         "explanation": "let the numbers be x,x+2,x+4 and x+6. Then, (x+(x+2)+(x+4)+(x+6))/4 = 27, (4x+12)/4= 27, x+3=27, x=24. Therefore the largest number=(x+6)=24+6=30."
+      },
+      {
+        "question": "A person crosses a 600 m long street in 5 minutes. What is his speed in km per hour?",
+        "options": [
+          "3.6",
+          "7.2",
+          "8.4",
+          "10"
+        ],
+        "correctOptions": [1],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "Speed = 600/(5 × 60) = 2 m/sec. Converting m/sec to km/hr = 2 × (18/5) = 7.2 km/hr"
+      },
+      {
+        "question": "An aeroplane covers a certain distance at a speed of 240 kmph in 5 hours. To cover the same distance in 1⅔ hours, it must travel at a speed of:",
+        "options": [
+          "300 kmph",
+          "360 kmph",
+          "600 kmph",
+          "720 kmph"
+        ],
+        "correctOptions": [3],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "Distance = 240 × 5 = 1200 km. Required speed = 1200/(5/3) = (1200 × 3)/5 = 720 km/hr"
+      },
+      {
+        "question": "If a person walks at 14 km/hr instead of 10 km/hr, he would have walked 20 km more. The actual distance travelled by him is:",
+        "options": [
+          "50 km",
+          "56 km",
+          "70 km",
+          "80 km"
+        ],
+        "correctOptions": [0],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "Let actual distance be x km. Then, x/10 = (x + 20)/14. Solving: 14x = 10x + 200, so 4x = 200, therefore x = 50 km"
+      },
+      {
+        "question": "A train can travel 50% faster than a car. Both start from point A at the same time and reach point B 75 kms away from A at the same time. On the way, however, the train lost about 12.5 minutes while stopping at the stations. The speed of the car is:",
+        "options": [
+          "100 kmph",
+          "110 kmph",
+          "120 kmph",
+          "130 kmph"
+        ],
+        "correctOptions": [2],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "Let car speed be x kmph. Train speed = 1.5x kmph. Using time equations: 75/x - 75/(1.5x) = 12.5/60. Solving gives x = 120 kmph"
+      },
+      {
+        "question": "Excluding stoppages, the speed of a bus is 54 kmph and including stoppages, it is 45 kmph. For how many minutes does the bus stop per hour?",
+        "options": [
+          "9",
+          "10",
+          "12",
+          "20"
+        ],
+        "correctOptions": [1],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "Due to stoppages, it covers 9 km less. Time taken to cover 9 km = (9/54) × 60 = 10 minutes"
+      },
+      {
+        "question": "A and B together have Rs. 1210. If 4/15 of A's amount is equal to 2/5 of B's amount, how much amount does B have?",
+        "options": [
+          "Rs. 460",
+          "Rs. 484",
+          "Rs. 550",
+          "Rs. 664"
+        ],
+        "correctOptions": [1],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "If (4/15)A = (2/5)B, then A = (2/5 × 15/4)B = (3/2)B. So A:B = 3:2. Therefore, B's share = Rs. 1210 × 2/5 = Rs. 484"
+      },
+      {
+        "question": "Two numbers are respectively 20% and 50% more than a third number. The ratio of the two numbers is:",
+        "options": [
+          "2 : 5",
+          "3 : 5",
+          "4 : 5",
+          "6 : 7"
+        ],
+        "correctOptions": [2],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "Let third number be x. First number = 120% of x = 6x/5. Second number = 150% of x = 3x/2. Ratio = (6x/5):(3x/2) = 12x:15x = 4:5"
+      },
+      {
+        "question": "A sum of money is to be distributed among A, B, C, D in the proportion of 5 : 2 : 4 : 3. If C gets Rs. 1000 more than D, what is B's share?",
+        "options": [
+          "Rs. 500",
+          "Rs. 1500",
+          "Rs. 2000",
+          "None of these"
+        ],
+        "correctOptions": [2],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "Let shares be 5x, 2x, 4x, 3x respectively. Then 4x - 3x = 1000, so x = 1000. B's share = 2x = Rs. 2000"
+      },
+      {
+        "question": "Seats for Mathematics, Physics and Biology in a school are in the ratio 5 : 7 : 8. There is a proposal to increase these seats by 40%, 50% and 75% respectively. What will be the ratio of increased seats?",
+        "options": [
+          "2 : 3 : 4",
+          "6 : 7 : 8",
+          "6 : 8 : 9",
+          "None of these"
+        ],
+        "correctOptions": [0],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "Original seats: 5x, 7x, 8x. After increase: 7x, 21x/2, 14x. Simplifying gives ratio 14x:21x:28x = 2:3:4"
+      },
+      {
+        "question": "In a mixture 60 litres, the ratio of milk and water 2 : 1. If this ratio is to be 1 : 2, then the quantity of water to be further added is:",
+        "options": [
+          "20 litres",
+          "30 litres",
+          "40 litres",
+          "60 litres"
+        ],
+        "correctOptions": [3],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "Initial milk = 40 litres, water = 20 litres. For 1:2 ratio, if milk is 40, water should be 80. Additional water needed = 80 - 20 = 60 litres"
+      },
+      {
+        "question": "A shopkeeper marks his goods at 40% above cost price and allows a discount of 25%. His profit percentage is:",
+        "options": [
+          "5%",
+          "10%",
+          "15%",
+          "20%"
+        ],
+        "correctOptions": [0],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "Marked price = 140% of CP. After 25% discount, SP = 75% of marked price = 75% of 140% of CP = 105% of CP. Therefore profit = 5%"
+      },
+      {
+        "question": "If 6 men or 8 women can complete a work in 12 days, in how many days can 6 men and 8 women together complete the work?",
+        "options": [
+          "4",
+          "5",
+          "6",
+          "8"
+        ],
+        "correctOptions": [2],
+        "answerType": "single",
+        "marks": 4,
+        "difficulty": "medium",
+        "explanation": "6 men's 1 day work = 1/12, 8 women's 1 day work = 1/12. Together 1 day work = 2/12 = 1/6. Therefore total days needed = 6 days"
       }
     ],
     "codingChallenges": [
       {
-        "title": "Basic Calculator",
-        "description": "Implement a basic calculator that performs arithmetic operations",
-        "problemStatement": "Write a function that takes two numbers and an operator (+, -, *, /) as input and returns the result of the operation. Return 'Error' for division by zero.",
-        "constraints": "1. -10^5 <= numbers <= 10^5\n2. operator can be '+', '-', '*', or '/'",
+        "title": "String Reversal",
+        "description": "Write a program to reverse a given string",
+        "problemStatement": "Create a function that takes a string as input and returns the reversed string.",
+        "constraints": "1 <= string length <= 100",
         "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
         "languageImplementations": {
           "javascript": {
-            "visibleCode": "function calculate(num1, operator, num2) {\n    // Write your code here\n    // Return the result of the arithmetic operation\n    \n}",
-            "invisibleCode": "module.exports = calculate;"
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
           },
           "python": {
-            "visibleCode": "def calculate(num1, operator, num2):\n    # Write your code here\n    # Return the result of the arithmetic operation\n    pass",
-            "invisibleCode": "# No additional code needed"
+            "visibleCode": "# Write your code here",
+            "invisibleCode": "# No code needed"
           },
           "java": {
-            "visibleCode": "public class Solution {\n    public static double calculate(double num1, String operator, double num2) {\n        // Write your code here\n        // Return the result of the arithmetic operation\n    }\n}",
-            "invisibleCode": "// No additional code needed"
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
           },
           "c": {
-            "visibleCode": "double calculate(double num1, char operator, double num2) {\n    // Write your code here\n    // Return the result of the arithmetic operation\n}",
-            "invisibleCode": "#include <stdio.h>\n#include <stdlib.h>"
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
           },
           "cpp": {
-            "visibleCode": "double calculate(double num1, char operator, double num2) {\n    // Write your code here\n    // Return the result of the arithmetic operation\n}",
-            "invisibleCode": "#include <iostream>\nusing namespace std;"
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
           }
         },
         "testCases": [
-          {
-            "input": "10 + 5",
-            "output": "15",
-            "isVisible": true
-          },
-          {
-            "input": "20 - 8",
-            "output": "12",
-            "isVisible": true
-          },
-          {
-            "input": "6 * 4",
-            "output": "24",
-            "isVisible": true
-          },
-          {
-            "input": "15 / 3",
-            "output": "5",
-            "isVisible": true
-          },
-          {
-            "input": "10 / 0",
-            "output": "Error",
-            "isVisible": true
-          }
+          {"input": "hello", "output": "olleh", "isVisible": true},
+          {"input": "world", "output": "dlrow", "isVisible": true}
         ],
         "marks": 10,
-        "timeLimit": 2,
+        "timeLimit": 1,
         "memoryLimit": 256,
-        "difficulty": "medium",
-        "tags": ["arithmetic", "basic-math"]
+        "difficulty": "easy",
+        "tags": ["strings", "basic"]
+      },
+      {
+        "title": "Grade Calculator",
+        "description": "Calculate grade based on marks",
+        "problemStatement": "Write a program that takes marks (0-100) as input and returns the grade: A(90-100), B(80-89), C(70-79), D(60-69), F(0-59)",
+        "constraints": "0 <= marks <= 100",
+        "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+        "languageImplementations": {
+          "javascript": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "python": {
+            "visibleCode": "# Write your code here",
+            "invisibleCode": "# No code needed"
+          },
+          "java": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "c": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "cpp": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          }
+        },
+        "testCases": [
+          {"input": "95", "output": "A", "isVisible": true},
+          {"input": "75", "output": "C", "isVisible": true}
+        ],
+        "marks": 10,
+        "timeLimit": 1,
+        "memoryLimit": 256,
+        "difficulty": "easy",
+        "tags": ["if-else", "basic"]
+      },
+      {
+        "title": "Sum of Digits",
+        "description": "Calculate sum of digits using while loop",
+        "problemStatement": "Write a program that calculates the sum of digits of a given number using while loop. Example: 123 → 6 (1+2+3)",
+        "constraints": "1 <= number <= 10^9",
+        "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+        "languageImplementations": {
+          "javascript": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "python": {
+            "visibleCode": "# Write your code here",
+            "invisibleCode": "# No code needed"
+          },
+          "java": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "c": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "cpp": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          }
+        },
+        "testCases": [
+          {"input": "123", "output": "6", "isVisible": true},
+          {"input": "5678", "output": "26", "isVisible": true}
+        ],
+        "marks": 10,
+        "timeLimit": 1,
+        "memoryLimit": 256,
+        "difficulty": "easy",
+        "tags": ["while-loop", "basic"]
+      },
+      {
+        "title": "Vowel Counter",
+        "description": "Count vowels in a string",
+        "problemStatement": "Write a program that counts the number of vowels (a,e,i,o,u) in a given string. Ignore case.",
+        "constraints": "1 <= string length <= 100",
+        "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+        "languageImplementations": {
+          "javascript": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "python": {
+            "visibleCode": "# Write your code here",
+            "invisibleCode": "# No code needed"
+          },
+          "java": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "c": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "cpp": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          }
+        },
+        "testCases": [
+          {"input": "Hello", "output": "2", "isVisible": true},
+          {"input": "AEIOU", "output": "5", "isVisible": true}
+        ],
+        "marks": 10,
+        "timeLimit": 1,
+        "memoryLimit": 256,
+        "difficulty": "easy",
+        "tags": ["strings", "basic"]
+      },
+      {
+        "title": "Temperature Converter",
+        "description": "Convert between Celsius and Fahrenheit",
+        "problemStatement": "Write a program that converts temperature from Celsius to Fahrenheit. Formula: F = (C × 9/5) + 32",
+        "constraints": "-100 <= temperature <= 100",
+        "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+        "languageImplementations": {
+          "javascript": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "python": {
+            "visibleCode": "# Write your code here",
+            "invisibleCode": "# No code needed"
+          },
+          "java": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "c": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "cpp": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          }
+        },
+        "testCases": [
+          {"input": "0", "output": "32", "isVisible": true},
+          {"input": "100", "output": "212", "isVisible": true}
+        ],
+        "marks": 10,
+        "timeLimit": 1,
+        "memoryLimit": 256,
+        "difficulty": "easy",
+        "tags": ["if-else", "basic"]
+      },
+      {
+        "title": "Factorial Calculator",
+        "description": "Calculate factorial using while loop",
+        "problemStatement": "Write a program to calculate factorial of a number using while loop. Example: 5! = 5×4×3×2×1 = 120",
+        "constraints": "0 <= N <= 12",
+        "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+        "languageImplementations": {
+          "javascript": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "python": {
+            "visibleCode": "# Write your code here",
+            "invisibleCode": "# No code needed"
+          },
+          "java": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "c": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "cpp": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          }
+        },
+        "testCases": [
+          {"input": "5", "output": "120", "isVisible": true},
+          {"input": "0", "output": "1", "isVisible": true}
+        ],
+        "marks": 10,
+        "timeLimit": 1,
+        "memoryLimit": 256,
+        "difficulty": "easy",
+        "tags": ["while-loop", "basic"]
+      },
+      {
+        "title": "Palindrome Check",
+        "description": "Check if string is palindrome",
+        "problemStatement": "Write a program to check if a string is palindrome (reads same forwards and backwards). Return 'Yes' or 'No'.",
+        "constraints": "1 <= string length <= 100",
+        "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+        "languageImplementations": {
+          "javascript": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "python": {
+            "visibleCode": "# Write your code here",
+            "invisibleCode": "# No code needed"
+          },
+          "java": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "c": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "cpp": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          }
+        },
+        "testCases": [
+          {"input": "radar", "output": "Yes", "isVisible": true},
+          {"input": "hello", "output": "No", "isVisible": true}
+        ],
+        "marks": 10,
+        "timeLimit": 1,
+        "memoryLimit": 256,
+        "difficulty": "easy",
+        "tags": ["strings", "basic"]
+      },
+      {
+        "title": "Largest of Three",
+        "description": "Find largest among three numbers",
+        "problemStatement": "Write a program to find the largest among three given numbers.",
+        "constraints": "-10^9 <= numbers <= 10^9",
+        "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+        "languageImplementations": {
+          "javascript": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "python": {
+            "visibleCode": "# Write your code here",
+            "invisibleCode": "# No code needed"
+          },
+          "java": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "c": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "cpp": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          }
+        },
+        "testCases": [
+          {"input": "10 20 30", "output": "30", "isVisible": true},
+          {"input": "-1 -5 -3", "output": "-1", "isVisible": true}
+        ],
+        "marks": 10,
+        "timeLimit": 1,
+        "memoryLimit": 256,
+        "difficulty": "easy",
+        "tags": ["if-else", "basic"]
+      },
+      {
+        "title": "Multiplication Table",
+        "description": "Print multiplication table using while loop",
+        "problemStatement": "Write a program to print multiplication table of a given number up to 10 using while loop.",
+        "constraints": "1 <= N <= 20",
+        "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+        "languageImplementations": {
+          "javascript": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "python": {
+            "visibleCode": "# Write your code here",
+            "invisibleCode": "# No code needed"
+          },
+          "java": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "c": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "cpp": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          }
+        },
+        "testCases": [
+          {"input": "5", "output": "5 10 15 20 25 30 35 40 45 50", "isVisible": true},
+          {"input": "2", "output": "2 4 6 8 10 12 14 16 18 20", "isVisible": true}
+        ],
+        "marks": 10,
+        "timeLimit": 1,
+        "memoryLimit": 256,
+        "difficulty": "easy",
+        "tags": ["while-loop", "basic"]
+      },
+      {
+        "title": "Case Converter",
+        "description": "Convert string to uppercase",
+        "problemStatement": "Write a program to convert a given string to uppercase.",
+        "constraints": "1 <= string length <= 100",
+        "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+        "languageImplementations": {
+          "javascript": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "python": {
+            "visibleCode": "# Write your code here",
+            "invisibleCode": "# No code needed"
+          },
+          "java": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "c": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "cpp": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          }
+        },
+        "testCases": [
+          {"input": "hello", "output": "HELLO", "isVisible": true},
+          {"input": "World", "output": "WORLD", "isVisible": true}
+        ],
+        "marks": 10,
+        "timeLimit": 1,
+        "memoryLimit": 256,
+        "difficulty": "easy",
+        "tags": ["strings", "basic"]
+      },
+      {
+        "title": "Positive Negative Zero",
+        "description": "Check if number is positive, negative or zero",
+        "problemStatement": "Write a program to check if a number is positive, negative or zero. Return 'Positive', 'Negative' or 'Zero'.",
+        "constraints": "-10^9 <= number <= 10^9",
+        "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+        "languageImplementations": {
+          "javascript": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "python": {
+            "visibleCode": "# Write your code here",
+            "invisibleCode": "# No code needed"
+          },
+          "java": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "c": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "cpp": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          }
+        },
+        "testCases": [
+          {"input": "5", "output": "Positive", "isVisible": true},
+          {"input": "-3", "output": "Negative", "isVisible": true},
+          {"input": "0", "output": "Zero", "isVisible": true}
+        ],
+        "marks": 10,
+        "timeLimit": 1,
+        "memoryLimit": 256,
+        "difficulty": "easy",
+        "tags": ["if-else", "basic"]
+      },
+      {
+        "title": "Digit Counter",
+        "description": "Count digits using while loop",
+        "problemStatement": "Write a program to count the number of digits in a given number using while loop.",
+        "constraints": "0 <= number <= 10^9",
+        "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+        "languageImplementations": {
+          "javascript": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "python": {
+            "visibleCode": "# Write your code here",
+            "invisibleCode": "# No code needed"
+          },
+          "java": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "c": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "cpp": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          }
+        },
+        "testCases": [
+          {"input": "12345", "output": "5", "isVisible": true},
+          {"input": "100", "output": "3", "isVisible": true}
+        ],
+        "marks": 10,
+        "timeLimit": 1,
+        "memoryLimit": 256,
+        "difficulty": "easy",
+        "tags": ["while-loop", "basic"]
+      },
+      {
+        "title": "Word Counter",
+        "description": "Count words in a string",
+        "problemStatement": "Write a program to count the number of words in a given string. Words are separated by single space.",
+        "constraints": "1 <= string length <= 1000",
+        "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+        "languageImplementations": {
+          "javascript": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "python": {
+            "visibleCode": "# Write your code here",
+            "invisibleCode": "# No code needed"
+          },
+          "java": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "c": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "cpp": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          }
+        },
+        "testCases": [
+          {"input": "Hello World", "output": "2", "isVisible": true},
+          {"input": "I am a programmer", "output": "4", "isVisible": true}
+        ],
+        "marks": 10,
+        "timeLimit": 1,
+        "memoryLimit": 256,
+        "difficulty": "easy",
+        "tags": ["strings", "basic"]
+      },
+      {
+        "title": "Leap Year",
+        "description": "Check if year is leap year",
+        "problemStatement": "Write a program to determine whether a given year is a leap year. Return 'Yes' for leap year and 'No' for non-leap year.",
+        "constraints": "1 <= year <= 9999",
+        "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+        "languageImplementations": {
+          "javascript": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "python": {
+            "visibleCode": "# Write your code here",
+            "invisibleCode": "# No code needed"
+          },
+          "java": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "c": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "cpp": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          }
+        },
+        "testCases": [
+          {"input": "2000", "output": "Yes", "isVisible": true},
+          {"input": "2100", "output": "No", "isVisible": true}
+        ],
+        "marks": 10,
+        "timeLimit": 1,
+        "memoryLimit": 256,
+        "difficulty": "easy",
+        "tags": ["if-else", "basic"]
+      },
+      {
+        "title": "Power Calculator",
+        "description": "Calculate power using while loop",
+        "problemStatement": "Write a program to calculate power of a number using while loop. Given base and exponent, calculate base^exponent.",
+        "constraints": "0 <= base, exponent <= 10",
+        "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+        "languageImplementations": {
+          "javascript": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "python": {
+            "visibleCode": "# Write your code here",
+            "invisibleCode": "# No code needed"
+          },
+          "java": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "c": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          },
+          "cpp": {
+            "visibleCode": "// Write your code here",
+            "invisibleCode": "// No code needed"
+          }
+        },
+        "testCases": [
+          {"input": "2 3", "output": "8", "isVisible": true},
+          {"input": "5 2", "output": "25", "isVisible": true}
+        ],
+        "marks": 10,
+        "timeLimit": 1,
+        "memoryLimit": 256,
+        "difficulty": "easy",
+        "tags": ["while-loop", "basic"]
       }
     ]
-}  
+}

@@ -673,17 +673,21 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
     }
   };
 
-  // Update editor options with additional settings
+  // Update editorOptions with additional settings to ensure proper cursor movement
   const editorOptions = {
     minimap: { enabled: false },
     fontSize: fontSize,
     lineNumbers: showLineNumbers ? 'on' : 'off',
     wordWrap: wordWrap ? 'on' : 'off',
     automaticLayout: true,
-    readOnly: false,
-    domReadOnly: false,
+    readOnly: false,  // Ensure this is false
+    domReadOnly: false,  // Ensure this is false
     scrollBeyondLastLine: false,
     tabSize: 2,
+    // Add these settings to improve cursor and typing behavior
+    cursorBlinking: 'blink',
+    cursorStyle: 'line',
+    cursorWidth: 2,
     // Keep basic editing features enabled
     formatOnPaste: true,
     formatOnType: true,
@@ -931,16 +935,21 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
     setLanguage(newLanguage);
     
     if (challenge?._id) {
+      // Get the default code but don't force it if user already has code
+      const existingCode = answers[challenge._id]?.code;
       const defaultCode = challenge.languageImplementations?.[newLanguage]?.visibleCode || '// Write your code here\n';
+      
+      const codeToUse = existingCode || defaultCode;
+      
       const newAnswers = {
         ...answers,
         [challenge._id]: {
-          code: defaultCode,
+          code: codeToUse,
           language: newLanguage
         }
       };
       setAnswers(newAnswers);
-      setEditorValue(defaultCode);
+      setEditorValue(codeToUse);
     }
   };
 
@@ -1180,14 +1189,19 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
             onChange={handleEditorChange}
             options={{
               ...editorOptions,
-              readOnly: !language,
-              domReadOnly: !language,
+              readOnly: false,  // Explicitly set to false
+              domReadOnly: false,  // Explicitly set to false
               theme: theme,
               backgroundColor: theme === 'vs-dark' ? '#1e1e1e' : '#ffffff',
             }}
             onMount={(editor, monaco) => {
               if (language) {
                 editor.focus();
+                // Force enable editing
+                editor.updateOptions({
+                  readOnly: false,
+                  domReadOnly: false
+                });
                 monaco.editor.setModelLanguage(editor.getModel(), language.toLowerCase());
               }
               monaco.editor.setTheme(theme);
