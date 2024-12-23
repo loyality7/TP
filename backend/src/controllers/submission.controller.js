@@ -469,7 +469,9 @@ export const getTestSubmissions = async (req, res) => {
           userId: sub.user._id,
           userName: sub.user.name,
           userEmail: sub.user.email,
-          totalScore: mcqTotalScore,
+          mcqScore: mcqTotalScore,
+          codingScore: sub.codingSubmission?.totalScore || 0,
+          totalScore: (mcqTotalScore + (sub.codingSubmission?.totalScore || 0)),
           submittedAt: sub.mcqSubmission.submittedAt,
           answers
         };
@@ -508,7 +510,9 @@ export const getTestSubmissions = async (req, res) => {
           userId: sub.user._id,
           userName: sub.user.name,
           userEmail: sub.user.email,
-          totalScore: codingTotalScore,
+          mcqScore: sub.mcqSubmission?.totalScore || 0,
+          codingScore: codingTotalScore,
+          totalScore: (sub.mcqSubmission?.totalScore || 0) + codingTotalScore,
           submittedAt: sub.codingSubmission.submittedAt,
           challenges
         };
