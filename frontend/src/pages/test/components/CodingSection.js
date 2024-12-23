@@ -587,22 +587,6 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
         
         toast.success('Challenge submitted successfully!');
         
-        // Remove the stored code for this challenge
-        setCodeStore(prev => {
-          const updated = { ...prev };
-          delete updated[challenge._id];
-          return updated;
-        });
-
-        // Also remove from localStorage
-        try {
-          const savedCode = JSON.parse(localStorage.getItem(`coding_progress_${testId}`) || '{}');
-          delete savedCode[challenge._id];
-          localStorage.setItem(`coding_progress_${testId}`, JSON.stringify(savedCode));
-        } catch (error) {
-          console.error('Error removing stored code:', error);
-        }
-
         // Check if all challenges are completed
         const allChallengesCompleted = challenges.every(ch => 
           submissionStatus[ch._id] === 'submitted' || ch._id === challenge._id
@@ -610,8 +594,6 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
 
         if (allChallengesCompleted) {
           toast.success('All coding challenges completed!');
-          // Remove all stored code when all challenges are completed
-          localStorage.removeItem(`coding_progress_${testId}`);
           onSubmitCoding({
             codingSubmission: response.data.submission.codingSubmission,
             totalScore: response.data.submission.totalScore || 0
