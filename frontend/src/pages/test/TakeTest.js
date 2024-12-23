@@ -583,7 +583,6 @@ export default function TakeTest() {
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.hidden && !showInstructions) {
-        const now = Date.now();
         handleWarning('Warning: Tab switching detected!');
         
         updateAnalytics(prev => ({
