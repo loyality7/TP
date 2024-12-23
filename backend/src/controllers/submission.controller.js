@@ -437,21 +437,15 @@ export const getTestSubmissions = async (req, res) => {
     // Process MCQ submissions with corrected array comparison
     const mcqSubmissions = submissions
       .filter(sub => sub.mcqSubmission?.completed)
-      .map(sub => ({
-        submissionId: sub._id,
-        userId: sub.user._id,
-        userName: sub.user.name,
-        userEmail: sub.user.email,
-        totalScore: sub.mcqSubmission.totalScore,
-        submittedAt: sub.mcqSubmission.submittedAt,
-        answers: sub.mcqSubmission.answers.map(answer => {
+      .map(sub => {
+        // Calculate MCQ answers and total score
+        const answers = sub.mcqSubmission.answers.map(answer => {
           const question = test.mcqs?.find(q => 
             q._id.toString() === answer.questionId.toString()
           );
           const correctOptions = question?.correctOptions || [];
           const selectedOptions = answer.selectedOptions || [];
           
-          // Updated array comparison logic
           const isCorrect = Array.isArray(correctOptions) && 
             Array.isArray(selectedOptions) &&
             correctOptions.length === selectedOptions.length &&
@@ -465,32 +459,92 @@ export const getTestSubmissions = async (req, res) => {
             isCorrect: isCorrect,
             marks: isCorrect ? (question?.marks || 0) : 0
           };
-        })
-      }));
+        });
 
-    // Process coding submissions
+        // Calculate MCQ total score
+        const mcqTotalScore = answers.reduce((sum, answer) => sum + answer.marks, 0);
+
+        return {
+          submissionId: sub._id,
+          userId: sub.user._id,
+          userName: sub.user.name,
+          userEmail: sub.user.email,
+          totalScore: mcqTotalScore,
+          submittedAt: sub.mcqSubmission.submittedAt,
+          answers
+        };
+      });
+
+    // Process coding submissions with total score calculation
     const codingSubmissions = submissions
       .filter(sub => sub.codingSubmission?.completed)
-      .map(sub => ({
-        submissionId: sub._id,
+      .map(sub => {
+        // Calculate coding total score from best attempt of each challenge
+        const challenges = sub.codingSubmission.challenges.map(challenge => {
+          const bestSubmission = challenge.submissions.reduce((best, current) => {
+            return (current.marks > best.marks) ? current : best;
+          }, { marks: 0 });
+
+          return {
+            challengeId: challenge.challengeId,
+            submissions: challenge.submissions.map(submission => ({
+              code: submission.code,
+              language: submission.language,
+              status: submission.status,
+              marks: submission.marks,
+              testCaseResults: submission.testCaseResults,
+              executionTime: submission.executionTime,
+              memory: submission.memory
+            })),
+            bestScore: bestSubmission.marks
+          };
+        });
+
+        const codingTotalScore = challenges.reduce((sum, challenge) => 
+          sum + challenge.bestScore, 0);
+
+        return {
+          submissionId: sub._id,
+          userId: sub.user._id,
+          userName: sub.user.name,
+          userEmail: sub.user.email,
+          totalScore: codingTotalScore,
+          submittedAt: sub.codingSubmission.submittedAt,
+          challenges
+        };
+      });
+
+    // Calculate overall statistics
+    const overallStats = submissions.map(sub => {
+      const mcqScore = sub.mcqSubmission?.answers?.reduce((sum, answer) => {
+        const question = test.mcqs?.find(q => 
+          q._id.toString() === answer.questionId.toString()
+        );
+        const correctOptions = question?.correctOptions || [];
+        const selectedOptions = answer.selectedOptions || [];
+        
+        const isCorrect = Array.isArray(correctOptions) && 
+          Array.isArray(selectedOptions) &&
+          correctOptions.length === selectedOptions.length &&
+          [...correctOptions].sort().every((opt, idx) => 
+            opt === [...selectedOptions].sort()[idx]
+          );
+
+        return sum + (isCorrect ? (question?.marks || 0) : 0);
+      }, 0) || 0;
+
+      const codingScore = sub.codingSubmission?.challenges?.reduce((sum, challenge) => {
+        const bestMark = Math.max(...challenge.submissions.map(s => s.marks || 0), 0);
+        return sum + bestMark;
+      }, 0) || 0;
+
+      return {
         userId: sub.user._id,
-        userName: sub.user.name,
-        userEmail: sub.user.email,
-        totalScore: sub.codingSubmission.totalScore,
-        submittedAt: sub.codingSubmission.submittedAt,
-        challenges: sub.codingSubmission.challenges.map(challenge => ({
-          challengeId: challenge.challengeId,
-          submissions: challenge.submissions.map(submission => ({
-            code: submission.code,
-            language: submission.language,
-            status: submission.status,
-            marks: submission.marks,
-            testCaseResults: submission.testCaseResults,
-            executionTime: submission.executionTime,
-            memory: submission.memory
-          }))
-        }))
-      }));
+        totalScore: mcqScore + codingScore,
+        mcqScore,
+        codingScore
+      };
+    });
 
     res.json({
       mcq: mcqSubmissions,
@@ -498,7 +552,16 @@ export const getTestSubmissions = async (req, res) => {
       summary: {
         totalSubmissions: submissions.length,
         mcqSubmissions: mcqSubmissions.length,
-        codingSubmissions: codingSubmissions.length
+        codingSubmissions: codingSubmissions.length,
+        averageScore: overallStats.length > 0 
+          ? Math.round(overallStats.reduce((sum, stat) => sum + stat.totalScore, 0) / overallStats.length) 
+          : 0,
+        averageMCQScore: overallStats.length > 0
+          ? Math.round(overallStats.reduce((sum, stat) => sum + stat.mcqScore, 0) / overallStats.length)
+          : 0,
+        averageCodingScore: overallStats.length > 0
+          ? Math.round(overallStats.reduce((sum, stat) => sum + stat.codingScore, 0) / overallStats.length)
+          : 0
       }
     });
 
@@ -532,19 +595,15 @@ export const getTestMCQSubmissions = async (req, res) => {
     .populate('user', 'name email')
     .lean();
 
-    const mcqSubmissions = submissions.map(sub => ({
-      testId: sub.test,
-      userId: sub.user._id,
-      userName: sub.user.name,
-      userEmail: sub.user.email,
-      answers: sub.mcqSubmission.answers.map(answer => {
+    const mcqSubmissions = submissions.map(sub => {
+      // Calculate answers and their correctness
+      const answers = sub.mcqSubmission.answers.map(answer => {
         const question = test.mcqs?.find(q => 
           q._id.toString() === answer.questionId.toString()
         );
         const correctOptions = question?.correctOptions || [];
         const selectedOptions = answer.selectedOptions || [];
         
-        // Updated array comparison logic
         const isCorrect = Array.isArray(correctOptions) && 
           Array.isArray(selectedOptions) &&
           correctOptions.length === selectedOptions.length &&
@@ -557,10 +616,21 @@ export const getTestMCQSubmissions = async (req, res) => {
           isCorrect,
           marks: isCorrect ? (question?.marks || 0) : 0
         };
-      }),
-      totalScore: sub.mcqSubmission.totalScore,
-      submittedAt: sub.mcqSubmission.submittedAt
-    }));
+      });
+
+      // Calculate total score by summing up marks from correct answers
+      const totalScore = answers.reduce((sum, answer) => sum + answer.marks, 0);
+
+      return {
+        testId: sub.test,
+        userId: sub.user._id,
+        userName: sub.user.name,
+        userEmail: sub.user.email,
+        answers,
+        totalScore,
+        submittedAt: sub.mcqSubmission.submittedAt
+      };
+    });
 
     res.status(200).json(mcqSubmissions);
   } catch (error) {
