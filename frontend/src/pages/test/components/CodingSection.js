@@ -7,7 +7,7 @@ import {
 import { apiService } from '../../../services/api';
 import { toast } from 'react-hot-toast';
 
-export default function CodingSection({ challenges, answers, setAnswers, onSubmitCoding, testId,  setAnalytics }) {
+export default function CodingSection({ challenges, answers, setAnswers, onSubmitCoding, setAnalytics }) {
   // Move ALL state declarations to the top
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [language, setLanguage] = useState('');
@@ -45,125 +45,23 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
     setAnswers(newAnswers);
   }, [setAnswers]);
 
-  // Add state for storing code per challenge
-  const [codeStore, setCodeStore] = useState(() => {
-    // Try to load saved code from localStorage
-    try {
-      const saved = localStorage.getItem(`coding_progress_${testId}`);
-      return saved ? JSON.parse(saved) : {};
-    } catch (error) {
-      console.error('Error loading saved code:', error);
-      return {};
-    }
-  });
-
-  // Update editor value handling
+  // Update handleEditorChange to use optional chaining
   const handleEditorChange = useCallback((value) => {
-    if (!challenge?._id) return;
-
-    // Update code store
-    setCodeStore(prev => {
-      const updated = {
-        ...prev,
+    if (typeof value !== 'string') return;
+    
+    setEditorValue(value);
+    
+    if (challenge?._id && language) {
+      const newAnswers = {
+        ...answers,
         [challenge._id]: {
           code: value,
-          language: language,
-          lastModified: Date.now()
+          language: language
         }
       };
-      
-      // Save to localStorage
-      try {
-        localStorage.setItem(`coding_progress_${testId}`, JSON.stringify(updated));
-      } catch (error) {
-        console.error('Error saving code:', error);
-      }
-      
-      return updated;
-    });
-
-    // Update editor value
-    setEditorValue(value);
-  }, [challenge?._id, language, testId]);
-
-  // Load saved code when challenge changes
-  useEffect(() => {
-    if (challenge?._id && codeStore[challenge._id]) {
-      const saved = codeStore[challenge._id];
-      setEditorValue(saved.code);
-      if (saved.language) {
-        setLanguage(saved.language);
-      }
+      memoizedSetAnswers(newAnswers);
     }
-  }, [challenge?._id, codeStore]);
-
-  // Add auto-save interval
-  useEffect(() => {
-    const saveInterval = setInterval(() => {
-      if (challenge?._id && editorValue) {
-        try {
-          const currentStore = JSON.parse(localStorage.getItem(`coding_progress_${testId}`) || '{}');
-          currentStore[challenge._id] = {
-            code: editorValue,
-            language: language,
-            lastModified: Date.now()
-          };
-          localStorage.setItem(`coding_progress_${testId}`, JSON.stringify(currentStore));
-        } catch (error) {
-          console.error('Auto-save error:', error);
-        }
-      }
-    }, 10000); // Auto-save every 10 seconds
-
-    return () => clearInterval(saveInterval);
-  }, [challenge?._id, editorValue, language, testId]);
-
-  // Add recovery mechanism for blank screen
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (!document.hidden && challenge?._id) {
-        // Try to recover code if screen is blank
-        try {
-          const saved = localStorage.getItem(`coding_progress_${testId}`);
-          if (saved) {
-            const parsed = JSON.parse(saved);
-            if (parsed[challenge._id]?.code && !editorValue) {
-              setEditorValue(parsed[challenge._id].code);
-              if (parsed[challenge._id].language) {
-                setLanguage(parsed[challenge._id].language);
-              }
-              toast.success('Recovered your code!');
-            }
-          }
-        } catch (error) {
-          console.error('Recovery attempt failed:', error);
-        }
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, [challenge?._id, testId, editorValue]);
-
-  // Add cleanup on component unmount
-  useEffect(() => {
-    return () => {
-      // Save final state before unmounting
-      if (challenge?._id && editorValue) {
-        try {
-          const currentStore = JSON.parse(localStorage.getItem(`coding_progress_${testId}`) || '{}');
-          currentStore[challenge._id] = {
-            code: editorValue,
-            language: language,
-            lastModified: Date.now()
-          };
-          localStorage.setItem(`coding_progress_${testId}`, JSON.stringify(currentStore));
-        } catch (error) {
-          console.error('Final save error:', error);
-        }
-      }
-    };
-  }, [challenge?._id, editorValue, language, testId]);
+  }, [answers, challenge?._id, language, memoizedSetAnswers]);
 
   // Define handleResetCode before any useEffect hooks
   const handleResetCode = () => {
@@ -673,21 +571,17 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
     }
   };
 
-  // Update editorOptions with additional settings to ensure proper cursor movement
+  // Update editor options with additional settings
   const editorOptions = {
     minimap: { enabled: false },
     fontSize: fontSize,
     lineNumbers: showLineNumbers ? 'on' : 'off',
     wordWrap: wordWrap ? 'on' : 'off',
     automaticLayout: true,
-    readOnly: false,  // Ensure this is false
-    domReadOnly: false,  // Ensure this is false
+    readOnly: false,
+    domReadOnly: false,
     scrollBeyondLastLine: false,
     tabSize: 2,
-    // Add these settings to improve cursor and typing behavior
-    cursorBlinking: 'blink',
-    cursorStyle: 'line',
-    cursorWidth: 2,
     // Keep basic editing features enabled
     formatOnPaste: true,
     formatOnType: true,
@@ -935,21 +829,16 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
     setLanguage(newLanguage);
     
     if (challenge?._id) {
-      // Get the default code but don't force it if user already has code
-      const existingCode = answers[challenge._id]?.code;
       const defaultCode = challenge.languageImplementations?.[newLanguage]?.visibleCode || '// Write your code here\n';
-      
-      const codeToUse = existingCode || defaultCode;
-      
       const newAnswers = {
         ...answers,
         [challenge._id]: {
-          code: codeToUse,
+          code: defaultCode,
           language: newLanguage
         }
       };
       setAnswers(newAnswers);
-      setEditorValue(codeToUse);
+      setEditorValue(defaultCode);
     }
   };
 
@@ -1189,19 +1078,14 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
             onChange={handleEditorChange}
             options={{
               ...editorOptions,
-              readOnly: false,  // Explicitly set to false
-              domReadOnly: false,  // Explicitly set to false
+              readOnly: !language,
+              domReadOnly: !language,
               theme: theme,
               backgroundColor: theme === 'vs-dark' ? '#1e1e1e' : '#ffffff',
             }}
             onMount={(editor, monaco) => {
               if (language) {
                 editor.focus();
-                // Force enable editing
-                editor.updateOptions({
-                  readOnly: false,
-                  domReadOnly: false
-                });
                 monaco.editor.setModelLanguage(editor.getModel(), language.toLowerCase());
               }
               monaco.editor.setTheme(theme);
