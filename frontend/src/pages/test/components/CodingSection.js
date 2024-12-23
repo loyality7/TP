@@ -411,27 +411,46 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
       const loadingToast = toast.loading('Running test cases...');
 
       for (const testCase of allTestCases) {
-        const response = await apiService.post('code/execute', {
-          code: currentAnswer.code,
-          language: language,
-          inputs: testCase.input
-        });
+        try {
+          const response = await apiService.post('code/execute', {
+            code: currentAnswer.code,
+            language: language.toLowerCase(), // Ensure lowercase language
+            inputs: testCase.input
+          });
 
-        // Ensure all required fields are present
-        const result = {
-          input: testCase.input || '',
-          expectedOutput: testCase.output || '',
-          actualOutput: response?.output || '',
-          passed: response?.status === 'Accepted' && 
-                  response?.output === testCase.output,
-          executionTime: response?.executionTime || 0,
-          memory: response?.memory || 0,
-          status: response?.status || 'Error',
-          error: response?.error || null,
-          isHidden: testCase.isHidden || false
-        };
+          // Clean outputs for comparison
+          const expectedOutput = (testCase.output || '').trim();
+          const actualOutput = (response?.data?.output || '').trim();
 
-        results.push(result);
+          // Ensure all required fields are present
+          const result = {
+            input: testCase.input || '',
+            expectedOutput: expectedOutput,
+            actualOutput: actualOutput,
+            passed: response?.data?.status === 'Accepted' && 
+                   actualOutput === expectedOutput, // Strict equality comparison
+            executionTime: parseFloat(response?.data?.executionTime) || 0,
+            memory: parseFloat(response?.data?.memory) || 0,
+            status: response?.data?.status || 'Error',
+            error: response?.data?.error || null,
+            isHidden: testCase.isHidden || false
+          };
+
+          results.push(result);
+        } catch (error) {
+          // Handle individual test case execution errors
+          results.push({
+            input: testCase.input || '',
+            expectedOutput: testCase.output || '',
+            actualOutput: '',
+            passed: false,
+            executionTime: 0,
+            memory: 0,
+            status: 'Error',
+            error: error.message || 'Execution failed',
+            isHidden: testCase.isHidden || false
+          });
+        }
       }
 
       // Update visible test results
@@ -452,7 +471,7 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
         submissions: [{
           challengeId: challenge._id,
           code: currentAnswer.code,
-          language: language,
+          language: language.toLowerCase(), // Ensure lowercase language
           testCaseResults: results.map(r => ({
             input: r.input,
             expectedOutput: r.expectedOutput,
@@ -465,40 +484,46 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
           })),
           executionTime: results.reduce((sum, r) => sum + r.executionTime, 0),
           memory: Math.max(...results.map(r => r.memory)),
-          output: results[0]?.output || '',
-          error: results.some(r => r.error) ? results.find(r => r.error)?.error : null
+          output: results[0]?.actualOutput || '', // Use actualOutput instead of output
+          error: results.some(r => r.error) ? results.find(r => r.error)?.error : null,
+          passed: results.every(r => r.passed) // Add overall passed status
         }]
       };
 
       toast.dismiss(loadingToast);
-      console.log('Submitting solution...');
       
       const response = await apiService.post('submissions/submit/coding', submissionData);
 
       // Check response status and update submission status
       if (response?.status === 201 || response?.statusText === 'Created') {
-        // Update submission status for this challenge
-        setSubmissionStatus(prev => ({
-          ...prev,
-          [challenge._id]: 'submitted'
-        }));
-        
-        toast.success('Challenge submitted successfully!');
-        
-        // Check if all challenges are completed
-        const allChallengesCompleted = challenges.every(ch => 
-          submissionStatus[ch._id] === 'submitted' || ch._id === challenge._id
-        );
+        // Only mark as submitted if ALL test cases passed
+        if (results.every(r => r.passed)) {
+          setSubmissionStatus(prev => ({
+            ...prev,
+            [challenge._id]: 'submitted'
+          }));
+          toast.success('Challenge submitted successfully!');
+          
+          // Check if all challenges are completed
+          const allChallengesCompleted = challenges.every(ch => 
+            submissionStatus[ch._id] === 'submitted' || ch._id === challenge._id
+          );
 
-        if (allChallengesCompleted) {
-          toast.success('All coding challenges completed!');
-          onSubmitCoding({
-            codingSubmission: response.data.submission.codingSubmission,
-            totalScore: response.data.submission.totalScore || 0
-          });
-        } else if (currentChallenge < challenges.length - 1) {
-          // Move to next challenge after successful submission
-          setTimeout(() => setCurrentChallenge(prev => prev + 1), 1500);
+          if (allChallengesCompleted) {
+            toast.success('All coding challenges completed!');
+            onSubmitCoding({
+              codingSubmission: response.data.submission.codingSubmission,
+              totalScore: response.data.submission.totalScore || 0
+            });
+          } else if (currentChallenge < challenges.length - 1) {
+            setTimeout(() => setCurrentChallenge(prev => prev + 1), 1500);
+          }
+        } else {
+          toast.error('Some test cases failed. Please fix your code and try again.');
+          setSubmissionStatus(prev => ({
+            ...prev,
+            [challenge._id]: undefined
+          }));
         }
       } else {
         throw new Error('Submission failed');
@@ -506,7 +531,6 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
 
     } catch (error) {
       console.error('Submission Error:', error);
-      // Reset submission status on error
       setSubmissionStatus(prev => ({
         ...prev,
         [challenge._id]: undefined
