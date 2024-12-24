@@ -1,1910 +1,1000 @@
 {
-    "title": "Aptitude and Programming Test 3",
-    "description": "A comprehensive test for MITS students covering Quantitative Aptitude and Basic Programming skills.",
-    "duration": 90,
-    "proctoring": true,
-    "type": "coding_challenge",
-    "category": "Aptitude and Programming",
-    "difficulty": "beginner",
-    "instructions": "1. Complete all sections: Aptitude MCQs and Programming Questions\n2. Each coding solution must handle basic test cases\n3. Time management is crucial - attempt all questions\n4. Read each question carefully before answering",
-    "mcqs": [
-      {
-        "question": "3 pumps, working 8 hours a day, can empty a tank in 2 days. How many hours a day must 4 pumps work to empty the tank in 1 day?",
-        "options": [
-          "9",
-          "10",
-          "11",
-          "12"
-        ],
-        "correctOptions": [3],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Let the required number of working hours per day be x. More pumps, Less working hours per day (Indirect Proportion). Less days, More working hours per day (Indirect Proportion). Using proportion: 4 × 1 × x = 3 × 2 × 8, solving for x = 12"
-      },
-      {
-        "question": "If the cost of x metres of wire is d rupees, then what is the cost of y metres of wire at the same rate?",
-        "options": [
-          "Rs. xy/d",
-          "Rs. (xd)",
-          "Rs. (yd)",
-          "Rs. yd/x"
-        ],
-        "correctOptions": [3],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Cost of x metres = Rs. d. Cost of 1 metre = Rs. d/x. Cost of y metres = Rs. (d/x) × y = Rs. yd/x"
-      },
-      {
-        "question": "If the cost price of shoes doubles, then the loss gets tripled of what it was initially. The initial loss % was?",
-        "options": [
-          "42",
-          "50",
-          "52",
-          "58"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Let CP = 100 and Loss be X. SP = CP - X = 100 - X. When CP doubles and loss triples: SP = 200 - 3X. Solving: 100 - X = 200 - 3X gives X = 50, so initial loss was 50%"
-      },
-      {
-        "question": "A car dealer sold two cars for Rs 45,000 each. One yielded him 25 percent profit on outlay. On the other he lost 25 percent. The profit/loss incurred by the dealer in rupees is",
-        "options": [
-          "6000 loss",
-          "No profit/loss",
-          "6000 profit",
-          "None of these"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "SP of both cars = Rs 90000. For first car: CP + 25% of CP = 45000, so CP = 36000. For second car: CP - 25% of CP = 45000, so CP = 60000. Total CP = 96000. Loss = 6000"
-      },
-      {
-        "question": "A man bought a number of articles for Rs.100; 3 of them were broken, but by selling each of the rest at 12.5% above cost price he made a profit of Rs.8. How many articles did he buy?",
-        "options": [
-          "60",
-          "65",
-          "70",
-          "75"
-        ],
-        "correctOptions": [3],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Let n be the number of articles. C.P. of each article = Rs.100/n. S.P. of each article = Rs.108/(n - 3). (100/n) x (112.5/100) = 108/(n-3) => n = 75"
-      },
-      {
-        "question": "A man buys oranges at 9 for Rs. 1.60 and sells them at 11 for Rs. 2. What is his gain or loss percent?",
-        "options": [
-          "2 (3/11) %",
-          "5 (6/11)%",
-          "4 (8/15)%",
-          "6 (3/11)%"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Taking LCM of 11 and 9 = 99 oranges. CP = 99x1.60/9 = Rs. 17.60. SP = 99 X 2/11 = Rs. 18. Gain = 40 Paise. Gain percent = (40/1760)X 100 = 2(3/11)%"
-      },
-      {
-        "question": "A man sells an item for 700 and makes some profit. Then he sells the same item for 500 and his loss is 3/5th of the earlier profit. What is his approximate loss percentage in the second transaction?",
-        "options": [
-          "11.5",
-          "13",
-          "15",
-          "Data insufficient"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "In First Transaction, SP1= 700; Profit= 700 - CP. In Second Transaction, CP - 500 = 3/5(700 - CP). Solving we get CP= 575. Loss %= (75/575)*100= 13%"
-      },
-      {
-        "question": "A man sold 12 candies at Rs. 10 had loss of b%, then again sold 12 candies at Rs. 12 had profit of b%. Find the value of b.",
-        "options": [
-          "9",
-          "9.09",
-          "10",
-          "11"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Let CP be x. Then: x-10 = bx/100 and 12-x = bx/100. Solving these equations gives b = 9.09%"
-      },
-      {
-        "question": "A merchant makes a profit of 20% even after allowing a discount of 20% on the marked price. What should be the marked price if the cost price of the article is Rs.300?",
-        "options": [
-          "Rs.450",
-          "Rs.250",
-          "Rs.380",
-          "Rs.590"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "CP = 300, SP = 360 (20% profit). Let MP be x. 80% of x = 360. Therefore x = 360*(100/80) = 450"
-      },
-      {
-        "question": "After allowing a discount of 11.11%, a trader still makes a gain of 14.28%. At how many percent above the cost price does he mark on his goods?",
-        "options": [
-          "28.56%",
-          "35%",
-          "22.22%",
-          "None of these"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Let CP be X. Then SP = 1.1428X. SP = 0.8889 MP. 0.8889 MP = 1.1428X. Therefore MP = 1.2856X, meaning marked up 28.56% above CP"
-      },
-      {
-        "question": "A student first decreased a number by 50% and then increased the decreased number by 50%. The number so obtained is 80 less than the original number. What was the original number?",
-        "options": [
-          "160",
-          "320",
-          "400",
-          "500"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Let original number be 100. After 50% decrease = 50. After 50% increase of 50 = 75. Difference is 25. If 25 = 80, then 100 = 320"
-      },
-      {
-        "question": "If the annual increase in the population of a town be 10% and the present population be 13310, then what was it three years ago?",
-        "options": [
-          "13310",
-          "10000",
-          "1331",
-          "None of these"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Let X be the initial population. X[1 + (10/100)]^3 = 13310. Therefore X = 10000"
-      },
-      {
-        "question": "In an examination, a candidate who gets 30% of the maximum marks fails by 100 marks. But another candidate who gets 42% marks gets 20 marks more than necessary marks. What is the passing mark?",
-        "options": [
-          "400",
-          "250",
-          "230",
-          "1000"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Let X be maximum marks. 30% of X + 100 = 42% of X – 20. 12% of X = 120. X = 1000. Pass marks = 0.3X + 100 = 400"
-      },
-      {
-        "question": "The length of a rectangle increases by 10% and the breath diminished by 25%. How does its area change?",
-        "options": [
-          "increases by 17.5%",
-          "decreases by 17.5%",
-          "increases by 15%",
-          "decreases by 15%"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "New length = 11x/10, new breadth = 3y/4. New area = 33xy/40. Reduced area = xy - 33xy/40 = 7xy/40. Percentage decrease = 17.5%"
-      },
-      {
-        "question": "The price of sugar increases by 50%. In order to restore the original price, the new price must be reduced by",
-        "options": [
-          "37 1/2%",
-          "50%",
-          "33 1/3%",
-          "None of these"
-        ],
-        "correctOptions": [2],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "If price increases by 50%, to restore original price, new price must be reduced by 33 1/3%"
-      },
-      {
-        "question": "Population of a village is 8000. If 6% men and 10% women are added, population becomes 8,600 then the number of men in the village was",
-        "options": [
-          "4800",
-          "5000",
-          "5400",
-          "6000"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Let x = men, y = women. 0.06x + 0.1y = 600 and x + y = 8000. Solving gives x = 5000, y = 3000"
-      },
-      {
-        "question": "Total income of Eesha in the years 2003, 2004, 2005 was $36,400. Her income increased by 20% each year. What was her income in 2005?",
-        "options": [
-          "14500",
-          "14000",
-          "14400",
-          "13500"
-        ],
-        "correctOptions": [2],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Let 2003 income be X. 2004 = 1.2X, 2005 = 1.44X. X + 1.2X + 1.44X = 36400. X = 10000. 2005 income = 1.44X = 14400"
-      },
-      {
-        "question": "Complete the missing term in the series 1, 6, 15, ?, 45, 66, 91.",
-        "options": [
-          "25",
-          "26",
-          "27",
-          "28"
-        ],
-        "correctOptions": [3],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Pattern: Each difference increases by 4. 6-1=5, 15-6=9, 28-15=13, 45-28=17, 66-45=21, 91-66=25. Therefore missing number is 28"
-      },
-      {
-        "question": "Out of 5 women and 4 men a committee of three members is to be formed in such a way that at least one member is a woman. In how many different ways can it be done?",
-        "options": [
-          "80",
-          "84",
-          "76",
-          "96"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "1 woman, 2 men: 5C1*4C2 = 5*6=30, 2 women, 1 man: 5C2*4C1 = 10*4=40, 3 women, 0 men: 5C3 = 10. Total = 80"
-      },
-      {
-        "question": "Town D is to the West of town M. Town R is to the South of town D. Town K is to the East of town R. Town K is towards which direction of town D?",
-        "options": [
-          "South",
-          "East",
-          "North-East",
-          "South-East"
-        ],
-        "correctOptions": [3],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "By plotting the towns on a direction grid, K is South-East of D"
-      },
-      {
-        "question": "A cube of side 4 cm is painted black on the pair of one surfaces, blue on the pair of another opposite surfaces and red on the pair of opposite surfaces. The cube is now divided into smaller cubes of equal side of 1 cm each. Then find the no. of smaller cubes with one surface painted.",
-        "options": [
-          "8",
-          "20",
-          "16",
-          "24"
-        ],
-        "correctOptions": [3],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "On each face, the inner smaller cubes other than the ones on the edges will have 1 side painted. 4 small cubes on each face, total 6 faces = 24 cubes"
-      },
-      {
-        "question": "Pointing out to a photograph, Shaloo said, 'Her son's father is the son in law of my mother.' How is Shaloo related to the lady?",
-        "options": [
-          "Aunt",
-          "Sister",
-          "Mother",
-          "Cousin"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Her son's father is Shaloo's sister's husband, making the lady Shaloo's sister"
-      },
-      {
-        "question": "How often are the hands of a clock at right angle everyday?",
-        "options": [
-          "38 times",
-          "44 times",
-          "40 times",
-          "48 times"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Right angle occurs 22 times in 12 hours. In 24 hours = 44 times"
-      },
-      {
-        "question": "Find the correct pair analogy for 3265:4376 :: 4673:?",
-        "options": [
-          "2154",
-          "3562",
-          "5487",
-          "5784"
-        ],
-        "correctOptions": [3],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "The difference between each pair is 1111. 4376 - 3265 = 1111, therefore 5784 - 4673 = 1111"
-      },
-      {
-        "question": "If ROAST is coded as PQYUR in a certain language then how will SLOPPY be coded?",
-        "options": [
-          "MRNAQN",
-          "NRMNQA",
-          "QNMRNA",
-          "RANNMQ"
-        ],
-        "correctOptions": [2],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "The series follows pattern -2, +2, -2. Applying same pattern to SLOPPY gives QNMRNA"
-      },
-      {
-        "question": "What is Nikita's share in the profit of Rs. 50,000 earned in the business run by her in partnership with Sharmila? I. Nikita invested an amount 150% of the amount invested by Sharmila. II. Amount invested by Sharmila is two-third of the amount invested by Nikita.",
-        "options": [
-          "A",
-          "B",
-          "C",
-          "D",
-          "E"
-        ],
-        "correctOptions": [2],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Either statement alone is sufficient to determine Nikita's share"
-      },
-      {
-        "question": "What is the two digit number? I. Sum of the digits is 6. II. Digit in the ten's place is double the digit in the unit's place.",
-        "options": [
-          "A",
-          "B",
-          "C",
-          "D",
-          "E"
-        ],
-        "correctOptions": [4],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Both statements together are needed to determine the number is 42 (4+2=6 and 4=2×2)"
-      },
-      {
-        "question": "A number when divided by a divisor leaves a remainder of 25. When twice the original number is divided by the same divisor, the remainder is 11. What is the value of the divisor?",
-        "options": [
-          "26",
-          "39",
-          "52",
-          "46"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "When twice the original number is divided, remainder should be 50. The remainder of 11 was obtained by dividing 50 by divisor. When 50 is divided by 39, remainder is 11. Hence 39 is the divisor."
-      },
-      {
-        "question": "Three years back, a father was 24 years older than his son. At present the father is 5 times as old as the son. How old will the son be three years from now?",
-        "options": [
-          "9 years",
-          "10 years",
-          "12 years",
-          "15 years"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Let present age of son be S and father be F. F-3 = (S-3) + 24 and F = 5S. Solving gives S = 6. Three years from now son's age will be 9 years."
-      },
-      {
-        "question": "A, B and C, each of them working alone can complete a job in 10, 12 and 15 days respectively. If all three of them work together to complete a job and earn Rs. 6000, what will be C's share of the earnings?",
-        "options": [
-          "Rs.1600",
-          "Rs. 1200",
-          "Rs. 1300",
-          "Rs.1500"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Work = 60 units (LCM of 10,12,15). A does 6 units/day, B does 5 units/day, C does 4 units/day. C's contribution is 4/15 of total. C's share = 6000 × (4/15) = Rs.1600"
-      },
-      {
-        "question": "In what ratio should a 20% methyl alcohol solution be mixed with a 50% methyl alcohol solution so that the resultant solution has 40% methyl alcohol in it?",
-        "options": [
-          "3:2",
-          "1:2",
-          "5:2",
-          "8:2"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Using allegation: 0.2x + 0.5y = 0.4(x+y). Solving gives x:y = 1:2"
-      },
-      {
-        "question": "The average monthly salary of 10 workers and 2 managers in a company was Rs. 18,000. When one of the managers whose salary was Rs. 24,000, was replaced with a new manager, the average salary of the team went up to Rs. 19,000. What is the salary of the new manager?",
-        "options": [
-          "38,000",
-          "39,000",
-          "36,000",
-          "40,000"
-        ],
-        "correctOptions": [2],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Original total = 12 × 18,000 = 216,000. New total = 12 × 19,000 = 228,000. Difference = 12,000. New manager salary = 24,000 + 12,000 = 36,000"
-      },
-      {
-        "question": "40% of 80 is x% more than 20% of 120. Find x.",
-        "options": [
-          "33.33%",
-          "35.33%",
-          "38.33%",
-          "39.33%"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "40% of 80 = 32, 20% of 120 = 24. Percentage increase = (32-24)/24 × 100 = 33.33%"
-      },
-      {
-        "question": "The difference between the compound interest and the simple interest on a certain sum at 10% p.a. for two years is Rs. 90. What will be the value of the amount at the end of 3 years, assuming SI?",
-        "options": [
-          "Rs. 11700",
-          "Rs. 11900",
-          "Rs. 11800",
-          "Rs. 20000"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "CI - SI = 90, 0.01P = 90, P = 9000. SI for 3 years = 9000 × 3 × 10/100 = 2700. Amount = 9000 + 2700 = 11700"
-      },
-      {
-        "question": "Two trains of lengths 125 m and 175 m cross each other in 12 seconds. If the speed of one of the trains is 40 km/h, what is the speed of the other train?",
-        "options": [
-          "10 km/h",
-          "50 km/h",
-          "20 km/h",
-          "30 km/h"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Relative speed = (125+175)/12 = 25 m/s = 90 km/h. If one train's speed is 40 km/h, other train's speed = 50 km/h"
-      },
-      {
-        "question": "In how many ways can 8 letters be posted in 4 post boxes, if any number of letters can be posted in all of the four post boxes?",
-        "options": [
-          "58",
-          "48",
-          "68",
-          "88"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Each letter can be posted in 4 ways. For 8 letters, total ways = 48"
-      },
-      {
-        "question": "There are 2 different blue toys, 3 different green toys and 4 different red toys. In how many ways can one choose 3 toys, such that there is at least one green toy and one blue toy in the chosen three?",
-        "options": [
-          "33 ways",
-          "36 ways",
-          "38 ways",
-          "40 ways"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Possible combinations: GBR (3×2×4=24 ways), GBB (3×1=3 ways), GBG (3×2=6 ways). Total = 24+3+6 = 33 ways"
-      },
-      {
-        "question": "What is the approximate value of 242 + 2.42 + 0.242 + 0.0242?",
-        "options": [
-          "560",
-          "570",
-          "580",
-          "590"
-        ],
-        "correctOptions": [2],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "242 = 576, 2.42 = 5.76, other values are negligible. Total sum is approximately 580"
-      },
-      {
-        "question": "3324 – 1724 is at least divisible by",
-        "options": [
-          "26",
-          "800",
-          "50",
-          "80"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "3324 - 1724 is divisible by (33+17) and (33-17). Therefore divisible by 50 × 16 = 800"
-      },
-      {
-        "question": "A number is mistakenly divided by 5 instead of being multiplied by 5. Find the percentage change in the result due to this mistake.",
-        "options": [
-          "96%",
-          "95%",
-          "2400%",
-          "none of these"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Let number be X. Actual value = 5X, Mistake value = X/5. Percentage change = (5X-0.2X)/5X = 0.96X = 96%"
-      },
-      {
-        "question": "A shopkeeper makes a profit of 20% on every kilogram of rice sold at the rate of Rs.36 per kg. The selling price is reduced in such a way that he gets a profit of Rs.2 per kg. By what percent must his sales increase so that his profit remains the same as before?",
-        "options": [
-          "220%",
-          "200%",
-          "150%",
-          "175%"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "CP = 36/1.2 = 30 per kg. Original profit = Rs.6/kg. To maintain same profit with Rs.2/kg, sales must increase by 200%"
-      },
-      {
-        "question": "A book was sold for a certain sum and there was a loss of 20%. Had it been sold for Rs. 12 more, there would have been a gain of 30%. What would be the profit if the book were sold for Rs. 4.8 more than what it was sold for?",
-        "options": [
-          "No profit, no loss",
-          "20%",
-          "10%",
-          "25%"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Let CP = x, SP = 0.8x. When SP increases by 12, 1.3x = 0.8x + 12. Solving gives x = 24, original SP = 19.2. New SP = 24 equals CP, so no profit no loss"
-      },
-      {
-        "question": "A sum of money placed at compound interest doubles itself in 3 years. In how many years will it amount to 8 times itself?",
-        "options": [
-          "9 years",
-          "8 years",
-          "27 years",
-          "7 years"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "If amount doubles in 3 years, 8 times means 2³ = 8, so it will take 3 × 3 = 9 years"
-      },
-      {
-        "question": "The rate of interest for first 3 years is 6% per annum, for the next 4 years, 7% per annum and for the period beyond 7 years, 7.5% per annum. If a man lent out Rs.1200 for 11 years, find the total interest earned by him?",
-        "options": [
-          "Rs.1002",
-          "Rs.912",
-          "Rs.864",
-          "Rs.948"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Interest for first 3 years = 18%, next 4 years = 28%, remaining 4 years = 30%. Total = 76% of 1200 = Rs.912"
-      },
-      {
-        "question": "A fast train takes 3 hours less than a slow train for a journey of 600 km. If the speed of the slow train is 10 km/hr less than that of the fast train, then the speeds of two trains are",
-        "options": [
-          "50, 40",
-          "60, 50",
-          "70, 80",
-          "None of these"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Let fast train speed be x. Then (600/x-10) - (600/x) = 3. Solving gives x = 50, slow train speed = 40"
-      },
-      {
-        "question": "A bus 270 metres can cross a bridge 180 metres long completely in 50 seconds. How long it will take to cross a telegraph pole 20 m high?",
-        "options": [
-          "35 sec",
-          "36 sec",
-          "20 sec",
-          "30 sec"
-        ],
-        "correctOptions": [3],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Total distance = 270 + 180 = 450m, Speed = 450/50 = 9 m/s. Time to cross pole = 270/9 = 30 sec (pole height irrelevant)"
-      },
-      {
-        "question": "How many different straight lines can be formed by joining 12 different points on a plane of which four are collinear and the rest are non collinear?",
-        "options": [
-          "16",
-          "32",
-          "61",
-          "64"
-        ],
-        "correctOptions": [2],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Total lines = 12C2 - 4C2 + 1 = 66 - 6 + 1 = 61"
-      },
-      {
-        "question": "A box contains 7 red, 6 white and 4 blue balls. How many selection of three balls can be made so that all three are red balls?",
-        "options": [
-          "35",
-          "70",
-          "42",
-          "17"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Selection of 3 red balls from 7 red balls = 7C3 = 35"
-      },
-      {
-        "question": "Simplify: 3 log 5 + 2 log 4 – log 2 =?",
-        "options": [
-          "9",
-          "6",
-          "3",
-          "5"
-        ],
-        "correctOptions": [2],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "3 log 5 + 2 log 4 - log 2 = log 125 + log 16 - log 2 = log (125 × 16)/2 = log 1000 = 3"
-      },
-      {
-        "question": "If four dice are thrown simultaneously, what is the probability of getting exactly the same number in each dice?",
-        "options": [
-          "1/36",
-          "1/216",
-          "1/6",
-          "NONE"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Favorable outcomes = 6 (same number on all dice), Total outcomes = 6⁴ = 1296. Probability = 6/1296 = 1/216"
-      },
-      {
-        "question": "From a book containing 100 page one page is selected randomly. What is the probability that the sum of the digits of the page number of the selected page is 11?",
-        "options": [
-          "11/100",
-          "11/50",
-          "1/25",
-          "2/25"
-        ],
-        "correctOptions": [3],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Favorable pages: 29, 92, 38, 83, 47, 74, 56, 65 (8 pages). Probability = 8/100 = 2/25"
-      },
-      {
-        "question": "If 5ᵃ = 3125, then the value of 5(a - 3) is?",
-        "options": [
-          "125",
-          "100",
-          "25",
-          "75"
-        ],
-        "correctOptions": [2],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "5ᵃ = 3125 = 5⁵, so a = 5. Therefore 5(a-3) = 5² = 25"
-      },
-      {
-        "question": "A train running at 54 km/hr crosses a platform in 20 seconds. If the length of the train is 150 meters, what is the length of the platform?",
-        "options": [
-          "100 meters",
-          "150 meters",
-          "200 meters",
-          "250 meters"
-        ],
-        "correctOptions": [2],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Train speed = 54 km/hr = 15 m/s. Total distance = Speed × Time = 15 × 20 = 300m. Platform length = Total distance - Train length = 300 - 150 = 200m"
-      },
-      {
-        "question": "If log 2 = 0.3010 and log 3 = 0.4771, then the value of log 72 is:",
-        "options": [
-          "1.8571",
-          "1.8751",
-          "1.8573",
-          "1.8575"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "log 72 = log(2^3 × 3^2) = 3log2 + 2log3 = 3(0.3010) + 2(0.4771) = 0.903 + 0.9542 = 1.8571"
-      },
-      {
-        "question": "A shopkeeper bought 30 kg of rice at Rs. 40 per kg and 20 kg of rice at Rs. 50 per kg. He mixed them and sold the mixture at Rs. 48 per kg. His profit percentage is:",
-        "options": [
-          "5%",
-          "8%",
-          "10%",
-          "12%"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "CP = (30×40 + 20×50) = 2200. SP = 48×50 = 2400. Profit% = ((2400-2200)/2200)×100 = 8%"
-      },
-      {
-        "question": "Three numbers are in the ratio 2:3:5. The sum of their squares is 608. The smallest number is:",
-        "options": [
-          "8",
-          "10",
-          "12",
-          "16"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Let numbers be 2x, 3x, 5x. (2x)² + (3x)² + (5x)² = 608. 38x² = 608. x = 4. Smallest number = 2x = 8"
-      },
-      {
-        "question": "A cylindrical vessel of diameter 14 cm contains water to a depth of 10 cm. A sphere is dropped into it and the water level rises by 5.6 cm. The diameter of the sphere is:",
-        "options": [
-          "10 cm",
-          "11 cm",
-          "12 cm",
-          "14 cm"
-        ],
-        "correctOptions": [2],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Volume of water risen = πr²h = π×7²×5.6. Volume of sphere = (4/3)πR³. Equating gives R = 6cm, diameter = 12cm"
-      },
-      {
-        "question": "If tan A = 3/4, then the value of (sin A + cos A) is:",
-        "options": [
-          "1",
-          "5/4",
-          "5/3",
-          "5/√25"
-        ],
-        "correctOptions": [3],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "If tan A = 3/4, then sin A = 3/5 and cos A = 4/5 (using Pythagorean identity). Therefore sin A + cos A = 5/5 = 5/√25"
-      },
-      {
-        "question": "A boat covers 24 km upstream and 24 km downstream in 6 hours. The same boat covers 24 km upstream and 24 km downstream in 8 hours in another river. The ratio of the rates of current in the first and second river is:",
-        "options": [
-          "1:2",
-          "2:1",
-          "3:2",
-          "2:3"
-        ],
-        "correctOptions": [2],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Let speed of boat be u and currents be c1, c2. Solving equations gives c1:c2 = 3:2"
-      },
-      {
-        "question": "The average weight of 8 persons increases by 2.5 kg when one person weighing 65 kg is replaced by a new person. The weight of the new person is:",
-        "options": [
-          "80 kg",
-          "82 kg",
-          "85 kg",
-          "87 kg"
-        ],
-        "correctOptions": [2],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Total increase = 8 × 2.5 = 20 kg. New person's weight = 65 + 20 = 85 kg"
-      },
-      {
-        "question": "The difference between simple interest and compound interest on a certain sum for 2 years at 4% per annum is Rs. 1. The sum is:",
-        "options": [
-          "Rs. 625",
-          "Rs. 630",
-          "Rs. 640",
-          "Rs. 650"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "CI - SI = P(1+r/100)² - P(1+2r/100) = 1. Solving gives P = 625"
-      },
-      {
-        "question": "A can do a work in 15 days and B in 20 days. They work together for 4 days and then B leaves. In how many days will A finish the remaining work?",
-        "options": [
-          "6 days",
-          "7 days",
-          "8 days",
-          "9 days"
-        ],
-        "correctOptions": [2],
-        "answerType": "single",
-        "marks": 5,
-        "difficulty": "medium",
-        "explanation": "Work done in 4 days = (1/15 + 1/20)×4 = 28/60. Remaining work = 32/60. A will take (32/60)/(1/15) = 8 days"
-      }
-    ],
-   "codingChallenges": [
+  "title": "Aptitude and Programming Test",
+  "description": "A comprehensive test for MITS students covering Quantitative Aptitude (R.S. Agarwal), Basic Programming, and Problem Solving skills.",
+  "duration": 60,
+  "proctoring": true,
+  "type": "coding_challenge",
+  "category": "Aptitude and Programming",
+  "difficulty": "beginner",
+  "instructions": "1. Complete all sections: Aptitude MCQs and Programming Questions\n2. Each coding solution must handle basic test cases\n3. Time management is crucial - attempt all questions\n4. Read each question carefully before answering",
+  "mcqs": [
     {
-      "title": "String Reversal",
-      "description": "Write a program to reverse a given string",
-      "problemStatement": "Create a function that takes a string as input and returns the reversed string.",
-      "constraints": "1 <= string length <= 100",
-      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
-      "languageImplementations": {
-        "javascript": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "python": {
-          "visibleCode": "# Write your code here",
-          "invisibleCode": "# No code needed"
-        },
-        "java": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "c": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "cpp": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        }
-      },
-      "testCases": [
-        {
-          "input": "hello",
-          "output": "olleh",
-          "isVisible": true,
-          "explanation": "Reverse the string 'hello' to get 'olleh'"
-        },
-        {
-          "input": "world",
-          "output": "dlrow",
-          "isVisible": true,
-          "explanation": "Reverse the string 'world' to get 'dlrow'"
-        }
+      "question": "A train running at 90 kmph crosses a pole in 10 seconds. What is the length of the train?",
+      "options": [
+        "200 meters",
+        "250 meters",
+        "225 meters",
+        "275 meters"
       ],
-      "marks": 10,
-      "timeLimit": 1,
-      "memoryLimit": 256,
-      "difficulty": "easy",
-      "tags": ["strings", "basic"]
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 4,
+      "difficulty": "medium",
+      "explanation": "Speed = 90 kmph = 25 m/s, Time = 10s, Length = Speed × Time = 25 × 10 = 250 meters"
     },
     {
-      "title": "Grade Calculator",
-      "description": "Calculate grade based on marks",
-      "problemStatement": "Write a program that takes marks (0-100) as input and returns the grade: A(90-100), B(80-89), C(70-79), D(60-69), F(0-59)",
-      "constraints": "0 <= marks <= 100",
-      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
-      "languageImplementations": {
-        "javascript": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "python": {
-          "visibleCode": "# Write your code here",
-          "invisibleCode": "# No code needed"
-        },
-        "java": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "c": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "cpp": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        }
-      },
-      "testCases": [
-        {
-          "input": "95",
-          "output": "A",
-          "isVisible": true,
-          "explanation": "95 is in the range 90-100, so grade is A"
-        },
-        {
-          "input": "75",
-          "output": "C",
-          "isVisible": true,
-          "explanation": "75 is in the range 70-79, so grade is C"
-        }
+      "question": "Find the average of all prime numbers between 30 and 50?",
+      "options": [
+        "39.6",
+        "42",
+        "38",
+        "39.8"
       ],
-      "marks": 10,
-      "timeLimit": 1,
-      "memoryLimit": 256,
-      "difficulty": "easy",
-      "tags": ["if-else", "basic"]
+      "correctOptions": [3],
+      "answerType": "single",
+      "marks": 4,
+      "difficulty": "medium",
+      "explanation": "There are five prime numbers between 30 and 50. They are 31,37,41,43 and 47. Therefore the required average=(31+37+41+43+47)/5=199/5=39.8."
     },
     {
-      "title": "Sum of Digits",
-      "description": "Calculate sum of digits using while loop",
-      "problemStatement": "Write a program that calculates the sum of digits of a given number using while loop. Example: 123 → 6 (1+2+3)",
-      "constraints": "1 <= number <= 10^9",
-      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
-      "languageImplementations": {
-        "javascript": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "python": {
-          "visibleCode": "# Write your code here",
-          "invisibleCode": "# No code needed"
-        },
-        "java": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "c": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "cpp": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        }
-      },
-      "testCases": [
-        {
-          "input": "123",
-          "output": "6",
-          "isVisible": true,
-          "explanation": "1 + 2 + 3 = 6"
-        },
-        {
-          "input": "5678",
-          "output": "26",
-          "isVisible": true,
-          "explanation": "5 + 6 + 7 + 8 = 26"
-        }
+      "question": "Find the average of first 40 natural numbers?",
+      "options": [
+        "19.5",
+        "19",
+        "20.5",
+        "20"
       ],
-      "marks": 10,
-      "timeLimit": 1,
-      "memoryLimit": 256,
-      "difficulty": "easy",
-      "tags": ["while-loop", "basic"]
+      "correctOptions": [2],
+      "answerType": "single",
+      "marks": 4,
+      "difficulty": "medium",
+      "explanation": "sum of first n natural numbers=n(n+1)/2; So,sum of 40 natural numbers=(40∗41)/2=820. Therefore the required average=820/40=20.5."
     },
     {
-      "title": "Vowel Counter",
-      "description": "Count vowels in a string",
-      "problemStatement": "Write a program that counts the number of vowels (a,e,i,o,u) in a given string. Ignore case.",
-      "constraints": "1 <= string length <= 100",
+      "question": "Find the average of first 20 multiples of 7?",
+      "options": [
+        "73.32",
+        "73.5",
+        "73.05",
+        "73"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 4,
+      "difficulty": "medium",
+      "explanation": "Required average =7*(1+2+3+…….+20)/20=(7∗20∗21)/(20∗2)=147/2=73.5."
+    },
+    {
+      "question": "The average of four consecutive even numbers is 27. find the largest of these numbers?",
+      "options": [
+        "30",
+        "24",
+        "26",
+        "28"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 4,
+      "difficulty": "medium",
+      "explanation": "let the numbers be x,x+2,x+4 and x+6. Then, (x+(x+2)+(x+4)+(x+6))/4 = 27, (4x+12)/4= 27, x+3=27, x=24. Therefore the largest number=(x+6)=24+6=30."
+    },
+    {
+      "question": "In a row of 20 students, when Rohit was shifted to his left by 4 places his number from left end became 10. What was his earlier position from the right end?",
+      "options": [
+        "6",
+        "7",
+        "8",
+        "9"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-1",
+      "difficulty": "medium",
+      "explanation": "His new position from left is 10. Earlier he was at (10+4)=14th position from left. So from right end he was at (20-14+1)=7th position."
+    },
+    {
+      "question": "If TEACHER is coded as VGCEJGT, then how will STUDENT be coded?",
+      "options": [
+        "UVWFGPV",
+        "UVWFGPZ",
+        "UVWFCPV",
+        "UVWFGPY"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-1",
+      "difficulty": "medium",
+      "explanation": "Each letter is replaced by letter 2 positions ahead in alphabet. Therefore, STUDENT becomes UVWFGPV"
+    },
+    {
+      "question": "If South-East becomes North, North-East becomes West, then what will North-West become?",
+      "options": [
+        "South",
+        "East",
+        "South-West",
+        "North-East"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-1",
+      "difficulty": "medium",
+      "explanation": "The pattern shows 135° clockwise rotation. Following this, North-West will become East"
+    },
+    {
+      "question": "Find the missing number: 2, 6, 12, 20, 30, ?",
+      "options": [
+        "42",
+        "40",
+        "44",
+        "46"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-1",
+      "difficulty": "medium",
+      "explanation": "The pattern is +4, +6, +8, +10, +12. So next number is 30+12=42"
+    },
+    {
+      "question": "If A + B means A is the mother of B; A - B means A is the brother of B; A × B means A is the sister of B and A ÷ B means A is the father of B, then which of the following means M is the aunt of N?",
+      "options": [
+        "M × P + N",
+        "M - P + N",
+        "M + P - N",
+        "M ÷ P + N"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-1",
+      "difficulty": "hard",
+      "explanation": "M × P + N means M is sister of P and P is mother of N, making M the aunt of N"
+    },
+    {
+      "question": "In a certain code, '256' means 'bright red light', '637' means 'light red rose' and '358' means 'green bright rose'. Which digit stands for 'bright'?",
+      "options": [
+        "2",
+        "5",
+        "6",
+        "3"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-1",
+      "difficulty": "medium",
+      "explanation": "Comparing the codes, '2' is common between 'bright red light' and 'bright rose', so 2 represents 'bright'"
+    },
+    {
+      "question": "If MOUSE is written as PRUQC, then how will SHIFT be written in that code?",
+      "options": [
+        "UJKHV",
+        "QFGDV",
+        "UJKDV",
+        "QJKDV"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-1",
+      "difficulty": "medium",
+      "explanation": "Each letter is replaced by the letter 2 positions before it in the alphabet. Therefore, SHIFT becomes QFGDV"
+    },
+    {
+      "question": "In a certain code language, if TERMINAL = 1234567890, then MINERAL = ?",
+      "options": [
+        "45632789",
+        "46532789",
+        "45623789",
+        "46523789"
+      ],
+      "correctOptions": [2],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-1",
+      "difficulty": "medium",
+      "explanation": "Using the same position values from TERMINAL, MINERAL would be 45623789"
+    },
+    {
+      "question": "If 'P' means '×', 'Q' means '÷', 'R' means '+' and 'S' means '-', then what will be the value of 8 P 6 Q 2 R 4 S 2?",
+      "options": [
+        "26",
+        "24",
+        "28",
+        "22"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-1",
+      "difficulty": "hard",
+      "explanation": "8 × 6 ÷ 2 + 4 - 2 = 48 ÷ 2 + 4 - 2 = 24 + 4 - 2 = 26"
+    },
+    {
+      "question": "Which one will replace the question mark? 2, 6, 12, 20, 30, 42, ?",
+      "options": [
+        "56",
+        "54",
+        "58",
+        "60"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-1",
+      "difficulty": "medium",
+      "explanation": "The pattern is +4, +6, +8, +10, +12, +14. So next number is 42+14=56"
+    },
+    {
+      "question": "If FRIEND is coded as HUMJTK, how is CANDLE coded?",
+      "options": [
+        "EDRJQG",
+        "DCQIKG",
+        "ECPFNG",
+        "ECOFNG"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-1",
+      "difficulty": "medium",
+      "explanation": "Each letter is moved 2 positions forward in the alphabet. Therefore, CANDLE becomes DCQIKG"
+    },
+    {
+      "question": "In a row of boys, A is 7th from the left and B is 12th from the right. If A is 8th from the right, what is B's position from the left?",
+      "options": [
+        "3",
+        "12",
+        "13",
+        "14"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-1",
+      "difficulty": "medium",
+      "explanation": "Total boys = (7 + 8 - 1) = 14. B is 12th from right, so from left B is (14 - 12 + 1) = 3rd position"
+    },
+    {
+      "question": "If in a certain language, MADRAS is coded as NBESBT, how is BOMBAY coded in that code?",
+      "options": [
+        "CPNCBZ",
+        "CPNCBX",
+        "CPOCBZ",
+        "CQOCBZ"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-1",
+      "difficulty": "medium",
+      "explanation": "Each letter is replaced by the next letter in the alphabet. Therefore, BOMBAY becomes CPNCBZ"
+    },
+    {
+      "question": "Find the odd one out: Teacher, Doctor, Engineer, Nurse, Carpenter",
+      "options": [
+        "Teacher",
+        "Doctor",
+        "Engineer",
+        "Carpenter"
+      ],
+      "correctOptions": [3],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-1",
+      "difficulty": "easy",
+      "explanation": "Carpenter is the only profession that doesn't require a formal degree education"
+    },
+    {
+      "question": "Complete the series: FAG, GAF, HAI, IAH, ___",
+      "options": [
+        "JAK",
+        "HAK",
+        "JAI",
+        "HAI"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-1",
+      "difficulty": "hard",
+      "explanation": "First letter increases by 1, second letter remains A, third letter increases by 1 in alternate terms. Therefore, JAK is next"
+    },
+    {
+      "question": "What is the time complexity of quicksort in the average case?",
+      "options": [
+        "O(n)",
+        "O(n log n)",
+        "O(n²)",
+        "O(log n)"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-2",
+      "difficulty": "medium",
+      "explanation": "Quicksort has an average time complexity of O(n log n) due to its divide-and-conquer approach."
+    },
+    {
+      "question": "Which of the following is NOT a valid access modifier in Java?",
+      "options": [
+        "public",
+        "private",
+        "friendly",
+        "protected"
+      ],
+      "correctOptions": [2],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-2",
+      "difficulty": "medium",
+      "explanation": "'friendly' is not a valid access modifier in Java. The correct term is 'default' or package-private (when no modifier is specified)."
+    },
+    {
+      "question": "What is the output of: SELECT COUNT(*) FROM table WHERE column IS NULL?",
+      "options": [
+        "Returns error",
+        "Returns 0",
+        "Returns count of NULL values",
+        "Returns count of non-NULL values"
+      ],
+      "correctOptions": [2],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-2",
+      "difficulty": "medium",
+      "explanation": "The query counts the number of rows where the specified column contains NULL values."
+    },
+    {
+      "question": "In IPv4, how many bits are used for the network address in a Class C network?",
+      "options": [
+        "8 bits",
+        "16 bits",
+        "24 bits",
+        "32 bits"
+      ],
+      "correctOptions": [2],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-2",
+      "difficulty": "medium",
+      "explanation": "In a Class C network, the first 24 bits are used for the network address, leaving 8 bits for host addresses."
+    },
+    {
+      "question": "What is the result of 5 & 3 in binary operations?",
+      "options": [
+        "1",
+        "2",
+        "3",
+        "8"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-2",
+      "difficulty": "medium",
+      "explanation": "5 in binary is 101, 3 in binary is 011. Performing AND operation: 101 & 011 = 001 = 1 in decimal."
+    },
+    {
+      "question": "Which data structure is typically used to implement undo functionality in a text editor?",
+      "options": [
+        "Queue",
+        "Stack",
+        "Linked List",
+        "Binary Tree"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-2",
+      "difficulty": "medium",
+      "explanation": "Stack is used because it follows Last-In-First-Out (LIFO) principle, perfect for undoing the most recent actions."
+    },
+    {
+      "question": "What is the main purpose of a primary key in a database?",
+      "options": [
+        "To encrypt data",
+        "To speed up queries",
+        "To uniquely identify records",
+        "To compress data"
+      ],
+      "correctOptions": [2],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-2",
+      "difficulty": "easy",
+      "explanation": "A primary key uniquely identifies each record in a database table, ensuring data integrity and relationships between tables."
+    },
+    {
+      "question": "Which HTTP status code indicates a successful request?",
+      "options": [
+        "200",
+        "404",
+        "500",
+        "301"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-2",
+      "difficulty": "easy",
+      "explanation": "200 (OK) status code indicates that the request has succeeded and the server has returned the expected content."
+    },
+    {
+      "question": "What is the output of: console.log(typeof typeof 1);",
+      "options": [
+        "number",
+        "string",
+        "undefined",
+        "object"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-2",
+      "difficulty": "hard",
+      "explanation": "typeof 1 returns 'number', then typeof 'number' returns 'string' because typeof always returns a string."
+    },
+    {
+      "question": "Which design pattern is used when you need a single instance of a class throughout the application?",
+      "options": [
+        "Factory",
+        "Observer",
+        "Singleton",
+        "Decorator"
+      ],
+      "correctOptions": [2],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-2",
+      "difficulty": "medium",
+      "explanation": "Singleton pattern ensures a class has only one instance and provides a global point of access to it."
+    },
+    {
+      "question": "Choose the word that is closest in meaning to 'BENEVOLENT'",
+      "options": [
+        "Kind",
+        "Hostile",
+        "Cruel",
+        "Indifferent"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "medium",
+      "explanation": "Benevolent means 'kind and generous', making 'Kind' the closest synonym."
+    },
+    {
+      "question": "Select the correct meaning of the idiom: 'Beat around the bush'",
+      "options": [
+        "To search in the wild",
+        "To avoid coming directly to the point",
+        "To create confusion",
+        "To waste time"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "medium",
+      "explanation": "To 'beat around the bush' means to avoid addressing a subject directly."
+    },
+    {
+      "question": "Choose the antonym of 'AUDACIOUS'",
+      "options": [
+        "Timid",
+        "Bold",
+        "Brave",
+        "Daring"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "medium",
+      "explanation": "Audacious means 'bold and daring', so its antonym is 'Timid'."
+    },
+    {
+      "question": "Identify the correctly spelled word:",
+      "options": [
+        "Accomodate",
+        "Accommodate",
+        "Acommodate",
+        "Accommodete"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "medium",
+      "explanation": "The correct spelling is 'Accommodate' with two 'c's and two 'm's."
+    },
+    {
+      "question": "Choose the sentence with correct subject-verb agreement:",
+      "options": [
+        "The group of students were playing.",
+        "The group of students was playing.",
+        "The group of students is playing.",
+        "The group of students have playing."
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "medium",
+      "explanation": "'Group' is a collective noun and takes a singular verb 'was'."
+    },
+    {
+      "question": "What is the plural form of 'criterion'?",
+      "options": [
+        "Criterions",
+        "Criteria",
+        "Criterias",
+        "Criterion's"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "medium",
+      "explanation": "The plural of 'criterion' is 'criteria', following Greek plural formation rules."
+    },
+    {
+      "question": "Choose the correct meaning of the phrase 'In the nick of time'",
+      "options": [
+        "Very late",
+        "Just in time",
+        "Before time",
+        "After time"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "'In the nick of time' means just at the right moment or just in time."
+    },
+    {
+      "question": "Which word best completes the sentence: 'The mountain climber showed great _____ in reaching the summit.'",
+      "options": [
+        "Fortitude",
+        "Latitude",
+        "Gratitude",
+        "Attitude"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "medium",
+      "explanation": "'Fortitude' means courage in pain or adversity, making it the most appropriate choice."
+    },
+    {
+      "question": "Identify the passive voice: 'The letter _____ yesterday.'",
+      "options": [
+        "was written",
+        "was writing",
+        "wrote",
+        "had written"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "medium",
+      "explanation": "'Was written' is in passive voice, where the subject receives the action."
+    },
+    {
+      "question": "Choose the correct article to complete: '_____ European Union has 27 member states.'",
+      "options": [
+        "A",
+        "An",
+        "The",
+        "No article needed"
+      ],
+      "correctOptions": [2],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "medium",
+      "explanation": "'The' is used before unique entities and organizations."
+    },
+    {
+      "question": "What is the meaning of the prefix 'inter-'?",
+      "options": [
+        "Between",
+        "Inside",
+        "Against",
+        "Beyond"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "medium",
+      "explanation": "The prefix 'inter-' means 'between' or 'among', as in 'international' or 'interact'."
+    },
+    {
+      "question": "Choose the correct form of the verb: 'Each of the students _____ to submit their assignments.'",
+      "options": [
+        "have",
+        "has",
+        "were",
+        "are"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "medium",
+      "explanation": "When using 'each of', the verb should be singular."
+    },
+    {
+      "question": "Identify the figure of speech: 'The wind whispered through the trees.'",
+      "options": [
+        "Metaphor",
+        "Simile",
+        "Personification",
+        "Hyperbole"
+      ],
+      "correctOptions": [2],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "medium",
+      "explanation": "This is personification as it attributes human qualities (whispering) to non-human things (wind)."
+    },
+    {
+      "question": "Choose the word with the correct prefix to mean 'against': '_____ bacterial'",
+      "options": [
+        "in-",
+        "un-",
+        "anti-",
+        "non-"
+      ],
+      "correctOptions": [2],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "medium",
+      "explanation": "The prefix 'anti-' means 'against' or 'opposing'."
+    },
+    {
+      "question": "Select the correct homophone: 'The ship dropped its _____.'",
+      "options": [
+        "anchor",
+        "anker",
+        "ancor",
+        "ankhor"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "'Anchor' is the correct spelling for a ship's mooring device."
+    },
+    {
+      "question": "What is the meaning of the idiom 'Apple of one's eye'?",
+      "options": [
+        "Something very expensive",
+        "Someone's favorite",
+        "A rare fruit",
+        "A type of eye disease"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "medium",
+      "explanation": "'Apple of one's eye' refers to someone who is very dear or precious to another person."
+    },
+    {
+      "question": "Choose the correct word order: 'He (1)bought (2)yesterday (3)a car (4)new'",
+      "options": [
+        "1-2-3-4",
+        "1-3-4-2",
+        "2-1-3-4",
+        "1-2-4-3"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "medium",
+      "explanation": "The correct word order is 'He bought a new car yesterday.'"
+    },
+    {
+      "question": "Identify the type of sentence: 'What a beautiful sunset!'",
+      "options": [
+        "Declarative",
+        "Interrogative",
+        "Exclamatory",
+        "Imperative"
+      ],
+      "correctOptions": [2],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "This is an exclamatory sentence expressing strong emotion or feeling."
+    },
+    {
+      "question": "Choose the correct comparative form: 'This is the _____ day of my life.'",
+      "options": [
+        "better",
+        "good",
+        "best",
+        "well"
+      ],
+      "correctOptions": [2],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "'Best' is the superlative form used when comparing more than two things."
+    },
+    {
+      "question": "Select the sentence with correct punctuation:",
+      "options": [
+        "John said that he was tired",
+        "John said, that he was tired",
+        "John said that, he was tired",
+        "John said that he was tired."
+      ],
+      "correctOptions": [3],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "medium",
+      "explanation": "A period is needed at the end of a declarative sentence."
+    },
+    {
+      "question": "What will be the output of this pseudocode?\nA = 5\nB = 3\nWHILE A > 0\n  B = B + 1\n  A = A - 1\nPRINT B",
+      "options": [
+        "3",
+        "5",
+        "8",
+        "15"
+      ],
+      "correctOptions": [2],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-4",
+      "difficulty": "medium",
+      "explanation": "Loop runs 5 times. Each time B increases by 1. Starting from 3, after 5 iterations: 3+5=8"
+    },
+    {
+      "question": "In the following pseudocode, what is the value of SUM?\nSUM = 0\nFOR i = 1 TO 5\n  IF i MOD 2 = 0\n    SUM = SUM + i\nENDFOR",
+      "options": [
+        "6",
+        "9",
+        "15",
+        "25"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-4",
+      "difficulty": "medium",
+      "explanation": "Only even numbers are added (2+4=6). Numbers 1,3,5 are skipped as they give remainder 1 when divided by 2"
+    },
+    {
+      "question": "What will this pseudocode return?\nFUNCTION mystery(n)\n  IF n ≤ 1 THEN\n    RETURN 1\n  ELSE\n    RETURN n * mystery(n-1)\n  ENDIF\nENDFUNCTION\nmystery(4)",
+      "options": [
+        "4",
+        "8",
+        "16",
+        "24"
+      ],
+      "correctOptions": [3],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-4",
+      "difficulty": "hard",
+      "explanation": "This is a factorial function. For n=4: 4 * 3 * 2 * 1 = 24"
+    },
+    {
+      "question": "What is the time complexity of this pseudocode?\nFOR i = 1 TO n\n  FOR j = 1 TO i\n    PRINT i,j\n  ENDFOR\nENDFOR",
+      "options": [
+        "O(n)",
+        "O(n log n)",
+        "O(n²)",
+        "O(2n)"
+      ],
+      "correctOptions": [2],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-4",
+      "difficulty": "medium",
+      "explanation": "Inner loop runs i times for each i from 1 to n. Total operations: 1+2+3+...+n = n(n+1)/2 which is O(n²)"
+    },
+    {
+      "question": "What will be stored in array A after this pseudocode executes?\nA = [5,2,8,1,9]\nFOR i = 1 TO 4\n  FOR j = 1 TO 5-i\n    IF A[j] > A[j+1] THEN\n      SWAP A[j], A[j+1]\n    ENDIF\n  ENDFOR\nENDFOR",
+      "options": [
+        "[9,8,5,2,1]",
+        "[1,2,5,8,9]",
+        "[5,2,8,1,9]",
+        "[1,9,2,8,5]"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-4",
+      "difficulty": "hard",
+      "explanation": "This is bubble sort algorithm. It repeatedly steps through the list, compares adjacent elements and swaps them if they are in wrong order."
+    },
+    {
+      "question": "If a train travels 360 kilometers in 4 hours working 6 hours per day, how many days will it take 6 workers to complete the same job working 8 hours per day?",
+      "options": [
+        "10 days",
+        "12 days",
+        "16 days",
+        "18 days"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-5",
+      "difficulty": "hard",
+      "explanation": "Using (M₁ × D₁ × H₁) = (M₂ × D₂ × H₂)\n8 × 12 × 6 = 6 × D × 8\n576 = 48D\nD = 10 days"
+    },
+    {
+      "question": "A mixture contains milk and water in the ratio 4:1. If 10 liters of water is added, the ratio becomes 4:3. Find the initial quantity of milk in the mixture.",
+      "options": [
+        "20 liters",
+        "25 liters",
+        "30 liters",
+        "40 liters"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-5",
+      "difficulty": "hard",
+      "explanation": "Let initial milk be x liters\nInitial ratio: x : x/4 = 4 : 1\nAfter adding water: x : (x/4 + 10) = 4 : 3\nx/4 + 10 = 3x/4\n40 = 2x\nx = 20 liters"
+    },
+    {
+      "question": "Choose the sentence with correct parallel structure:",
+      "options": [
+        "He likes swimming, running, and to play tennis",
+        "He likes swimming, running, and playing tennis",
+        "He likes to swim, running, and tennis playing",
+        "He likes to swim, to run, and plays tennis"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-6",
+      "difficulty": "medium",
+      "explanation": "Parallel structure requires consistent grammatical form. All gerunds: 'swimming, running, and playing' maintain parallelism."
+    },
+    {
+      "question": "Which sentence demonstrates correct subject-verb agreement?",
+      "options": [
+        "Neither of the students have completed their assignments",
+        "Neither of the students has completed their assignment",
+        "Neither of the student has completed their assignments",
+        "Neither of the students have completed his assignment"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-6",
+      "difficulty": "medium",
+      "explanation": "'Neither' is singular and requires a singular verb 'has'. The plural 'their' is acceptable as a gender-neutral pronoun."
+    },
+    {
+      "question": "Identify the sentence with the correct use of the past perfect tense:",
+      "options": [
+        "By the time he reached home, she left",
+        "By the time he reached home, she had left",
+        "By the time he had reached home, she left",
+        "By the time he has reached home, she had left"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-6",
+      "difficulty": "medium",
+      "explanation": "Past perfect (had + past participle) is used for an action completed before another past action. 'She had left' happened before 'he reached'."
+    },
+    {
+      "question": "Which sentence uses the correct form of the conditional?",
+      "options": [
+        "If I would have known, I would have told you",
+        "If I had known, I would have told you",
+        "If I would know, I would tell you",
+        "If I had known, I would told you"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-6",
+      "difficulty": "hard",
+      "explanation": "Third conditional uses 'if + past perfect' in the if-clause and 'would have + past participle' in the main clause."
+    },
+    {
+      "question": "Select the sentence with correct modifier placement:",
+      "options": [
+        "Walking down the street, a tree caught my attention",
+        "Walking down the street, I saw a tree that caught my attention",
+        "A tree caught my attention while walking down the street",
+        "Down the street walking, my attention was caught by a tree"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-6",
+      "difficulty": "medium",
+      "explanation": "The introductory modifier 'Walking down the street' should describe the subject 'I' of the main clause to avoid a dangling modifier."
+    }
+  ],
+  "codingChallenges": [
+    {
+      "title": "Basic Calculator",
+      "description": "Implement a basic calculator that performs arithmetic operations",
+      "problemStatement": "Write a function that takes two numbers and an operator (+, -, *, /) as input and returns the result of the operation. Return 'Error' for division by zero.",
+      "constraints": "1. -10^5 <= numbers <= 10^5\n2. operator can be '+', '-', '*', or '/'",
       "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
       "languageImplementations": {
         "javascript": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
+          "visibleCode": "function calculate(num1, operator, num2) {\n    // Write your code here\n    // Return the result of the arithmetic operation\n    \n}",
+          "invisibleCode": "module.exports = calculate;"
         },
         "python": {
-          "visibleCode": "# Write your code here",
-          "invisibleCode": "# No code needed"
+          "visibleCode": "def calculate(num1, operator, num2):\n    # Write your code here\n    # Return the result of the arithmetic operation\n    pass",
+          "invisibleCode": "# No additional code needed"
         },
         "java": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
+          "visibleCode": "public class Solution {\n    public static double calculate(double num1, String operator, double num2) {\n        // Write your code here\n        // Return the result of the arithmetic operation\n    }\n}",
+          "invisibleCode": "// No additional code needed"
         },
         "c": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
+          "visibleCode": "double calculate(double num1, char operator, double num2) {\n    // Write your code here\n    // Return the result of the arithmetic operation\n}",
+          "invisibleCode": "#include <stdio.h>\n#include <stdlib.h>"
         },
         "cpp": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
+          "visibleCode": "double calculate(double num1, char operator, double num2) {\n    // Write your code here\n    // Return the result of the arithmetic operation\n}",
+          "invisibleCode": "#include <iostream>\nusing namespace std;"
         }
       },
       "testCases": [
         {
-          "input": "Hello",
-          "output": "2",
-          "isVisible": true,
-          "explanation": "Found vowels: e, o"
+          "input": "10 + 5",
+          "output": "15",
+          "isVisible": true
         },
         {
-          "input": "AEIOU",
+          "input": "20 - 8",
+          "output": "12",
+          "isVisible": true
+        },
+        {
+          "input": "6 * 4",
+          "output": "24",
+          "isVisible": true
+        },
+        {
+          "input": "15 / 3",
           "output": "5",
-          "isVisible": true,
-          "explanation": "Found vowels: A, E, I, O, U"
-        }
-      ],
-      "marks": 10,
-      "timeLimit": 1,
-      "memoryLimit": 256,
-      "difficulty": "easy",
-      "tags": ["strings", "basic"]
-    },
-    {
-      "title": "Temperature Converter",
-      "description": "Convert between Celsius and Fahrenheit",
-      "problemStatement": "Write a program that converts temperature from Celsius to Fahrenheit. Formula: F = (C × 9/5) + 32",
-      "constraints": "-100 <= temperature <= 100",
-      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
-      "languageImplementations": {
-        "javascript": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "python": {
-          "visibleCode": "# Write your code here",
-          "invisibleCode": "# No code needed"
-        },
-        "java": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "c": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "cpp": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        }
-      },
-      "testCases": [
-        {
-          "input": "0",
-          "output": "32",
-          "isVisible": true,
-          "explanation": "0°C = (0 × 9/5) + 32 = 32°F"
+          "isVisible": true
         },
         {
-          "input": "100",
-          "output": "212",
-          "isVisible": true,
-          "explanation": "100°C = (100 × 9/5) + 32 = 212°F"
+          "input": "10 / 0",
+          "output": "Error",
+          "isVisible": true
         }
       ],
       "marks": 10,
-      "timeLimit": 1,
+      "timeLimit": 2,
       "memoryLimit": 256,
-      "difficulty": "easy",
-      "tags": ["if-else", "basic"]
-    },
-    {
-      "title": "Factorial Calculator",
-      "description": "Calculate factorial using while loop",
-      "problemStatement": "Write a program to calculate factorial of a number using while loop. Example: 5! = 5×4×3×2×1 = 120",
-      "constraints": "0 <= N <= 12",
-      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
-      "languageImplementations": {
-        "javascript": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "python": {
-          "visibleCode": "# Write your code here",
-          "invisibleCode": "# No code needed"
-        },
-        "java": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "c": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "cpp": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        }
-      },
-      "testCases": [
-        {"input": "5", "output": "120", "isVisible": true},
-        {"input": "0", "output": "1", "isVisible": true}
-      ],
-      "marks": 10,
-      "timeLimit": 1,
-      "memoryLimit": 256,
-      "difficulty": "easy",
-      "tags": ["while-loop", "basic"]
-    },
-    {
-      "title": "Palindrome Check",
-      "description": "Check if string is palindrome",
-      "problemStatement": "Write a program to check if a string is palindrome (reads same forwards and backwards). Return 'Yes' or 'No'.",
-      "constraints": "1 <= string length <= 100",
-      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
-      "languageImplementations": {
-        "javascript": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "python": {
-          "visibleCode": "# Write your code here",
-          "invisibleCode": "# No code needed"
-        },
-        "java": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "c": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "cpp": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        }
-      },
-      "testCases": [
-        {"input": "radar", "output": "Yes", "isVisible": true},
-        {"input": "hello", "output": "No", "isVisible": true}
-      ],
-      "marks": 10,
-      "timeLimit": 1,
-      "memoryLimit": 256,
-      "difficulty": "easy",
-      "tags": ["strings", "basic"]
-    },
-    {
-      "title": "Largest of Three",
-      "description": "Find largest among three numbers",
-      "problemStatement": "Write a program to find the largest among three given numbers.",
-      "constraints": "-10^9 <= numbers <= 10^9",
-      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
-      "languageImplementations": {
-        "javascript": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "python": {
-          "visibleCode": "# Write your code here",
-          "invisibleCode": "# No code needed"
-        },
-        "java": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "c": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "cpp": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        }
-      },
-      "testCases": [
-        {"input": "10 20 30", "output": "30", "isVisible": true},
-        {"input": "-1 -5 -3", "output": "-1", "isVisible": true}
-      ],
-      "marks": 10,
-      "timeLimit": 1,
-      "memoryLimit": 256,
-      "difficulty": "easy",
-      "tags": ["if-else", "basic"]
-    },
-    {
-      "title": "Multiplication Table",
-      "description": "Print multiplication table using while loop",
-      "problemStatement": "Write a program to print multiplication table of a given number up to 10 using while loop.",
-      "constraints": "1 <= N <= 20",
-      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
-      "languageImplementations": {
-        "javascript": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "python": {
-          "visibleCode": "# Write your code here",
-          "invisibleCode": "# No code needed"
-        },
-        "java": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "c": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "cpp": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        }
-      },
-      "testCases": [
-        {"input": "5", "output": "5 10 15 20 25 30 35 40 45 50", "isVisible": true},
-        {"input": "2", "output": "2 4 6 8 10 12 14 16 18 20", "isVisible": true}
-      ],
-      "marks": 10,
-      "timeLimit": 1,
-      "memoryLimit": 256,
-      "difficulty": "easy",
-      "tags": ["while-loop", "basic"]
-    },
-    {
-      "title": "Case Converter",
-      "description": "Convert string to uppercase",
-      "problemStatement": "Write a program to convert a given string to uppercase.",
-      "constraints": "1 <= string length <= 100",
-      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
-      "languageImplementations": {
-        "javascript": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "python": {
-          "visibleCode": "# Write your code here",
-          "invisibleCode": "# No code needed"
-        },
-        "java": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "c": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "cpp": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        }
-      },
-      "testCases": [
-        {"input": "hello", "output": "HELLO", "isVisible": true},
-        {"input": "World", "output": "WORLD", "isVisible": true}
-      ],
-      "marks": 10,
-      "timeLimit": 1,
-      "memoryLimit": 256,
-      "difficulty": "easy",
-      "tags": ["strings", "basic"]
-    },
-    {
-      "title": "Positive Negative Zero",
-      "description": "Check if number is positive, negative or zero",
-      "problemStatement": "Write a program to check if a number is positive, negative or zero. Return 'Positive', 'Negative' or 'Zero'.",
-      "constraints": "-10^9 <= number <= 10^9",
-      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
-      "languageImplementations": {
-        "javascript": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "python": {
-          "visibleCode": "# Write your code here",
-          "invisibleCode": "# No code needed"
-        },
-        "java": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "c": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "cpp": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        }
-      },
-      "testCases": [
-        {"input": "5", "output": "Positive", "isVisible": true},
-        {"input": "-3", "output": "Negative", "isVisible": true},
-        {"input": "0", "output": "Zero", "isVisible": true}
-      ],
-      "marks": 10,
-      "timeLimit": 1,
-      "memoryLimit": 256,
-      "difficulty": "easy",
-      "tags": ["if-else", "basic"]
-    },
-    {
-      "title": "Digit Counter",
-      "description": "Count digits using while loop",
-      "problemStatement": "Write a program to count the number of digits in a given number using while loop.",
-      "constraints": "0 <= number <= 10^9",
-      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
-      "languageImplementations": {
-        "javascript": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "python": {
-          "visibleCode": "# Write your code here",
-          "invisibleCode": "# No code needed"
-        },
-        "java": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "c": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "cpp": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        }
-      },
-      "testCases": [
-        {"input": "12345", "output": "5", "isVisible": true},
-        {"input": "100", "output": "3", "isVisible": true}
-      ],
-      "marks": 10,
-      "timeLimit": 1,
-      "memoryLimit": 256,
-      "difficulty": "easy",
-      "tags": ["while-loop", "basic"]
-    },
-    {
-      "title": "Word Counter",
-      "description": "Count words in a string",
-      "problemStatement": "Write a program to count the number of words in a given string. Words are separated by single space.",
-      "constraints": "1 <= string length <= 1000",
-      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
-      "languageImplementations": {
-        "javascript": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "python": {
-          "visibleCode": "# Write your code here",
-          "invisibleCode": "# No code needed"
-        },
-        "java": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "c": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "cpp": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        }
-      },
-      "testCases": [
-        {"input": "Hello World", "output": "2", "isVisible": true},
-        {"input": "I am a programmer", "output": "4", "isVisible": true}
-      ],
-      "marks": 10,
-      "timeLimit": 1,
-      "memoryLimit": 256,
-      "difficulty": "easy",
-      "tags": ["strings", "basic"]
-    },
-    {
-      "title": "Leap Year",
-      "description": "Check if year is leap year",
-      "problemStatement": "Write a program to determine whether a given year is a leap year. Return 'Yes' for leap year and 'No' for non-leap year.",
-      "constraints": "1 <= year <= 9999",
-      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
-      "languageImplementations": {
-        "javascript": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "python": {
-          "visibleCode": "# Write your code here",
-          "invisibleCode": "# No code needed"
-        },
-        "java": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "c": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "cpp": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        }
-      },
-      "testCases": [
-        {"input": "2000", "output": "Yes", "isVisible": true},
-        {"input": "2100", "output": "No", "isVisible": true}
-      ],
-      "marks": 10,
-      "timeLimit": 1,
-      "memoryLimit": 256,
-      "difficulty": "easy",
-      "tags": ["if-else", "basic"]
-    },
-    {
-      "title": "Power Calculator",
-      "description": "Calculate power using while loop",
-      "problemStatement": "Write a program to calculate power of a number using while loop. Given base and exponent, calculate base^exponent.",
-      "constraints": "0 <= base, exponent <= 10",
-      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
-      "languageImplementations": {
-        "javascript": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "python": {
-          "visibleCode": "# Write your code here",
-          "invisibleCode": "# No code needed"
-        },
-        "java": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "c": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "cpp": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        }
-      },
-      "testCases": [
-        {"input": "2 3", "output": "8", "isVisible": true},
-        {"input": "5 2", "output": "25", "isVisible": true}
-      ],
-      "marks": 10,
-      "timeLimit": 1,
-      "memoryLimit": 256,
-      "difficulty": "easy",
-      "tags": ["while-loop", "basic"]
-    },
-    {
-      "title": "Character Counter",
-      "description": "Count specific character occurrences",
-      "problemStatement": "Write a program to count how many times a specific character appears in a string. Return the count.",
-      "constraints": "1 <= string length <= 100",
-      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
-      "languageImplementations": {
-        "javascript": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "python": {
-          "visibleCode": "# Write your code here",
-          "invisibleCode": "# No code needed"
-        },
-        "java": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "c": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "cpp": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        }
-      },
-      "testCases": [
-        {"input": "hello l", "output": "2", "isVisible": true},
-        {"input": "programming g", "output": "2", "isVisible": true},
-        {"input": "mississippi s", "output": "4", "isVisible": true},
-        {"input": "test t", "output": "2", "isVisible": true}
-      ],
-      "marks": 10,
-      "timeLimit": 1,
-      "memoryLimit": 256,
-      "difficulty": "easy",
-      "tags": ["strings", "basic"]
-    },
-    {
-      "title": "Number Pattern",
-      "description": "Print number pattern using while loop",
-      "problemStatement": "Write a program to print numbers from 1 to n in a pattern where each line has one more number than the previous line.",
-      "constraints": "1 <= n <= 15",
-      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
-      "languageImplementations": {
-        "javascript": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "python": {
-          "visibleCode": "# Write your code here",
-          "invisibleCode": "# No code needed"
-        },
-        "java": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "c": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "cpp": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        }
-      },
-      "testCases": [
-        {"input": "3", "output": "1\n1 2\n1 2 3", "isVisible": true},
-        {"input": "4", "output": "1\n1 2\n1 2 3\n1 2 3 4", "isVisible": true},
-        {"input": "2", "output": "1\n1 2", "isVisible": true},
-        {"input": "1", "output": "1", "isVisible": true}
-      ],
-      "marks": 10,
-      "timeLimit": 1,
-      "memoryLimit": 256,
-      "difficulty": "easy",
-      "tags": ["while-loop", "basic"]
-    },
-    {
-      "title": "Age Category",
-      "description": "Determine age category",
-      "problemStatement": "Write a program that categorizes age into: 'Child' (0-12), 'Teen' (13-19), 'Adult' (20-59), 'Senior' (60+)",
-      "constraints": "0 <= age <= 120",
-      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
-      "languageImplementations": {
-        "javascript": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "python": {
-          "visibleCode": "# Write your code here",
-          "invisibleCode": "# No code needed"
-        },
-        "java": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "c": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "cpp": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        }
-      },
-      "testCases": [
-        {"input": "8", "output": "Child", "isVisible": true},
-        {"input": "15", "output": "Teen", "isVisible": true},
-        {"input": "45", "output": "Adult", "isVisible": true},
-        {"input": "75", "output": "Senior", "isVisible": true}
-      ],
-      "marks": 10,
-      "timeLimit": 1,
-      "memoryLimit": 256,
-      "difficulty": "easy",
-      "tags": ["if-else", "basic"]
-    },
-    {
-      "title": "String Trimmer",
-      "description": "Remove leading/trailing spaces",
-      "problemStatement": "Write a program to remove leading and trailing spaces from a string.",
-      "constraints": "1 <= string length <= 100",
-      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
-      "languageImplementations": {
-        "javascript": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "python": {
-          "visibleCode": "# Write your code here",
-          "invisibleCode": "# No code needed"
-        },
-        "java": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "c": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "cpp": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        }
-      },
-      "testCases": [
-        {"input": "  hello  ", "output": "hello", "isVisible": true},
-        {"input": "world   ", "output": "world", "isVisible": true},
-        {"input": "   test", "output": "test", "isVisible": true},
-        {"input": "  hi  there  ", "output": "hi  there", "isVisible": true}
-      ],
-      "marks": 10,
-      "timeLimit": 1,
-      "memoryLimit": 256,
-      "difficulty": "easy",
-      "tags": ["strings", "basic"]
-    },
-    {
-      "title": "String Alternator",
-      "description": "Alternate case in string",
-      "problemStatement": "Write a program to alternate between uppercase and lowercase letters in a string. First letter should be uppercase.",
-      "constraints": "1 <= string length <= 100",
-      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
-      "languageImplementations": {
-        "javascript": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "python": {
-          "visibleCode": "# Write your code here",
-          "invisibleCode": "# No code needed"
-        },
-        "java": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "c": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "cpp": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        }
-      },
-      "testCases": [
-        {"input": "hello", "output": "HeLlO", "isVisible": true},
-        {"input": "world", "output": "WoRlD", "isVisible": true},
-        {"input": "test", "output": "TeSt", "isVisible": true},
-        {"input": "programming", "output": "PrOgRaMmInG", "isVisible": true}
-      ],
-      "marks": 10,
-      "timeLimit": 1,
-      "memoryLimit": 256,
-      "difficulty": "easy",
-      "tags": ["strings", "basic"]
-    },
-    
-    {
-      "title": "Divisibility Checker",
-      "description": "Check divisibility by 3 and 5",
-      "problemStatement": "Write a program that checks if a number is divisible by both 3 and 5. Return 'Yes' if divisible by both, 'No' otherwise.",
-      "constraints": "1 <= number <= 10000",
-      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
-      "languageImplementations": {
-        "javascript": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "python": {
-          "visibleCode": "# Write your code here",
-          "invisibleCode": "# No code needed"
-        },
-        "java": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "c": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "cpp": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        }
-      },
-      "testCases": [
-        {"input": "15", "output": "Yes", "isVisible": true},
-        {"input": "9", "output": "No", "isVisible": true},
-        {"input": "30", "output": "Yes", "isVisible": true},
-        {"input": "7", "output": "No", "isVisible": true}
-      ],
-      "marks": 10,
-      "timeLimit": 1,
-      "memoryLimit": 256,
-      "difficulty": "easy",
-      "tags": ["if-else", "basic"]
-    },
-    
-    {
-      "title": "Digit Sum While",
-      "description": "Sum digits until single digit",
-      "problemStatement": "Write a program using while loop to repeatedly sum the digits of a number until a single digit is obtained.",
-      "constraints": "1 <= number <= 1000000",
-      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
-      "languageImplementations": {
-        "javascript": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "python": {
-          "visibleCode": "# Write your code here",
-          "invisibleCode": "# No code needed"
-        },
-        "java": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "c": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "cpp": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        }
-      },
-      "testCases": [
-        {"input": "789", "output": "6", "isVisible": true},
-        {"input": "99", "output": "9", "isVisible": true},
-        {"input": "12345", "output": "6", "isVisible": true},
-        {"input": "55", "output": "1", "isVisible": true}
-      ],
-      "marks": 10,
-      "timeLimit": 1,
-      "memoryLimit": 256,
-      "difficulty": "easy",
-      "tags": ["while-loop", "basic"]
-    },
-    
-    {
-      "title": "Vowel Remover",
-      "description": "Remove vowels from string",
-      "problemStatement": "Write a program to remove all vowels (a,e,i,o,u) from a string. Ignore case.",
-      "constraints": "1 <= string length <= 100",
-      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
-      "languageImplementations": {
-        "javascript": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "python": {
-          "visibleCode": "# Write your code here",
-          "invisibleCode": "# No code needed"
-        },
-        "java": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "c": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "cpp": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        }
-      },
-      "testCases": [
-        {"input": "hello", "output": "hll", "isVisible": true},
-        {"input": "APPLE", "output": "PPL", "isVisible": true},
-        {"input": "programming", "output": "prgrmmng", "isVisible": true},
-        {"input": "aEiOu", "output": "", "isVisible": true}
-      ],
-      "marks": 10,
-      "timeLimit": 1,
-      "memoryLimit": 256,
-      "difficulty": "easy",
-      "tags": ["strings", "basic"]
-    },
-    
-    {
-      "title": "Number Range",
-      "description": "Check if number is in range",
-      "problemStatement": "Write a program to check if a number is within a given range (inclusive). Return 'In Range' or 'Out of Range'.",
-      "constraints": "-1000 <= number, range_start, range_end <= 1000",
-      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
-      "languageImplementations": {
-        "javascript": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "python": {
-          "visibleCode": "# Write your code here",
-          "invisibleCode": "# No code needed"
-        },
-        "java": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "c": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "cpp": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        }
-      },
-      "testCases": [
-        {"input": "5 1 10", "output": "In Range", "isVisible": true},
-        {"input": "0 -5 5", "output": "In Range", "isVisible": true},
-        {"input": "15 1 10", "output": "Out of Range", "isVisible": true},
-        {"input": "-1 0 100", "output": "Out of Range", "isVisible": true}
-      ],
-      "marks": 10,
-      "timeLimit": 1,
-      "memoryLimit": 256,
-      "difficulty": "easy",
-      "tags": ["if-else", "basic"]
-    },
-    
-    {
-      "title": "String Repeater",
-      "description": "Repeat string n times",
-      "problemStatement": "Write a program to repeat a given string n times.",
-      "constraints": "1 <= n <= 10, 1 <= string length <= 20",
-      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
-      "languageImplementations": {
-        "javascript": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "python": {
-          "visibleCode": "# Write your code here",
-          "invisibleCode": "# No code needed"
-        },
-        "java": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "c": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        },
-        "cpp": {
-          "visibleCode": "// Write your code here",
-          "invisibleCode": "// No code needed"
-        }
-      },
-      "testCases": [
-        {"input": "hi 3", "output": "hihihi", "isVisible": true},
-        {"input": "ab 2", "output": "abab", "isVisible": true},
-        {"input": "x 5", "output": "xxxxx", "isVisible": true},
-        {"input": "test 1", "output": "test", "isVisible": true}
-      ],
-      "marks": 10,
-      "timeLimit": 1,
-      "memoryLimit": 256,
-      "difficulty": "easy",
-      "tags": ["strings", "basic"]
+      "difficulty": "medium",
+      "tags": ["arithmetic", "basic-math"]
     }
   ]
 }
