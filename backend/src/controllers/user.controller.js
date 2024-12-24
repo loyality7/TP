@@ -209,7 +209,7 @@ export const getTestResults = async (req, res) => {
       })
       .populate({
         path: 'test',
-        select: 'title totalMarks passingMarks mcqs codingChallenges',
+        select: 'title totalMarks passingMarks mcqs codingChallenges uuid',
         populate: [
           {
             path: 'mcqs',
@@ -352,7 +352,7 @@ export const getTestResults = async (req, res) => {
     })
     .populate({
       path: 'test',
-      select: 'title description duration totalMarks passingMarks type category difficulty vendor mcqs codingChallenges',
+      select: 'title description duration totalMarks passingMarks type category difficulty vendor mcqs codingChallenges uuid',
       populate: {
         path: 'vendor',
         select: 'name email'
@@ -380,7 +380,7 @@ export const getTestResults = async (req, res) => {
 
     const summaryResults = validSubmissions.map(submission => ({
       testId: submission.test._id,
-      uuid: submission.test.uuid,
+      uuid: submission.test.uuid || null,
       title: submission.test.title,
       startTime: submission.startTime,
       endTime: submission.endTime,

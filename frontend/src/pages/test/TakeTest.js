@@ -694,26 +694,24 @@ export default function TakeTest() {
 
   const handleCodingSubmission = async (submission) => {
     try {
-      // Update test state with coding submission
+      // Store coding submission in localStorage
+      localStorage.setItem('coding_submission', JSON.stringify(submission));
+      
       setTest(prev => ({
         ...prev,
         status: 'completed',
         codingSubmission: submission,
+        // Preserve existing MCQ submission
+        mcqSubmission: prev.mcqSubmission,
         totalScore: (prev?.mcqSubmission?.totalScore || 0) + (submission?.totalScore || 0)
       }));
 
-      // Navigate to completion page
-      navigate('/test/completed', { 
-        state: { 
-          testId: uuid,
-          submission: {
-            mcq: answers.mcq,
-            coding: answers.coding,
-            totalScore: (test?.mcqSubmission?.totalScore || 0) + (submission?.totalScore || 0),
-            testType: test?.type
-          }
-        }
-      });
+      // Store code in localStorage
+      if (answers.coding) {
+        localStorage.setItem('coding_answers', JSON.stringify(answers.coding));
+      }
+
+      toast.success('Coding section completed! You can now submit the test.');
     } catch (error) {
       console.error('Failed to process coding submission:', error);
       setError('Failed to process coding submission');
@@ -722,15 +720,22 @@ export default function TakeTest() {
 
   const handleMCQSubmission = async (submission) => {
     try {
+      // Store MCQ submission in localStorage
+      localStorage.setItem('mcq_submission', JSON.stringify(submission));
+
       setTest(prev => ({
         ...prev,
         status: 'mcq_completed',
-        mcqSubmission: submission
+        mcqSubmission: submission,
+        // Preserve existing coding submission if it exists
+        codingSubmission: prev.codingSubmission 
       }));
 
-      // Switch to coding section
+      // Switch to coding section without auto-submitting
       setCurrentSection('coding');
+      toast.success('MCQ section completed! You can now proceed to the coding section.');
     } catch (error) {
+      console.error('Failed to process MCQ submission:', error);
       setError('Failed to process MCQ submission');
     }
   };
@@ -1012,7 +1017,10 @@ export default function TakeTest() {
         'currentChallengeIndex',
         'testStartTime',
         'currentTest',
-        'analytics_' + testId
+        'analytics_' + testId,
+        'mcq_submission',    // Add these new items
+        'coding_submission', // Add these new items
+        'coding_answers'     // Add these new items
       ];
 
       itemsToClear.forEach(item => localStorage.removeItem(item));
@@ -1430,6 +1438,58 @@ export default function TakeTest() {
     };
   }, []);
 
+  // Add useEffect to load saved submissions on component mount
+  useEffect(() => {
+    const loadSavedSubmissions = () => {
+      const savedMcq = localStorage.getItem('mcq_submission');
+      const savedCoding = localStorage.getItem('coding_submission');
+      const savedCodingAnswers = localStorage.getItem('coding_answers');
+
+      if (savedMcq) {
+        try {
+          const mcqSubmission = JSON.parse(savedMcq);
+          setTest(prev => ({
+            ...prev,
+            mcqSubmission
+          }));
+        } catch (error) {
+          console.error('Error loading saved MCQ submission:', error);
+        }
+      }
+
+      if (savedCoding) {
+        try {
+          const codingSubmission = JSON.parse(savedCoding);
+          setTest(prev => ({
+            ...prev,
+            codingSubmission
+          }));
+        } catch (error) {
+          console.error('Error loading saved coding submission:', error);
+        }
+      }
+
+      if (savedCodingAnswers) {
+        try {
+          const codingAnswers = JSON.parse(savedCodingAnswers);
+          setAnswers(prev => ({
+            ...prev,
+            coding: codingAnswers
+          }));
+        } catch (error) {
+          console.error('Error loading saved coding answers:', error);
+        }
+      }
+    };
+
+    loadSavedSubmissions();
+  }, []);
+
+  // Add a new function to handle section switching
+  const handleSectionSwitch = (newSection) => {
+    setCurrentSection(newSection);
+  };
+
   // Render Loading State
   if (loading) {
     return (
@@ -1547,27 +1607,27 @@ export default function TakeTest() {
           {/* Section Tabs - Made more compact */}
           <div className="flex space-x-1 mt-2">
             <button
+              onClick={() => handleSectionSwitch('mcq')}
               className={`px-4 py-2 text-sm rounded-t-lg font-medium transition-all relative
                 ${currentSection === 'mcq' 
                   ? 'text-blue-600 bg-white border-t-2 border-blue-600' 
                   : 'text-gray-600 hover:text-gray-800'
                 }`}
-              onClick={() => setCurrentSection('mcq')}
             >
-              Multiple Choice Questions
+              MCQ Section
               <span className="ml-2 px-1.5 py-0.5 text-xs rounded-full bg-gray-100">
                 {test.mcqs?.length || 0}
               </span>
             </button>
             <button
+              onClick={() => handleSectionSwitch('coding')}
               className={`px-4 py-2 text-sm rounded-t-lg font-medium transition-all relative
                 ${currentSection === 'coding' 
                   ? 'text-blue-600 bg-white border-t-2 border-blue-600' 
                   : 'text-gray-600 hover:text-gray-800'
                 }`}
-              onClick={() => setCurrentSection('coding')}
             >
-              Coding Challenges
+              Coding Section
               <span className="ml-2 px-1.5 py-0.5 text-xs rounded-full bg-gray-100">
                 {test.codingChallenges?.length || 0}
               </span>

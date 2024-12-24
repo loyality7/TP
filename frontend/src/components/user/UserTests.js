@@ -100,11 +100,11 @@ const UserTests = () => {
         <button
           onClick={() => {
             if (test.status === 'completed') {
-              // Navigate to test results page using the new route
               navigate(`/dashboard/user/test-results/${test.testId}`);
             } else {
-              // Navigate to continue test page
-              navigate(`/test/shared/${test.uuid}`);
+              // Use test.uuid or test.testUuid, with a fallback to testId if needed
+              const testIdentifier = test.uuid || test.testUuid || test.testId;
+              navigate(`/test/shared/${testIdentifier}`);
             }
           }}
           className={`mt-6 w-full py-2.5 px-4 rounded-lg text-white font-medium

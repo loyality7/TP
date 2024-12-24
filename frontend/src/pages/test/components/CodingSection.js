@@ -15,7 +15,11 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showTestPanel, setShowTestPanel] = useState(false);
   const [theme, setTheme] = useState('vs-dark');
-  const [submissionStatus, setSubmissionStatus] = useState({});
+  const [submissionStatus, setSubmissionStatus] = useState(() => {
+    // Try to load saved submission status from localStorage
+    const savedStatus = localStorage.getItem('coding_submission_status');
+    return savedStatus ? JSON.parse(savedStatus) : {};
+  });
   const [isLoadingTestId, setIsLoadingTestId] = useState(false);
   const [fontSize, setFontSize] = useState(14);
   const [showLineNumbers, setShowLineNumbers] = useState(true);
@@ -105,12 +109,19 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
 
   useEffect(() => {
     if (challenges?.length > 0) {
-      // Initialize submission status for all challenges
+      // Load existing status from localStorage
+      const savedStatus = localStorage.getItem('coding_submission_status');
+      const existingStatus = savedStatus ? JSON.parse(savedStatus) : {};
+      
+      // Initialize status for any new challenges
       const initialStatus = {};
       challenges.forEach(challenge => {
-        initialStatus[challenge._id] = undefined;
+        initialStatus[challenge._id] = existingStatus[challenge._id] || undefined;
       });
+      
       setSubmissionStatus(initialStatus);
+      // Save to localStorage
+      localStorage.setItem('coding_submission_status', JSON.stringify(initialStatus));
     }
   }, [challenges]);
 
@@ -237,7 +248,7 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
     return <div>Challenge not found</div>;
   }
 
-  // Update handleSubmitChallenge to use handleExecuteCode
+  // Update handleSubmitChallenge to persist submission status
   const handleSubmitChallenge = async () => {
     try {
       const currentTestId = localStorage.getItem('currentTestId');
@@ -248,7 +259,13 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
       }
 
       // Set submitting status
-      setSubmissionStatus(prev => ({ ...prev, [challenge._id]: 'submitting' }));
+      const newStatus = { 
+        ...submissionStatus, 
+        [challenge._id]: 'submitting' 
+      };
+      setSubmissionStatus(newStatus);
+      // Save to localStorage
+      localStorage.setItem('coding_submission_status', JSON.stringify(newStatus));
       
       const currentAnswer = answers[challenge._id];
       if (!currentAnswer?.code) {
@@ -294,10 +311,13 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
       // Handle successful submission
       if (response?.status === 201 || response?.statusText === 'Created') {
         // Update submission status for this challenge
-        setSubmissionStatus(prev => ({
-          ...prev,
-          [challenge._id]: 'submitted'
-        }));
+        const newStatus = { 
+          ...submissionStatus, 
+          [challenge._id]: 'submitted' 
+        };
+        setSubmissionStatus(newStatus);
+        // Save to localStorage
+        localStorage.setItem('coding_submission_status', JSON.stringify(newStatus));
         
         toast.success('Challenge submitted successfully!');
         
@@ -321,11 +341,16 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
       }
 
     } catch (error) {
+      // Update error status
+      const newStatus = { 
+        ...submissionStatus, 
+        [challenge._id]: undefined 
+      };
+      setSubmissionStatus(newStatus);
+      // Save to localStorage
+      localStorage.setItem('coding_submission_status', JSON.stringify(newStatus));
+      
       console.error('Submission Error:', error);
-      setSubmissionStatus(prev => ({
-        ...prev,
-        [challenge._id]: undefined
-      }));
       toast.error('Failed to submit: ' + (error.response?.data?.error || error.message));
     }
   };

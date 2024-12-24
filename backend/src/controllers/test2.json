@@ -909,8 +909,18 @@
         }
       },
       "testCases": [
-        {"input": "hello", "output": "olleh", "isVisible": true},
-        {"input": "world", "output": "dlrow", "isVisible": true}
+        {
+          "input": "hello",
+          "output": "olleh",
+          "isVisible": true,
+          "explanation": "Reverse the string 'hello' to get 'olleh'"
+        },
+        {
+          "input": "world",
+          "output": "dlrow",
+          "isVisible": true,
+          "explanation": "Reverse the string 'world' to get 'dlrow'"
+        }
       ],
       "marks": 10,
       "timeLimit": 1,
@@ -947,8 +957,18 @@
         }
       },
       "testCases": [
-        {"input": "95", "output": "A", "isVisible": true},
-        {"input": "75", "output": "C", "isVisible": true}
+        {
+          "input": "95",
+          "output": "A",
+          "isVisible": true,
+          "explanation": "95 is in the range 90-100, so grade is A"
+        },
+        {
+          "input": "75",
+          "output": "C",
+          "isVisible": true,
+          "explanation": "75 is in the range 70-79, so grade is C"
+        }
       ],
       "marks": 10,
       "timeLimit": 1,
@@ -985,8 +1005,18 @@
         }
       },
       "testCases": [
-        {"input": "123", "output": "6", "isVisible": true},
-        {"input": "5678", "output": "26", "isVisible": true}
+        {
+          "input": "123",
+          "output": "6",
+          "isVisible": true,
+          "explanation": "1 + 2 + 3 = 6"
+        },
+        {
+          "input": "5678",
+          "output": "26",
+          "isVisible": true,
+          "explanation": "5 + 6 + 7 + 8 = 26"
+        }
       ],
       "marks": 10,
       "timeLimit": 1,
@@ -1023,8 +1053,18 @@
         }
       },
       "testCases": [
-        {"input": "Hello", "output": "2", "isVisible": true},
-        {"input": "AEIOU", "output": "5", "isVisible": true}
+        {
+          "input": "Hello",
+          "output": "2",
+          "isVisible": true,
+          "explanation": "Found vowels: e, o"
+        },
+        {
+          "input": "AEIOU",
+          "output": "5",
+          "isVisible": true,
+          "explanation": "Found vowels: A, E, I, O, U"
+        }
       ],
       "marks": 10,
       "timeLimit": 1,
@@ -1061,8 +1101,18 @@
         }
       },
       "testCases": [
-        {"input": "0", "output": "32", "isVisible": true},
-        {"input": "100", "output": "212", "isVisible": true}
+        {
+          "input": "0",
+          "output": "32",
+          "isVisible": true,
+          "explanation": "0°C = (0 × 9/5) + 32 = 32°F"
+        },
+        {
+          "input": "100",
+          "output": "212",
+          "isVisible": true,
+          "explanation": "100°C = (100 × 9/5) + 32 = 212°F"
+        }
       ],
       "marks": 10,
       "timeLimit": 1,
