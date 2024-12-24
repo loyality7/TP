@@ -198,6 +198,12 @@ export default function MCQPage({ mcqs, testId, onSubmitMCQs, setAnalytics }) {
     localStorage.setItem('currentMcqIndex', currentMcq.toString());
   }, [currentMcq]);
 
+  // Add right-click prevention handler
+  const handleContextMenu = (e) => {
+    e.preventDefault();
+    return false;
+  };
+
   // If MCQs are already submitted, show completion message
   if (isSubmitted) {
     return (
@@ -214,7 +220,10 @@ export default function MCQPage({ mcqs, testId, onSubmitMCQs, setAnalytics }) {
   }
 
   return (
-    <div className="flex flex-col h-full max-w-4xl mx-auto px-2 py-2">
+    <div 
+      className="flex flex-col h-full max-w-4xl mx-auto px-2 py-2"
+      onContextMenu={handleContextMenu}
+    >
       {/* Progress Bar */}
       <div className="bg-white shadow-sm rounded-lg mb-4 p-4">
         <div className="flex justify-between items-center mb-2">

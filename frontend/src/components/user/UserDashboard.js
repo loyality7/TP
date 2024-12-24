@@ -41,47 +41,18 @@ const getColorForCategory = (category) => {
   return { name: colorNames[index], classes: colors[colorNames[index]] };
 };
 
-const getBadgeForDifficulty = (difficulty) => {
-  const badgeMap = {
-    'beginner': 'Beginner',
-    'intermediate': 'Intermediate',
-    'advanced': 'Advanced',
-    'expert': 'Expert'
-  };
-  
-  return badgeMap[difficulty?.toLowerCase()] || 'N/A';
-};
-
 const getDummyData = () => {
   return {
     overview: {
       totalTestsTaken: 0,
       thisMonthTests: 0,
-      mcqPerformance: 0,
-      codingPerformance: 0,
-      successRate: 0,
-      improvement: 0,
       averageScore: 0,
-      codingTestsTaken: 0
+      completedTests: 0,
+      upcomingTests: 0,
+      lastTestScore: 0
     },
-    performanceMetrics: {
-      'JavaScript': {
-        count: 0,
-        avgScore: 0,
-        successRate: 0
-      },
-      'Python': {
-        count: 0,
-        avgScore: 0,
-        successRate: 0
-      },
-      'Data Structures': {
-        count: 0,
-        avgScore: 0,
-        successRate: 0
-      }
-    },
-    recentTests: []  // Empty array for tests
+    performanceByCategory: {},
+    recentTests: []
   };
 };
 
@@ -141,44 +112,44 @@ const DashboardHome = () => {
     },
     {
       title: 'MCQ Performance',
-      value: `${dashboardData?.overview?.mcqPerformance || 0}%`,
+      value: `${(dashboardData?.overview?.mcqPerformance || 0).toFixed(1)}%`,
       icon: Award,
       color: 'amber',
       subtitle: 'Average Score'
     },
     {
       title: 'Coding Performance',
-      value: `${dashboardData?.overview?.codingPerformance || 0}%`,
+      value: `${(dashboardData?.overview?.codingPerformance || 0).toFixed(1)}%`,
       icon: TrendingUp,
       color: 'violet',
       subtitle: 'Success Rate'
     },
     {
       title: 'Success Rate',
-      value: `${dashboardData?.overview?.successRate || 0}%`,
+      value: `${(dashboardData?.overview?.successRate || 0).toFixed(1)}%`,
       icon: CheckCircle,
       color: 'green',
-      subtitle: `${dashboardData?.overview?.improvement || 0}% improvement`
+      subtitle: `${(dashboardData?.overview?.improvement || 0).toFixed(1)}% improvement`
     }
   ];
 
-  const performanceStats = Object.entries(dashboardData?.performanceMetrics || {})
+  const performanceStats = Object.entries(dashboardData?.performanceByCategory || {})
     .filter(([category]) => category)
     .map(([category, data]) => ({
       category,
       count: data?.count || 0,
       avgScore: parseFloat(data?.avgScore || 0),
-      successRate: parseFloat(data?.successRate || 0),
+      successRate: parseFloat(data?.passRate || 0),
       color: getColorForCategory(category)
     }));
 
   const mappedRecentTests = (dashboardData?.recentTests || []).map(test => ({
-    id: test?._id,
-    title: test?.test?.title || 'Untitled Test',
-    type: test?.test?.type || 'unknown',
+    id: test?.testId,
+    title: test?.title || 'Untitled Test',
+    type: 'assessment',
     date: test?.startTime || new Date(),
-    duration: test?.test?.duration,
-    status: test?.status || 'unknown',
+    duration: test?.endTime ? new Date(test?.endTime) - new Date(test?.startTime) : null,
+    status: test?.completionStatus || 'unknown',
     progress: {
       mcq: {
         completed: test?.progress?.answeredMCQs || 0,
@@ -193,8 +164,13 @@ const DashboardHome = () => {
           Math.round((test?.progress?.completedChallenges / test?.progress?.totalCodingChallenges) * 100) : 0
       }
     },
-    topics: [test?.test?.category].filter(Boolean),
-    badge: getBadgeForDifficulty(test?.test?.difficulty)
+    topics: [test?.category].filter(Boolean),
+    score: {
+      mcq: test?.mcqScore || 0,
+      coding: test?.codingScore || 0,
+      total: test?.totalScore || 0,
+      max: test?.maxScore || 0
+    }
   }));
 
   return (

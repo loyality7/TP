@@ -44,18 +44,18 @@ const SETUP_STEPS = [
 ];
 
 // Update FullscreenButton component
-const FullscreenButton = ({ isFullScreen }) => {
+const FullscreenButton = ({ isFullScreen, setIsFullScreen }) => {
   const handleFullscreen = async () => {
     try {
       if (!document.fullscreenElement) {
         await document.documentElement.requestFullscreen();
+        setIsFullScreen(true);
       }
     } catch (error) {
       toast.error('Failed to enter fullscreen mode');
     }
   };
 
-  // Don't render the button if already in fullscreen
   if (isFullScreen) {
     return null;
   }
@@ -69,6 +69,36 @@ const FullscreenButton = ({ isFullScreen }) => {
       Fullscreen
     </button>
   );
+};
+
+// Add this helper function at the top
+const forceFullscreen = async () => {
+  try {
+    if (!document.fullscreenElement) {
+      await document.documentElement.requestFullscreen();
+      return true;
+    }
+    return document.fullscreenElement !== null;
+  } catch (error) {
+    console.error('Fullscreen error:', error);
+    // Dispatch force submit event if fullscreen fails repeatedly
+    window.dispatchEvent(new CustomEvent('forceTestSubmit'));
+    return false;
+  }
+};
+
+// Add this helper function at the top
+const requestAndLockFullscreen = async () => {
+  try {
+    if (!document.fullscreenElement) {
+      await document.documentElement.requestFullscreen();
+      return true;
+    }
+    return document.fullscreenElement !== null;
+  } catch (error) {
+    console.error('Fullscreen error:', error);
+    return false;
+  }
 };
 
 export default function TakeTest() {
@@ -239,16 +269,62 @@ export default function TakeTest() {
         localStorage.setItem('testEndTime', endTime.toString());
       }
       
-      const updateTimer = () => {
+      const updateTimer = async () => {
         const now = Date.now();
-        const remaining = Math.max(0, endTime - now);
-        
-        setTimeRemaining(remaining);
+        const remaining = endTime - now;
         
         if (remaining <= 0) {
           clearInterval(timerRef.current);
           toast.error('Time is up!');
-          handleSubmit(); // Auto submit when time is up
+          
+          // Calculate final analytics
+          const finalAnalytics = {
+            ...analytics,
+            timeSpent: test.duration * 60, // Total duration in seconds
+            endTime: new Date().toISOString(),
+            testStatus: 'completed',
+            submissionType: 'auto'
+          };
+
+          // Submit analytics
+          if (testId) {
+            try {
+              await apiService.post(`analytics/test/${testId}`, {
+                analyticsData: finalAnalytics
+              });
+            } catch (error) {
+              console.error('Failed to submit analytics:', error);
+            }
+          }
+
+          // Clear test data from localStorage
+          const itemsToClear = [
+            'testEndTime',
+            'testAnalytics',
+            'mcq_answers',
+            'coding_answers',
+            'currentTestId',
+            'currentTestData',
+            'submissionId',
+            'testStarted',
+            'testStartTime'
+          ];
+          itemsToClear.forEach(item => localStorage.removeItem(item));
+
+          // Navigate to completion page
+          navigate('/test/completed', { 
+            state: { 
+              testId: uuid,
+              submission: {
+                mcq: answers.mcq,
+                coding: answers.coding,
+                totalScore: (test?.mcqSubmission?.totalScore || 0) + (test?.codingSubmission?.totalScore || 0),
+                testType: test?.type
+              }
+            },
+            replace: true
+          });
+          
           return;
         }
         
@@ -261,10 +337,11 @@ export default function TakeTest() {
         if (remaining <= 60000 && remaining > 59000) {
           toast.warning('1 minute remaining!');
         }
+        
+        setTimeRemaining(Math.max(0, remaining)); // Ensure time never goes negative
       };
 
-      // Update immediately and then set interval
-      updateTimer();
+      updateTimer(); // Run immediately
       timerRef.current = setInterval(updateTimer, 1000);
 
       return () => {
@@ -273,7 +350,7 @@ export default function TakeTest() {
         }
       };
     }
-  }, [test, showInstructions, handleSubmit]);
+  }, [test, showInstructions, testId, uuid, analytics, answers, navigate]);
 
   // Add new state to track if test has been started
   const [hasStartedTest, setHasStartedTest] = useState(() => {
@@ -467,72 +544,153 @@ export default function TakeTest() {
     loadTest();
   }, [uuid, navigate]);
 
-  // Update the fullscreen effect with stricter controls
+  // Add this new effect for persistent fullscreen enforcement
   useEffect(() => {
-    let fullscreenAttempts = 0;
-    const maxAttempts = 3;
-
-    const forceFullscreen = async () => {
-      const elem = document.documentElement;
-      try {
-        await elem.requestFullscreen();
-        setIsFullScreen(true);
-        fullscreenAttempts = 0; // Reset attempts on success
-      } catch (error) {
-        fullscreenAttempts++;
-        if (fullscreenAttempts >= maxAttempts) {
-          toast.error('WARNING: Test will be submitted if fullscreen is not enabled!');
-          setTimeout(() => handleSubmit(), 5000); // Auto-submit after 5 seconds
+    if (!showInstructions && hasStartedTest) {
+      let fullscreenAttempts = 0;
+      const maxAttempts = 3;
+      
+      const enforceFullscreen = async () => {
+        if (!document.fullscreenElement) {
+          fullscreenAttempts++;
+          const success = await forceFullscreen();
+          
+          if (!success && fullscreenAttempts >= maxAttempts) {
+            toast.error('Fullscreen is required. Test will be submitted.');
+            handleSubmit();
+            return;
+          }
         } else {
-          handleWarning('Fullscreen mode is required! Please click "I understand" to continue.');
+          fullscreenAttempts = 0;
         }
-      }
-    };
+      };
 
-    const handleFullscreenChange = () => {
-      const isInFullscreen = !!(
-        document.fullscreenElement ||
-        document.webkitFullscreenElement ||
-        document.mozFullScreenElement ||
-        document.msFullscreenElement
-      );
-      
-      setIsFullScreen(isInFullscreen);
-      
-      if (!isInFullscreen && !showInstructions) {
-        forceFullscreen();
-      }
-    };
+      // Check fullscreen status frequently
+      const fullscreenInterval = setInterval(enforceFullscreen, 1000);
 
-    // Listen for keyboard ESC key
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape' && !showInstructions) {
-        e.preventDefault();
-        e.stopPropagation();
-        forceFullscreen();
-        return false;
-      }
-    };
+      // Also check on visibility change
+      const handleVisibilityChange = () => {
+        if (!document.hidden) {
+          enforceFullscreen();
+        }
+      };
 
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
-    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
-    document.addEventListener('keydown', handleKeyDown, true);
+      // Check on focus
+      const handleFocus = () => {
+        enforceFullscreen();
+      };
 
-    // Initial fullscreen check
-    if (!document.fullscreenElement && !showInstructions) {
-      forceFullscreen();
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+      window.addEventListener('focus', handleFocus);
+      document.addEventListener('fullscreenchange', enforceFullscreen);
+
+      return () => {
+        clearInterval(fullscreenInterval);
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+        window.removeEventListener('focus', handleFocus);
+        document.removeEventListener('fullscreenchange', enforceFullscreen);
+      };
     }
+  }, [showInstructions, hasStartedTest, handleSubmit]);
 
-    return () => {
-      document.removeEventListener('fullscreenchange', handleFullscreenChange);
-      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
-      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
-      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
-      document.removeEventListener('keydown', handleKeyDown, true);
-    };
-  }, [showInstructions, handleWarning, handleSubmit]);
+  // Update the useEffect for page load/reload
+  useEffect(() => {
+    const testStarted = localStorage.getItem('testStarted') === 'true';
+    
+    if (testStarted) {
+      setHasStartedTest(true);
+      setShowInstructions(false);
+      
+      // Immediate fullscreen enforcement on load/reload
+      const enforceFullscreenOnLoad = async () => {
+        // Try multiple times with delay if needed
+        let attempts = 0;
+        const maxAttempts = 3;
+        
+        const tryFullscreen = async () => {
+          try {
+            if (!document.fullscreenElement) {
+              await document.documentElement.requestFullscreen();
+              setIsFullScreen(true);
+            }
+            return true;
+          } catch (error) {
+            console.error('Fullscreen attempt failed:', error);
+            return false;
+          }
+        };
+
+        const attemptFullscreen = async () => {
+          if (attempts < maxAttempts) {
+            attempts++;
+            const success = await tryFullscreen();
+            if (!success && attempts < maxAttempts) {
+              // Wait 500ms before next attempt
+              setTimeout(attemptFullscreen, 500);
+            } else if (!success) {
+              toast.error('Failed to enter fullscreen mode. Test may be submitted.');
+              // Optionally force submit if fullscreen fails
+              window.dispatchEvent(new CustomEvent('forceTestSubmit'));
+            }
+          }
+        };
+
+        attemptFullscreen();
+      };
+      
+      // Execute immediately and also after a slight delay to ensure DOM is ready
+      enforceFullscreenOnLoad();
+      setTimeout(enforceFullscreenOnLoad, 1000);
+    }
+  }, []);
+
+  // Update the fullscreen enforcement effect to be more aggressive
+  useEffect(() => {
+    if (!showInstructions && hasStartedTest) {
+      let fullscreenCheckInterval;
+      let failedAttempts = 0;
+      const MAX_ATTEMPTS = 3;
+      const CHECK_INTERVAL = 100; // Check every 100ms
+
+      const enforceFullscreen = async () => {
+        if (!document.fullscreenElement) {
+          failedAttempts++;
+          try {
+            await document.documentElement.requestFullscreen();
+            failedAttempts = 0; // Reset counter on success
+            setIsFullScreen(true);
+          } catch (error) {
+            console.error('Fullscreen enforcement failed:', error);
+            if (failedAttempts >= MAX_ATTEMPTS) {
+              clearInterval(fullscreenCheckInterval);
+              toast.error('Fullscreen mode required. Test will be submitted.');
+              window.dispatchEvent(new CustomEvent('forceTestSubmit'));
+            }
+          }
+        }
+      };
+
+      // Initial enforcement
+      enforceFullscreen();
+      
+      // Continuous checking
+      fullscreenCheckInterval = setInterval(enforceFullscreen, CHECK_INTERVAL);
+
+      // Also enforce on visibility change
+      const handleVisibilityChange = () => {
+        if (!document.hidden) {
+          enforceFullscreen();
+        }
+      };
+
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+
+      return () => {
+        clearInterval(fullscreenCheckInterval);
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+      };
+    }
+  }, [showInstructions, hasStartedTest]);
 
   const handleCodingSubmission = async (submission) => {
     try {
@@ -579,47 +737,144 @@ export default function TakeTest() {
 
   // Update keyboard shortcuts prevention
   useEffect(() => {
-    const preventDefaultKeys = (e) => {
-      // Block ESC key completely
-      if (e.key === 'Escape') {
+    const preventKeys = (e) => {
+      // Block Alt+Tab specifically
+      if (e.altKey && e.key === 'Tab') {
         e.preventDefault();
         e.stopPropagation();
-        handleWarning('ESC key is disabled during the test');
-        // Force fullscreen if needed
-        if (!document.fullscreenElement && !showInstructions) {
-          document.documentElement.requestFullscreen().catch(() => {});
-        }
+        handleWarning('Alt+Tab is not allowed during the test');
         return false;
       }
 
-      // Block all Ctrl/Cmd combinations
-      if (e.ctrlKey || e.metaKey) {
-        e.preventDefault();
-        handleWarning('Keyboard shortcuts are not allowed during the test');
-        return false;
-      }
-
-      // Block other specific keys - removed 'Tab' from the list
-      const blockedKeys = [
-        'F12', 'Alt', 'Meta', 'ContextMenu',
-        'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11'
+      // Allow specific keys for coding
+      const allowedKeys = [
+        'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown',
+        'Backspace', 'Delete', 'Enter', 'Tab',
+        'Home', 'End', 'PageUp', 'PageDown'
       ];
-      if (blockedKeys.includes(e.key)) {
+
+      // Allow alphanumeric keys and common coding symbols
+      const isAllowedChar = /^[a-zA-Z0-9\s`~!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]$/.test(e.key);
+
+      // Always block certain key combinations
+      const isBlockedCombo = (e.ctrlKey || e.metaKey || e.altKey) && (
+        e.key === 'p' ||      // Print
+        e.key === 'r' ||      // Reload
+        e.key === 's' ||      // Save
+        e.key === 'u' ||      // View Source
+        e.key === 'a' ||      // Select All
+        e.key === 'd' ||      // Bookmark
+        e.key === 'f' ||      // Find
+        e.key === 'g' ||      // Find Again
+        e.key === 'o' ||      // Open
+        e.key === 'w' ||      // Close Window
+        e.key === 'j' ||      // Dev Tools
+        e.key === 'i' ||      // Inspector
+        e.key === '+'         // Zoom
+      );
+
+      // Block all function keys except F11 (which we handle separately)
+      const isBlockedFunctionKey = /^F\d+$/.test(e.key) && e.key !== 'F11';
+
+      // Block specific system keys
+      const isBlockedSystemKey = [
+        'ContextMenu',
+        'Meta',
+        'PrintScreen',
+        'ScrollLock',
+        'Pause'
+      ].includes(e.key);
+
+      if (
+        isBlockedCombo ||
+        isBlockedFunctionKey ||
+        isBlockedSystemKey ||
+        (!isAllowedChar && !allowedKeys.includes(e.key))
+      ) {
         e.preventDefault();
-        handleWarning('This key is not allowed during the test');
+        e.stopPropagation();
+        
+        // Only show warning for deliberate attempts to use shortcuts
+        if (isBlockedCombo || isBlockedFunctionKey) {
+          handleWarning('This keyboard shortcut is not allowed during the test');
+        }
+        
+        return false;
+      }
+
+      // Special handling for ESC and F11 keys
+      if (e.key === 'Escape' || e.key === 'F11') {
+        e.preventDefault();
+        e.stopPropagation();
+        requestAndLockFullscreen();
+        return false;
+      }
+
+      // Allow Ctrl+C, Ctrl+V, Ctrl+X only in coding section
+      if ((e.ctrlKey || e.metaKey) && ['c', 'v', 'x'].includes(e.key.toLowerCase())) {
+        if (currentSection !== 'coding') {
+          e.preventDefault();
+          handleWarning('Copy/Paste is only allowed in the coding section');
+          return false;
+        }
+      }
+    };
+
+    // Add keydown listener with capture phase and make it non-passive
+    document.addEventListener('keydown', preventKeys, { 
+      capture: true,
+      passive: false
+    });
+
+    // Also add a more aggressive Alt key handler
+    const preventAlt = (e) => {
+      if (e.key === 'Alt' || e.altKey) {
+        e.preventDefault();
+        e.stopPropagation();
         return false;
       }
     };
 
-    // Add event listener with capture phase to intercept keys early
-    document.addEventListener('keydown', preventDefaultKeys, true);
-    document.addEventListener('keyup', preventDefaultKeys, true);
-    
+    // Add both keydown and keyup listeners for Alt
+    document.addEventListener('keydown', preventAlt, { capture: true, passive: false });
+    document.addEventListener('keyup', preventAlt, { capture: true, passive: false });
+
     return () => {
-      document.removeEventListener('keydown', preventDefaultKeys, true);
-      document.removeEventListener('keyup', preventDefaultKeys, true);
+      document.removeEventListener('keydown', preventKeys, { capture: true });
+      document.removeEventListener('keydown', preventAlt, { capture: true });
+      document.removeEventListener('keyup', preventAlt, { capture: true });
     };
-  }, [handleWarning, showInstructions]);
+  }, [currentSection, handleWarning]);
+
+  // Add this effect to enforce fullscreen on component mount
+  useEffect(() => {
+    requestAndLockFullscreen();
+    
+    const enforceFullscreen = async () => {
+      if (!document.fullscreenElement) {
+        await requestAndLockFullscreen();
+      }
+    };
+
+    // Check periodically
+    const interval = setInterval(enforceFullscreen, 1000);
+    
+    // Check on visibility change
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        enforceFullscreen();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    document.addEventListener('fullscreenchange', enforceFullscreen);
+
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      document.removeEventListener('fullscreenchange', enforceFullscreen);
+    };
+  }, []);
 
   // Add detection for developer tools
   useEffect(() => {
@@ -681,50 +936,6 @@ export default function TakeTest() {
       window.removeEventListener('blur', handleBlur);
     };
   }, [showInstructions, hasStartedTest, handleWarning, updateAnalytics]);
-
-  // Update timer effect to auto-submit when time expires
-  useEffect(() => {
-    if (test && !showInstructions) {
-      let endTime = getTestEndTime();
-      
-      if (!endTime) {
-        endTime = Date.now() + (test.duration * 60 * 1000);
-        localStorage.setItem('testEndTime', endTime.toString());
-      }
-      
-      const updateTimer = () => {
-        const now = Date.now();
-        const remaining = endTime - now;
-        
-        if (remaining <= 0) {
-          clearInterval(timerRef.current);
-          toast.error('Time is up!');
-          return;
-        }
-        
-        // Show warning when 5 minutes remaining
-        if (remaining <= 300000 && remaining > 299000) {
-          toast.warning('5 minutes remaining!');
-        }
-        
-        // Show warning when 1 minute remaining
-        if (remaining <= 60000 && remaining > 59000) {
-          toast.warning('1 minute remaining!');
-        }
-        
-        setTimeRemaining(remaining);
-      };
-
-      updateTimer();
-      timerRef.current = setInterval(updateTimer, 1000);
-
-      return () => {
-        if (timerRef.current) {
-          clearInterval(timerRef.current);
-        }
-      };
-    }
-  }, [test, showInstructions]);
 
   // Add detection for tab visibility and window focus
   useEffect(() => {
@@ -926,15 +1137,40 @@ export default function TakeTest() {
 
   // Add these new state variables
   const [currentSetupStep, setCurrentSetupStep] = useState(0);
-  const [isCameraReady, setCameraReady] = useState(false);
   const [isNetworkReady, setIsNetworkReady] = useState(false);
-
-  // Add this state for camera stream
-  const [cameraStream, setCameraStream] = useState(null);
-  const videoRef = useRef(null);
 
   // Add this new component for setup steps
   const SetupStepContent = ({ step, onNext }) => {
+    useEffect(() => {
+      // Request fullscreen as soon as the setup screen loads
+      requestAndLockFullscreen();
+      
+      // Prevent exiting fullscreen
+      const handleFullscreenChange = async () => {
+        if (!document.fullscreenElement) {
+          await requestAndLockFullscreen();
+        }
+      };
+
+      // Block escape key
+      const preventEscape = (e) => {
+        if (e.key === 'Escape' || e.keyCode === 27 || e.key === 'F11') {
+          e.preventDefault();
+          e.stopPropagation();
+          requestAndLockFullscreen();
+          return false;
+        }
+      };
+
+      document.addEventListener('fullscreenchange', handleFullscreenChange);
+      document.addEventListener('keydown', preventEscape, { capture: true });
+
+      return () => {
+        document.removeEventListener('fullscreenchange', handleFullscreenChange);
+        document.removeEventListener('keydown', preventEscape, { capture: true });
+      };
+    }, []);
+
     switch (step) {
       case 0:
         return (
@@ -958,6 +1194,11 @@ export default function TakeTest() {
                 </div>
               </div>
             </div>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+              <p className="text-sm text-blue-700">
+                This test requires fullscreen mode. The test will remain in fullscreen until completion.
+              </p>
+            </div>
             <button
               onClick={onNext}
               className="flex items-center justify-center w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
@@ -972,73 +1213,43 @@ export default function TakeTest() {
           <div className="space-y-6">
             <h2 className="text-2xl font-bold">Camera Setup</h2>
             <div className="bg-white p-6 rounded-lg shadow-sm">
-              <div className="aspect-video bg-gray-900 rounded-lg overflow-hidden mb-4">
-                <video
-                  ref={videoRef}
-                  autoPlay
-                  playsInline
-                  muted
-                  style={{ 
-                    width: '100%', 
-                    height: '100%', 
-                    objectFit: 'cover',
-                    transform: 'scaleX(-1)' // Mirror the video
-                  }}
-                />
-              </div>
               <p className="text-sm text-gray-600 mb-4">
-                Please ensure your face is clearly visible and well-lit.
+                Camera access is required for this test. Please grant camera permissions to continue.
               </p>
               
-              {!isCameraReady && (
-                <button
-                  onClick={async () => {
-                    try {
-                      console.log('Requesting camera access...');
-                      const stream = await navigator.mediaDevices.getUserMedia({
-                        video: true  // Simplified video constraints
-                      });
-                      
-                      console.log('Camera access granted, setting up video...');
-                      const video = videoRef.current;
-                      if (video) {
-                        video.srcObject = stream;
-                        video.onloadedmetadata = () => {
-                          video.play().then(() => {
-                            console.log('Video playing successfully');
-                            setCameraStream(stream);
-                            setCameraReady(true);
-                            toast.success('Camera enabled!');
-                          }).catch(err => {
-                            console.error('Error playing video:', err);
-                            toast.error('Failed to start video');
-                          });
-                        };
-                      }
-                    } catch (error) {
-                      console.error('Camera setup error:', error);
-                      toast.error(
-                        error.name === 'NotAllowedError' 
-                          ? 'Please allow camera access to continue' 
-                          : 'Camera setup failed'
-                      );
-                    }
-                  }}
-                  className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                >
-                  Enable Camera
-                </button>
-              )}
-            </div>
-            
-            {isCameraReady && (
               <button
-                onClick={onNext}
-                className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2"
+                onClick={async () => {
+                  try {
+                    // Request camera permissions
+                    const stream = await navigator.mediaDevices.getUserMedia({ 
+                      video: { 
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                      } 
+                    });
+                    
+                    // Stop the stream immediately since we don't need it
+                    stream.getTracks().forEach(track => track.stop());
+                    
+                    // If we got here, permissions were granted
+                    toast.success('Camera permissions granted successfully!');
+                    onNext();
+                  } catch (error) {
+                    console.error('Camera permission error:', error);
+                    if (error.name === 'NotAllowedError') {
+                      toast.error('Camera access denied. Please allow camera access to continue.');
+                    } else if (error.name === 'NotFoundError') {
+                      toast.error('No camera detected. Please connect a camera to continue.');
+                    } else {
+                      toast.error('Failed to access camera. Please check your device settings.');
+                    }
+                  }
+                }}
+                className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
               >
-                Continue <ArrowRight className="w-4 h-4" />
+                Grant Camera Access
               </button>
-            )}
+            </div>
           </div>
         );
 
@@ -1129,14 +1340,95 @@ export default function TakeTest() {
     }
   };
 
-  // Clean up camera stream when component unmounts
+  // Add this effect in TakeTest component
   useEffect(() => {
+    const handleForceSubmit = () => {
+      handleSubmit();
+    };
+
+    window.addEventListener('forceTestSubmit', handleForceSubmit);
+    
     return () => {
-      if (cameraStream) {
-        cameraStream.getTracks().forEach(track => track.stop());
+      window.removeEventListener('forceTestSubmit', handleForceSubmit);
+    };
+  }, [handleSubmit]);
+
+  // Add or update the fullscreen enforcement effect
+  useEffect(() => {
+    if (!showInstructions && hasStartedTest) {
+      let fullscreenCheckInterval;
+      let failedAttempts = 0;
+      const MAX_ATTEMPTS = 3;
+      const CHECK_INTERVAL = 100; // Check every 100ms
+
+      const enforceFullscreen = async () => {
+        if (!document.fullscreenElement) {
+          failedAttempts++;
+          try {
+            await document.documentElement.requestFullscreen();
+            failedAttempts = 0; // Reset counter on success
+            setIsFullScreen(true);
+          } catch (error) {
+            console.error('Fullscreen enforcement failed:', error);
+            if (failedAttempts >= MAX_ATTEMPTS) {
+              clearInterval(fullscreenCheckInterval);
+              toast.error('Fullscreen mode required. Test will be submitted.');
+              window.dispatchEvent(new CustomEvent('forceTestSubmit'));
+            }
+          }
+        }
+      };
+
+      // Initial enforcement
+      enforceFullscreen();
+      
+      // Continuous checking
+      fullscreenCheckInterval = setInterval(enforceFullscreen, CHECK_INTERVAL);
+
+      // Also enforce on visibility change
+      const handleVisibilityChange = () => {
+        if (!document.hidden) {
+          enforceFullscreen();
+        }
+      };
+
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+
+      return () => {
+        clearInterval(fullscreenCheckInterval);
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+      };
+    }
+  }, [showInstructions, hasStartedTest]);
+
+  // Add this effect to request fullscreen on page load
+  useEffect(() => {
+    const requestFullscreenOnLoad = async () => {
+      try {
+        if (!document.fullscreenElement) {
+          await document.documentElement.requestFullscreen();
+          setIsFullScreen(true);
+        }
+      } catch (error) {
+        console.error('Fullscreen request failed:', error);
       }
     };
-  }, [cameraStream]);
+
+    requestFullscreenOnLoad();
+  }, []);
+
+  // Add this effect to disable right-click
+  useEffect(() => {
+    const disableContextMenu = (e) => {
+      e.preventDefault();
+    };
+
+    document.addEventListener('contextmenu', disableContextMenu);
+
+    return () => {
+      document.removeEventListener('contextmenu', disableContextMenu);
+    };
+  }, []);
 
   // Render Loading State
   if (loading) {
@@ -1226,7 +1518,10 @@ export default function TakeTest() {
 
             {/* Add Submit button before the camera */}
             <div className="flex items-center gap-4">
-              <FullscreenButton isFullScreen={isFullScreen} />
+              <FullscreenButton 
+                isFullScreen={isFullScreen} 
+                setIsFullScreen={setIsFullScreen} 
+              />
               <button
                 onClick={handleFinalSubmitClick}
                 className="px-4 py-2 flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors"
@@ -1318,7 +1613,12 @@ export default function TakeTest() {
         <WarningModal
           message={warningMessage}
           warningCount={analytics.warnings}
-          onClose={handleWarningModalClose}
+          onClose={() => {
+            handleWarningModalClose();
+            document.documentElement.requestFullscreen().catch(() => {
+              toast.error('Fullscreen is required to continue the test');
+            });
+          }}
         />
       )}
 

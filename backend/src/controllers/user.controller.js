@@ -232,7 +232,7 @@ export const getTestResults = async (req, res) => {
         return res.status(404).json({ message: 'Test result not found' });
       }
 
-      // Map MCQ answers with selected options
+      // Map MCQ answers with selected options and calculate scores correctly
       const mcqAnswers = (submission.mcqSubmission?.answers || []).map(answer => {
         const question = submission.test.mcqs.find(q => 
           q._id.toString() === answer.questionId.toString()
@@ -243,10 +243,12 @@ export const getTestResults = async (req, res) => {
           answer.selectedOptions || []
         );
 
+        const marks = isCorrect ? (question?.marks || 0) : 0;
+
         return {
           questionId: answer.questionId,
           selectedOptions: answer.selectedOptions || [],
-          marks: isCorrect ? (question?.marks || 0) : 0,
+          marks,
           isCorrect,
           _id: answer._id,
           question: question?.question,
@@ -257,7 +259,7 @@ export const getTestResults = async (req, res) => {
         };
       });
 
-      // Calculate MCQ summary
+      // Calculate MCQ summary with proper scoring
       const mcqSummary = {
         total: submission.test.mcqs?.length || 0,
         correct: mcqAnswers.filter(a => a.isCorrect).length,
@@ -265,18 +267,30 @@ export const getTestResults = async (req, res) => {
         questions: mcqAnswers
       };
 
+      // Calculate coding scores properly
+      const codingScore = submission.codingSubmission?.challenges?.reduce((total, challenge) => {
+        const maxMarks = submission.test.codingChallenges.find(
+          c => c._id.toString() === challenge.challengeId.toString()
+        )?.marks || 0;
+        
+        // Get the latest submission that passed
+        const passedSubmission = challenge.submissions?.find(s => s.status === 'passed');
+        return total + (passedSubmission ? maxMarks : 0);
+      }, 0) || 0;
+
       const detailedResult = {
         testId: submission.test._id,
         title: submission.test.title,
         startTime: submission.startTime,
         summary: {
           mcqScore: mcqSummary.score,
-          codingScore: submission.codingSubmission?.totalScore || 0,
-          totalScore: (mcqSummary.score + (submission.codingSubmission?.totalScore || 0)),
+          codingScore,
+          totalScore: mcqSummary.score + codingScore,
           maxScore: submission.test.totalMarks,
           passingScore: submission.test.passingMarks,
           status: submission.status,
-          timeTaken: submission.endTime ? Math.round((new Date(submission.endTime) - new Date(submission.startTime)) / 1000) : null
+          timeTaken: submission.endTime ? 
+            Math.round((new Date(submission.endTime) - new Date(submission.startTime)) / 1000) : null
         },
         mcq: mcqSummary,
         coding: {
@@ -284,7 +298,7 @@ export const getTestResults = async (req, res) => {
           completed: submission.codingSubmission?.challenges?.filter(c => 
             c.submissions?.some(s => s.status === 'passed')
           )?.length || 0,
-          score: submission.codingSubmission?.totalScore || 0,
+          score: codingScore,
           challenges: submission.test.codingChallenges?.map(challenge => {
             // Find the matching submission for this challenge
             const submittedChallenge = submission.codingSubmission?.challenges?.find(
@@ -694,228 +708,186 @@ export const getDashboardData = async (req, res) => {
     const currentDate = new Date();
     const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
 
-    // Get all submissions with any status
-    const submissions = (await Submission.find({ 
+    // Get all submissions with populated test data including MCQs and coding challenges
+    const submissions = await Submission.find({ 
       user: userId 
     })
     .populate({
       path: 'test',
       select: 'title description duration totalMarks passingMarks type category difficulty vendor mcqs codingChallenges',
-      populate: {
-        path: 'vendor',
-        select: 'name email'
-      }
+      populate: [
+        {
+          path: 'mcqs',
+          select: 'question options correctOptions marks'
+        },
+        {
+          path: 'codingChallenges',
+          select: 'title description testCases marks'
+        },
+        {
+          path: 'vendor',
+          select: 'name email'
+        }
+      ]
     })
+    .populate('codingSubmission')
     .sort({ 
       createdAt: -1,
       startTime: -1 
     })
-    .lean())
-    .filter(sub => sub.test && Object.keys(sub.test).length > 0); // Filter out submissions with empty test objects
-
-    // Filter completed submissions
-    const completedSubmissions = submissions.filter(sub => 
-      sub.status === 'completed' || sub.status === 'mcq_completed'
-    );
-
-    // Calculate improvement (comparing latest score with average of previous scores)
-    const calculateImprovement = () => {
-      if (completedSubmissions.length < 2) return 0;
-      
-      // Add null checks for test and totalMarks
-      const latestSubmission = completedSubmissions[0];
-      const latestScore = latestSubmission?.test?.totalMarks 
-        ? (latestSubmission.totalScore / latestSubmission.test.totalMarks) * 100 
-        : 0;
-
-      const previousScores = completedSubmissions.slice(1)
-        .filter(sub => sub?.test?.totalMarks) // Filter out submissions with missing test data
-        .map(sub => (sub.totalScore / sub.test.totalMarks) * 100);
-
-      if (previousScores.length === 0) return 0;
-      
-      const avgPreviousScore = previousScores.reduce((a, b) => a + b, 0) / previousScores.length;
-      if (avgPreviousScore === 0) return 0; // Avoid division by zero
-      
-      return Math.round(((latestScore - avgPreviousScore) / avgPreviousScore) * 1000) / 10;
-    };
-
-    // Get upcoming tests (registered but not started)
-    const upcomingTests = await TestRegistration.find({
-      user: userId,
-      status: 'registered',
-      scheduledDate: { $gt: currentDate }
-    })
-    .populate('test', 'title description duration type category difficulty vendor')
-    .sort({ scheduledDate: 1 })
     .lean();
 
-    // Calculate metrics including partial completions
-    const calculateMetrics = () => {
-      const metrics = {
-        mcqPerformance: 0,
-        codingPerformance: 0,
-        successRate: 0,
-        averageScore: 0
-      };
+    // Filter and map submissions with proper score calculations
+    const validSubmissions = submissions
+      .filter(sub => sub.test && Object.keys(sub.test).length > 0)
+      .map(submission => {
+        // Calculate MCQ scores
+        const mcqAnswers = (submission.mcqSubmission?.answers || []).map(answer => {
+          const question = submission.test.mcqs.find(q => 
+            q._id.toString() === answer.questionId.toString()
+          );
+          
+          const isCorrect = checkMCQAnswer(
+            question?.correctOptions || [],
+            answer.selectedOptions || []
+          );
 
-      // Filter submissions with MCQ or coding progress
-      const activeSubmissions = submissions.filter(sub => 
-        sub.mcqSubmission?.completed || sub.codingSubmission?.completed || 
-        sub.status === 'mcq_completed' || sub.status === 'coding_completed' ||
-        sub.status === 'completed'
-      );
+          return {
+            ...answer,
+            marks: isCorrect ? (question?.marks || 0) : 0,
+            maxMarks: question?.marks || 0
+          };
+        });
 
-      if (activeSubmissions.length > 0) {
-        // MCQ Performance
-        const mcqSubmissions = activeSubmissions.filter(sub => 
-          sub.mcqSubmission?.completed || sub.status === 'mcq_completed'
-        );
-        if (mcqSubmissions.length > 0) {
-          metrics.mcqPerformance = mcqSubmissions.reduce((acc, sub) => {
-            const totalMcqMarks = sub.test?.mcqs?.reduce((sum, q) => sum + (q.marks || 0), 0) || 0;
-            const mcqScore = sub.mcqSubmission?.answers?.reduce((total, answer) => {
-              const question = sub.test?.mcqs?.find(q => 
-                q._id.toString() === answer.questionId.toString()
-              );
-              const isCorrect = checkMCQAnswer(
-                question?.correctOptions || [], 
-                answer.selectedOptions || []
-              );
-              return total + (isCorrect ? (question?.marks || 0) : 0);
-            }, 0) || 0;
-            return acc + (totalMcqMarks > 0 ? (mcqScore / totalMcqMarks * 100) : 0);
-          }, 0) / mcqSubmissions.length;
+        const mcqScore = mcqAnswers.reduce((total, answer) => total + answer.marks, 0);
+
+        // Calculate coding scores
+        const codingScore = submission.codingSubmission?.challenges?.reduce((total, challenge) => {
+          const maxMarks = submission.test.codingChallenges.find(
+            c => c._id.toString() === challenge.challengeId.toString()
+          )?.marks || 0;
+          
+          const passedSubmission = challenge.submissions?.find(s => s.status === 'passed');
+          return total + (passedSubmission ? maxMarks : 0);
+        }, 0) || 0;
+
+        const totalScore = mcqScore + codingScore;
+
+        return {
+          testId: submission.test._id,
+          uuid: submission.test.uuid,
+          title: submission.test.title,
+          startTime: submission.startTime,
+          endTime: submission.endTime,
+          mcqScore,
+          codingScore,
+          totalScore,
+          maxScore: submission.test.totalMarks,
+          passingScore: submission.test.passingMarks,
+          status: totalScore >= submission.test.passingMarks ? 'passed' : 'failed',
+          attemptedAt: submission.createdAt,
+          completionStatus: submission.completionStatus || 'completed',
+          category: submission.test.category,
+          progress: {
+            mcqCompleted: submission.mcqSubmission?.completed || false,
+            codingCompleted: submission.codingSubmission?.completed || false,
+            totalMCQs: submission.test.mcqs?.length || 0,
+            answeredMCQs: submission.mcqSubmission?.answers?.length || 0,
+            totalCodingChallenges: submission.test.codingChallenges?.length || 0,
+            completedChallenges: (submission.codingSubmission?.challenges || [])
+              .filter(c => c.submissions?.some(s => s.status === 'passed'))
+              .length
+          }
+        };
+      });
+
+    // Calculate performance metrics
+    const performanceByCategory = Object.entries(
+      validSubmissions.reduce((acc, sub) => {
+        const category = sub.category || 'Uncategorized';
+        if (!acc[category]) {
+          acc[category] = { count: 0, totalScore: 0, passed: 0, maxPossibleScore: 0 };
         }
+        acc[category].count++;
+        acc[category].totalScore += sub.totalScore;
+        acc[category].maxPossibleScore += sub.maxScore;
+        if (sub.status === 'passed') acc[category].passed++;
+        return acc;
+      }, {})
+    ).reduce((acc, [category, data]) => {
+      acc[category] = {
+        count: data.count,
+        avgScore: Math.round((data.totalScore / data.maxPossibleScore * 100) * 10) / 10,
+        passRate: Math.round((data.passed / data.count) * 100)
+      };
+      return acc;
+    }, {});
 
-        // Calculate average score including partial completions
-        metrics.averageScore = activeSubmissions.reduce((acc, sub) => {
-          let totalScore = 0;
-          let maxScore = 0;
-
-          // Add MCQ score if available
-          if (sub.mcqSubmission?.completed || sub.status === 'mcq_completed') {
-            totalScore += sub.mcqSubmission?.totalScore || 0;
-            maxScore += sub.test?.mcqs?.reduce((sum, q) => sum + (q.marks || 0), 0) || 0;
-          }
-
-          // Add coding score if available
-          if (sub.codingSubmission?.completed || sub.status === 'coding_completed') {
-            totalScore += sub.codingSubmission?.totalScore || 0;
-            maxScore += sub.test?.codingChallenges?.reduce((sum, c) => sum + (c.marks || 0), 0) || 0;
-          }
-
-          // Calculate percentage for this submission
-          const submissionScore = maxScore > 0 ? (totalScore / maxScore * 100) : 0;
-          return acc + submissionScore;
-        }, 0) / activeSubmissions.length;
+    // Calculate MCQ and Coding specific performance with proper null checks
+    const mcqPerformance = validSubmissions.reduce((acc, sub) => {
+      if (sub.test && Array.isArray(sub.test.mcqs)) {
+        acc.totalScore += (sub.mcqScore || 0);
+        acc.maxScore += (sub.test.mcqs.length || 0) * 
+          ((sub.test.mcqs[0]?.marks || 0));
+        acc.count++;
       }
+      return acc;
+    }, { totalScore: 0, maxScore: 0, count: 0 });
 
-      return Object.fromEntries(
-        Object.entries(metrics).map(([key, value]) => [key, Math.round(value * 10) / 10])
-      );
-    };
+    const codingPerformance = validSubmissions.reduce((acc, sub) => {
+      if (sub.test && Array.isArray(sub.test.codingChallenges)) {
+        acc.totalScore += (sub.codingScore || 0);
+        acc.maxScore += (sub.test.codingChallenges.length || 0) * 
+          ((sub.test.codingChallenges[0]?.marks || 0));
+        acc.count++;
+      }
+      return acc;
+    }, { totalScore: 0, maxScore: 0, count: 0 });
 
-    const metrics = calculateMetrics();
+    // Calculate improvement (compare last 5 tests with previous 5)
+    const last5Tests = validSubmissions.slice(0, 5);
+    const previous5Tests = validSubmissions.slice(5, 10);
+    
+    const last5Avg = last5Tests.length ? 
+      last5Tests.reduce((acc, sub) => acc + (sub.totalScore / sub.maxScore * 100), 0) / last5Tests.length : 0;
+    const previous5Avg = previous5Tests.length ? 
+      previous5Tests.reduce((acc, sub) => acc + (sub.totalScore / sub.maxScore * 100), 0) / previous5Tests.length : 0;
+    
+    const improvement = previous5Avg ? ((last5Avg - previous5Avg) / previous5Avg) * 100 : 0;
 
     const response = {
       overview: {
-        totalTestsTaken: completedSubmissions.length,
-        upcomingTests: upcomingTests.length,
-        ...metrics,
-        lastTestScore: completedSubmissions.length > 0 
-          ? Math.round((completedSubmissions[0].totalScore / completedSubmissions[0].test.totalMarks * 100) * 10) / 10 
-          : 0,
-        thisMonthTests: completedSubmissions.filter(sub => 
-          new Date(sub.endTime || sub.updatedAt) >= firstDayOfMonth
+        totalTestsTaken: validSubmissions.length,
+        upcomingTests: 0,
+        completedTests: validSubmissions.filter(sub => sub.completionStatus === 'completed').length,
+        thisMonthTests: validSubmissions.filter(sub => 
+          new Date(sub.endTime || sub.attemptedAt) >= firstDayOfMonth
         ).length,
-        improvement: calculateImprovement()
+        averageScore: validSubmissions.length > 0
+          ? Math.round(validSubmissions.reduce((acc, sub) => 
+              acc + ((sub.totalScore || 0) / (sub.maxScore || 1) * 100), 0) / validSubmissions.length * 10) / 10
+          : 0,
+        lastTestScore: validSubmissions.length > 0
+          ? Math.round(((validSubmissions[0].totalScore || 0) / (validSubmissions[0].maxScore || 1) * 100) * 10) / 10
+          : 0,
+        mcqPerformance: mcqPerformance.count > 0 ? 
+          Math.round((mcqPerformance.totalScore / mcqPerformance.maxScore) * 1000) / 10 : 0,
+        codingPerformance: codingPerformance.count > 0 ? 
+          Math.round((codingPerformance.totalScore / codingPerformance.maxScore) * 1000) / 10 : 0,
+        successRate: validSubmissions.length ? 
+          Math.round((validSubmissions.filter(sub => sub.status === 'passed').length / validSubmissions.length) * 1000) / 10 : 0,
+        improvement: Math.round(improvement * 10) / 10,
+        codingTestsTaken: validSubmissions.filter(sub => 
+          sub.test && Array.isArray(sub.test.codingChallenges) && 
+          sub.test.codingChallenges.length > 0
+        ).length
       },
-      recentTests: submissions.slice(0, 5).map(sub => ({
-        _id: sub._id,
-        test: {
-          _id: sub.test?._id,
-          title: sub.test?.title,
-          description: sub.test?.description,
-          duration: sub.test?.duration,
-          totalMarks: sub.test?.totalMarks,
-          type: sub.test?.type,
-          category: sub.test?.category,
-          difficulty: sub.test?.difficulty,
-          vendor: sub.test?.vendor
-        },
-        score: (() => {
-          if (sub.status === 'completed') {
-            return Math.round((sub.totalScore / (sub.test?.totalMarks || 100)) * 100);
-          } else if (sub.status === 'mcq_completed') {
-            const mcqScore = sub.mcqSubmission?.totalScore || 0;
-            const totalMcqMarks = sub.test?.mcqs?.reduce((sum, q) => sum + (q.marks || 0), 0) || 100;
-            return Math.round((mcqScore / totalMcqMarks) * 100);
-          }
-          return 0;
-        })(),
-        mcqScore: (() => {
-          if (sub.status === 'mcq_completed' || sub.status === 'completed') {
-            const mcqScore = sub.mcqSubmission?.totalScore || 0;
-            const totalMcqMarks = sub.test?.mcqs?.reduce((sum, q) => sum + (q.marks || 0), 0) || 100;
-            return Math.round((mcqScore / totalMcqMarks) * 100);
-          }
-          return 0;
-        })(),
-        codingScore: (() => {
-          if (sub.status === 'completed') {
-            const codingScore = sub.codingSubmission?.totalScore || 0;
-            const totalCodingMarks = sub.test?.codingChallenges?.reduce((sum, c) => sum + (c.marks || 0), 0) || 100;
-            return Math.round((codingScore / totalCodingMarks) * 100);
-          }
-          return 0;
-        })(),
-        status: sub.status,
-        startTime: sub.startTime,
-        endTime: sub.endTime,
-        progress: {
-          mcqCompleted: sub.mcqSubmission?.completed || false,
-          codingCompleted: sub.codingSubmission?.completed || false,
-          totalMCQs: sub.test?.mcqs?.length || 0,
-          answeredMCQs: sub.mcqSubmission?.answers?.length || 0,
-          totalCodingChallenges: sub.test?.codingChallenges?.length || 0,
-          completedChallenges: (sub.codingSubmission?.challenges || [])
-            .filter(c => c.submissions?.some(s => s.status === 'passed'))
-            .length
-        }
+      recentTests: validSubmissions.slice(0, 5).map(test => ({
+        ...test,
+        badge: getBadgeLevel(test.totalScore / test.maxScore * 100)
       })),
-      upcomingSchedule: upcomingTests.map(reg => ({
-        _id: reg._id,
-        test: {
-          _id: reg.test?._id,
-          title: reg.test?.title,
-          description: reg.test?.description,
-          duration: reg.test?.duration,
-          type: reg.test?.type,
-          category: reg.test?.category,
-          difficulty: reg.test?.difficulty,
-          vendor: reg.test?.vendor
-        },
-        scheduledDate: reg.scheduledDate,
-        status: reg.status
-      })),
-      performanceByCategory: Object.entries(
-        completedSubmissions.reduce((acc, sub) => {
-          const category = sub.test?.category || 'Uncategorized';
-          if (!acc[category]) {
-            acc[category] = { count: 0, totalScore: 0 };
-          }
-          acc[category].count++;
-          acc[category].totalScore += (sub.totalScore / (sub.test?.totalMarks || 100) * 100);
-          return acc;
-        }, {})
-      ).reduce((acc, [category, data]) => {
-        acc[category] = {
-          count: data.count,
-          avgScore: Math.round((data.totalScore / data.count) * 10) / 10
-        };
-        return acc;
-      }, {})
+      performanceByCategory,
+      upcomingSchedule: []
     };
 
     res.json(response);

@@ -137,7 +137,6 @@ export default function Proctoring({ className }) {
     <div className={`relative ${className}`}>
       <video
         ref={videoRef}
-        style={{ display: 'none' }}
         width="640"
         height="480"
         playsInline

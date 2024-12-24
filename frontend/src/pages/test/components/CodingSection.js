@@ -511,16 +511,18 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
     domReadOnly: false,
     scrollBeyondLastLine: false,
     tabSize: 2,
-    // Keep basic editing features enabled
-    formatOnPaste: true,
+    formatOnPaste: false, // Disable format on paste
     tabCompletion: 'on',
 
-    clipboard: false,  
-    formatOnType: true,
-    autoIndent: 'full',
+    // Disable clipboard operations
+    disableLayerHinting: true,
+    contextmenu: false,
     quickSuggestions: autoComplete,
     suggestOnTriggerCharacters: autoComplete,
     parameterHints: autoComplete ? { enabled: true } : { enabled: false },
+
+    // Additional clipboard restrictions
+    'editor.clipboard.enabled': false,
   };
 
   // Update the renderTestResults function to better handle errors
@@ -801,8 +803,14 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
     }
   };
 
+  // Add this function before the return statement
+  const handleContextMenu = (e) => {
+    e.preventDefault();
+    return false;
+  };
+
   return (
-    <div className="relative h-full">
+    <div className="relative h-full" onContextMenu={handleContextMenu}>
       {isLoadingTestId && (
         <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
@@ -956,7 +964,7 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
           </div>
         </div>
 
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col" onContextMenu={handleContextMenu}>
           <MonacoEditor
             height="100%"
             language={language.toLowerCase()}
@@ -971,6 +979,7 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
             onMount={handleEditorMount}
             wrapperClassName="monaco-editor-wrapper"
             className="monaco-editor"
+            onContextMenu={handleContextMenu}
           />
         </div>
 

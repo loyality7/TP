@@ -180,7 +180,14 @@ export default function SharedTest() {
         vendorId: vendorId
       }));
 
-      toast.success('Starting test');
+      // Try to enter fullscreen before navigation
+      try {
+        await document.documentElement.requestFullscreen();
+      } catch (error) {
+        console.error('Fullscreen request failed:', error);
+        // Continue with navigation even if fullscreen fails
+      }
+
       navigate(`/test/take/${uuid}`);
 
     } catch (error) {

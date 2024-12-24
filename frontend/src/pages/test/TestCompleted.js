@@ -24,7 +24,7 @@ export default function TestCompleted() {
           ) : (
             <span className="block mt-2 text-yellow-600">
               If your session ended due to technical issues or you encountered any problems, 
-              please contact our support team at sarath@hysteresis.in
+              please contact our support Person 
             </span>
           )}
         </p>
