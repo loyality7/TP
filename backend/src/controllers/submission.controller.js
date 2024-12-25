@@ -299,16 +299,20 @@ export const getUserSubmissions = async (req, res) => {
       query.test = { $in: vendorTests.map(test => test._id) };
     }
 
-    // Update the populate to include codingSubmission details
+    // Update the populate to include detailed test and submission data
     const submissions = await Submission.find(query)
       .populate({
         path: 'test',
-        select: 'title type category difficulty totalMarks passingMarks vendor codingChallenges mcqs',
+        select: 'title type category difficulty totalMarks passingMarks vendor codingChallenges mcqs timeLimit',
         populate: [
           { path: 'vendor', select: 'name email' },
           { 
             path: 'codingChallenges', 
-            select: 'title description testCases marks'
+            select: 'title description testCases marks difficulty'
+          },
+          {
+            path: 'mcqs',
+            select: 'question options correctOptions marks'
           }
         ]
       })
@@ -319,6 +323,7 @@ export const getUserSubmissions = async (req, res) => {
       coding: submissions
         .filter(sub => sub.codingSubmission?.challenges?.length > 0)
         .map(sub => ({
+          submissionId: sub._id,
           testId: sub.test?._id,
           testTitle: sub.test?.title,
           type: sub.test?.type,
@@ -328,6 +333,9 @@ export const getUserSubmissions = async (req, res) => {
           totalMarks: sub.test?.totalMarks,
           passingMarks: sub.test?.passingMarks,
           status: sub.status,
+          startTime: sub.startTime,
+          endTime: sub.endTime,
+          duration: sub.endTime ? Math.round((sub.endTime - sub.startTime) / 1000) : null,
           submittedAt: sub.codingSubmission?.submittedAt,
           challenges: (sub.codingSubmission?.challenges || []).map(challenge => {
             const challengeDetails = sub.test.codingChallenges.find(
@@ -337,38 +345,100 @@ export const getUserSubmissions = async (req, res) => {
             return {
               challengeId: challenge.challengeId,
               challengeTitle: challengeDetails?.title || 'Unknown Challenge',
+              difficulty: challengeDetails?.difficulty,
+              maxMarks: challengeDetails?.marks || 0,
               submissions: (challenge.submissions || []).map(submission => ({
                 submittedAt: submission.submittedAt,
                 language: submission.language,
                 status: submission.status,
                 marks: submission.marks,
+                code: submission.code,
+                executionTime: submission.executionTime,
+                memory: submission.memory,
+                output: submission.output,
+                error: submission.error,
+                testCaseResults: submission.testCaseResults?.map(tc => ({
+                  passed: tc.passed,
+                  input: tc.input,
+                  expectedOutput: tc.expectedOutput,
+                  actualOutput: tc.actualOutput,
+                  error: tc.error
+                })),
                 testCasesPassed: submission.testCaseResults?.filter(tc => tc.passed).length || 0,
-                totalTestCases: submission.testCaseResults?.length || 0,
-                code: submission.code // Include the code
+                totalTestCases: submission.testCaseResults?.length || 0
               })),
-              bestScore: Math.max(...(challenge.submissions || []).map(s => s.marks || 0), 0)
+              bestScore: Math.max(...(challenge.submissions || []).map(s => s.marks || 0), 0),
+              totalAttempts: challenge.submissions?.length || 0
             };
           })
         })),
-      // Keep existing MCQ submissions transformation
       mcq: submissions
         .filter(sub => sub.mcqSubmission?.answers?.length > 0)
-        .map(sub => ({ /* existing MCQ transformation */ }))
+        .map(sub => ({
+          submissionId: sub._id,
+          testId: sub.test?._id,
+          testTitle: sub.test?.title,
+          type: sub.test?.type,
+          category: sub.test?.category,
+          difficulty: sub.test?.difficulty,
+          score: sub.mcqSubmission?.totalScore || 0,
+          totalMarks: sub.test?.totalMarks,
+          passingMarks: sub.test?.passingMarks,
+          status: sub.status,
+          startTime: sub.startTime,
+          endTime: sub.endTime,
+          duration: sub.endTime ? Math.round((sub.endTime - sub.startTime) / 1000) : null,
+          submittedAt: sub.mcqSubmission?.submittedAt,
+          answers: (sub.mcqSubmission?.answers || []).map(answer => {
+            const question = sub.test.mcqs.find(
+              q => q._id.toString() === answer.questionId.toString()
+            );
+            
+            const isCorrect = arraysEqual(
+              question?.correctOptions || [],
+              answer.selectedOptions || []
+            );
+
+            return {
+              questionId: answer.questionId,
+              question: question?.question,
+              selectedOptions: answer.selectedOptions || [],
+              isCorrect,
+              marks: isCorrect ? (question?.marks || 0) : 0,
+              maxMarks: question?.marks || 0
+            };
+          })
+        }))
+    };
+
+    // Calculate summary statistics
+    const summary = {
+      totalSubmissions: submissions.length,
+      mcqSubmissions: transformedSubmissions.mcq.length,
+      codingSubmissions: transformedSubmissions.coding.length,
+      averageScore: submissions.length > 0 
+        ? Math.round(submissions.reduce((sum, sub) => 
+            sum + ((sub.mcqSubmission?.totalScore || 0) + 
+                  (sub.codingSubmission?.totalScore || 0)), 0) / submissions.length)
+        : 0,
+      testsPassed: submissions.filter(sub => 
+        (sub.totalScore || 0) >= (sub.test?.passingMarks || 0)
+      ).length
     };
 
     res.json({
       success: true,
       data: transformedSubmissions,
-      meta: {
-        totalSubmissions: submissions.length,
-        mcqCount: transformedSubmissions.mcq?.length || 0,
-        codingCount: transformedSubmissions.coding?.length || 0
-      }
+      summary
     });
 
   } catch (error) {
     console.error('Error in getUserSubmissions:', error);
-    res.status(500).json({ success: false, error: 'Failed to fetch submissions' });
+    res.status(500).json({ 
+      success: false, 
+      error: 'Failed to fetch submissions',
+      message: error.message 
+    });
   }
 };
 
