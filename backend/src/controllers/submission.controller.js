@@ -389,6 +389,11 @@ export const getUserSubmissions = async (req, res) => {
           endTime: sub.endTime,
           duration: sub.endTime ? Math.round((sub.endTime - sub.startTime) / 1000) : null,
           submittedAt: sub.mcqSubmission?.submittedAt,
+          totalQuestions: sub.test.mcqs?.length || 0,
+          correctAnswers: (sub.mcqSubmission?.answers || []).filter(answer => {
+            const question = sub.test.mcqs.find(q => q._id.toString() === answer.questionId.toString());
+            return arraysEqual(question?.correctOptions || [], answer.selectedOptions || []);
+          }).length,
           answers: (sub.mcqSubmission?.answers || []).map(answer => {
             const question = sub.test.mcqs.find(
               q => q._id.toString() === answer.questionId.toString()
@@ -403,11 +408,42 @@ export const getUserSubmissions = async (req, res) => {
               questionId: answer.questionId,
               question: question?.question,
               selectedOptions: answer.selectedOptions || [],
+              correctOptions: question?.correctOptions || [],
+              options: question?.options || [],
+              explanation: question?.explanation,
               isCorrect,
               marks: isCorrect ? (question?.marks || 0) : 0,
-              maxMarks: question?.marks || 0
+              maxMarks: question?.marks || 0,
+              submittedAt: answer.submittedAt || sub.mcqSubmission?.submittedAt,
+              timeSpent: answer.timeSpent,
+              category: question?.category,
+              difficulty: question?.difficulty,
+              topics: question?.topics || [],
+              questionType: question?.type || 'single',
+              feedback: answer.feedback
             };
-          })
+          }),
+          summary: {
+            totalQuestions: sub.test.mcqs?.length || 0,
+            attemptedQuestions: sub.mcqSubmission?.answers?.length || 0,
+            correctAnswers: (sub.mcqSubmission?.answers || []).filter(answer => {
+              const question = sub.test.mcqs.find(q => q._id.toString() === answer.questionId.toString());
+              return arraysEqual(question?.correctOptions || [], answer.selectedOptions || []);
+            }).length,
+            incorrectAnswers: (sub.mcqSubmission?.answers || []).filter(answer => {
+              const question = sub.test.mcqs.find(q => q._id.toString() === answer.questionId.toString());
+              return !arraysEqual(question?.correctOptions || [], answer.selectedOptions || []);
+            }).length,
+            skippedQuestions: (sub.test.mcqs?.length || 0) - (sub.mcqSubmission?.answers?.length || 0),
+            accuracy: Math.round(((sub.mcqSubmission?.answers || []).filter(answer => {
+              const question = sub.test.mcqs.find(q => q._id.toString() === answer.questionId.toString());
+              return arraysEqual(question?.correctOptions || [], answer.selectedOptions || []);
+            }).length / (sub.mcqSubmission?.answers?.length || 1)) * 100),
+            averageTimePerQuestion: Math.round(
+              (sub.mcqSubmission?.answers || []).reduce((sum, ans) => sum + (ans.timeSpent || 0), 0) / 
+              (sub.mcqSubmission?.answers?.length || 1)
+            )
+          }
         }))
     };
 
