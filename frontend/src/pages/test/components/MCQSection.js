@@ -4,7 +4,13 @@ import { toast } from 'react-hot-toast';
 import { apiService } from '../../../services/api';
 import { CheckCircle } from 'lucide-react';
 
-export default function MCQPage({ mcqs, testId, onSubmitMCQs, setAnalytics }) {
+export default function MCQSection({ 
+  mcqs, 
+  testId, 
+  onSubmitMCQs, 
+  setAnalytics,
+  test
+}) {
   const [currentMcq, setCurrentMcq] = useState(() => {
     const savedIndex = localStorage.getItem('currentMcqIndex');
     return savedIndex ? parseInt(savedIndex, 0) : 0;
@@ -53,18 +59,22 @@ export default function MCQPage({ mcqs, testId, onSubmitMCQs, setAnalytics }) {
         return;
       }
 
-      const submissionData = {
+      // Submit MCQ answers first
+      const response = await apiService.post('submissions/submit/mcq', {
         testId: currentTestId,
         submissions: formattedSubmissions
-      };
-
-      console.log('Submitting data:', submissionData);
-
-      const response = await apiService.post('submissions/submit/mcq', submissionData);
+      });
 
       if (response?.data?.submissionId) {
+        // Update submission status based on coding completion
+        await apiService.post('submissions/update-status', {
+          testId: currentTestId,
+          status: response.data.submission?.codingSubmission?.completed ? 'completed' : 'mcq_completed'
+        });
+
         setIsSubmitted(true);
         toast.success('MCQs submitted successfully!');
+        
         localStorage.removeItem('mcq_answers');
         localStorage.removeItem('currentMcqIndex');
         
@@ -73,8 +83,6 @@ export default function MCQPage({ mcqs, testId, onSubmitMCQs, setAnalytics }) {
         if (onSubmitMCQs) {
           onSubmitMCQs(response.data);
         }
-
-        setCurrentMcq(prev => prev);
       } else {
         throw new Error('Submission response was not successful');
       }

@@ -81,8 +81,6 @@ const forceFullscreen = async () => {
     return document.fullscreenElement !== null;
   } catch (error) {
     console.error('Fullscreen error:', error);
-    // Dispatch force submit event if fullscreen fails repeatedly
-    window.dispatchEvent(new CustomEvent('forceTestSubmit'));
     return false;
   }
 };
@@ -188,7 +186,7 @@ export default function TakeTest() {
   const handleWarning = useCallback((message) => {
     const now = Date.now();
     const lastWarning = lastWarningRef.current;
-    const WARNING_COOLDOWN = 3000;
+    const WARNING_COOLDOWN = 5000;
 
     if (now - lastWarning >= WARNING_COOLDOWN) {
       setWarningMessage(message);
@@ -277,53 +275,63 @@ export default function TakeTest() {
           clearInterval(timerRef.current);
           toast.error('Time is up!');
           
-          // Calculate final analytics
-          const finalAnalytics = {
-            ...analytics,
-            timeSpent: test.duration * 60, // Total duration in seconds
-            endTime: new Date().toISOString(),
-            testStatus: 'completed',
-            submissionType: 'auto'
-          };
+          try {
+            // Update test status to completed
+            await apiService.post('submissions/update-status', {
+              testId: testId,
+              status: 'completed'
+            });
 
-          // Submit analytics
-          if (testId) {
-            try {
+            // Calculate final analytics
+            const finalAnalytics = {
+              ...analytics,
+              timeSpent: test.duration * 60, // Total duration in seconds
+              endTime: new Date().toISOString(),
+              testStatus: 'completed',
+              submissionType: 'auto',
+              totalScore: (test?.mcqSubmission?.totalScore || 0) + (test?.codingSubmission?.totalScore || 0)
+            };
+
+            // Submit analytics
+            if (testId) {
               await apiService.post(`analytics/test/${testId}`, {
                 analyticsData: finalAnalytics
               });
-            } catch (error) {
-              console.error('Failed to submit analytics:', error);
             }
+
+            // Clear all test-related localStorage items
+            const itemsToClear = [
+              'testEndTime',
+              'testAnalytics',
+              'mcq_answers',
+              'coding_answers',
+              'currentMcqIndex',
+              'currentTestId',
+              'currentTestData',
+              'submissionId',
+              'testStarted',
+              'testStartTime'
+            ];
+            itemsToClear.forEach(item => localStorage.removeItem(item));
+
+            // Navigate to completion page
+            navigate('/test/completed', { 
+              state: { 
+                testId: uuid,
+                submission: {
+                  mcq: answers.mcq,
+                  coding: answers.coding,
+                  totalScore: finalAnalytics.totalScore,
+                  testType: test?.type,
+                  submissionType: 'auto'
+                }
+              },
+              replace: true
+            });
+          } catch (error) {
+            console.error('Error handling test completion:', error);
+            toast.error('Error submitting test. Please contact support.');
           }
-
-          // Clear test data from localStorage
-          const itemsToClear = [
-            'testEndTime',
-            'testAnalytics',
-            'mcq_answers',
-            'coding_answers',
-            'currentTestId',
-            'currentTestData',
-            'submissionId',
-            'testStarted',
-            'testStartTime'
-          ];
-          itemsToClear.forEach(item => localStorage.removeItem(item));
-
-          // Navigate to completion page
-          navigate('/test/completed', { 
-            state: { 
-              testId: uuid,
-              submission: {
-                mcq: answers.mcq,
-                coding: answers.coding,
-                totalScore: (test?.mcqSubmission?.totalScore || 0) + (test?.codingSubmission?.totalScore || 0),
-                testType: test?.type
-              }
-            },
-            replace: true
-          });
           
           return;
         }
@@ -692,6 +700,7 @@ export default function TakeTest() {
     }
   }, [showInstructions, hasStartedTest]);
 
+  // Update handleCodingSubmission to better persist the state
   const handleCodingSubmission = async (submission) => {
     try {
       // Store coding submission in localStorage
@@ -699,10 +708,8 @@ export default function TakeTest() {
       
       setTest(prev => ({
         ...prev,
-        status: 'completed',
+        status: prev.mcqSubmission ? 'completed' : 'coding_completed',
         codingSubmission: submission,
-        // Preserve existing MCQ submission
-        mcqSubmission: prev.mcqSubmission,
         totalScore: (prev?.mcqSubmission?.totalScore || 0) + (submission?.totalScore || 0)
       }));
 
@@ -711,7 +718,18 @@ export default function TakeTest() {
         localStorage.setItem('coding_answers', JSON.stringify(answers.coding));
       }
 
-      toast.success('Coding section completed! You can now submit the test.');
+      toast.success('Coding section completed!');
+
+      // If MCQs are not completed, switch to MCQ section
+      if (!test?.mcqSubmission) {
+        setCurrentSection('mcq');
+        toast.success('Please complete the MCQ section');
+      }
+
+      // Update test status in localStorage
+      if (submission.status === 'completed') {
+        localStorage.setItem('testStatus', 'completed');
+      }
     } catch (error) {
       console.error('Failed to process coding submission:', error);
       setError('Failed to process coding submission');
@@ -734,6 +752,11 @@ export default function TakeTest() {
       // Switch to coding section without auto-submitting
       setCurrentSection('coding');
       toast.success('MCQ section completed! You can now proceed to the coding section.');
+
+      // Update test status in localStorage
+      if (submission.status === 'completed') {
+        localStorage.setItem('testStatus', 'completed');
+      }
     } catch (error) {
       console.error('Failed to process MCQ submission:', error);
       setError('Failed to process MCQ submission');
@@ -973,17 +996,21 @@ export default function TakeTest() {
     return test?.mcqSubmission && test?.codingSubmission;
   }, [test]);
 
-  // Update handleConfirmedSubmit to force reload after navigation
+  // Update handleConfirmedSubmit to handle navigation properly
   const handleConfirmedSubmit = async () => {
     setShowSubmitConfirmation(false);
-    
-    // Show loading toast
     const loadingToast = toast.loading('Submitting your test...');
 
     try {
       // Calculate total score from existing submissions
       const totalScore = (test?.mcqSubmission?.totalScore || 0) + 
                         (test?.codingSubmission?.totalScore || 0);
+
+      // Update submission status to completed
+      await apiService.post('submissions/update-status', {
+        testId: testId,
+        status: 'completed'
+      });
 
       // Submit analytics
       if (testId) {
@@ -1000,60 +1027,27 @@ export default function TakeTest() {
           });
         } catch (error) {
           console.error('Analytics submission error:', error);
-          // Continue even if analytics fails
         }
       }
 
-      // Clear ALL test-related localStorage items
-      const itemsToClear = [
-        'testEndTime',
-        'testAnalytics',
-        'mcq_answers',
-        'coding_answers',
-        'currentTestId',
-        'currentTestData',
-        'submissionId',
-        'currentMcqIndex',
-        'currentChallengeIndex',
-        'testStartTime',
-        'currentTest',
-        'analytics_' + testId,
-        'mcq_submission',    // Add these new items
-        'coding_submission', // Add these new items
-        'coding_answers'     // Add these new items
-      ];
+      // Clear all test-related localStorage items
+      localStorage.removeItem('coding_submission');
+      localStorage.removeItem('mcq_submission');
+      localStorage.removeItem('coding_answers');
+      localStorage.removeItem('mcq_answers');
+      localStorage.removeItem('currentMcqIndex');
+      localStorage.removeItem(`coding_state_${test?._id}`);
+      localStorage.removeItem(`analytics_${testId}`);
+      localStorage.removeItem('testStartTime');
+      localStorage.removeItem('currentTestId');
+      localStorage.removeItem('currentTest');
 
-      itemsToClear.forEach(item => localStorage.removeItem(item));
-
-      // Exit fullscreen if active
-      if (document.fullscreenElement) {
-        await document.exitFullscreen();
-      }
-
-      // Dismiss loading toast
       toast.dismiss(loadingToast);
       toast.success('Test submitted successfully!');
 
-      // Store completion data in sessionStorage
-      sessionStorage.setItem('testCompletion', JSON.stringify({
-        testId: uuid,
-        submission: {
-          mcq: answers.mcq,
-          coding: answers.coding,
-          totalScore,
-          testType: test?.type
-        }
-      }));
-
-      // Navigate and force reload
-      navigate('/test/completed', { replace: true });
-      setTimeout(() => {
-        window.location.reload();
-      }, 100); // Small delay to ensure navigation happens first
-
-      // Clear test started state
-      localStorage.removeItem('testStarted');
-
+      // Navigate to the completed page
+      navigate(`/test/completed`);
+      window.location.reload();
     } catch (error) {
       console.error('Final submission error:', error);
       toast.dismiss(loadingToast);
@@ -1128,8 +1122,11 @@ export default function TakeTest() {
   }, [updateAnalytics]);
 
   const handleSetAnalytics = useCallback((newAnalytics) => {
-    setAnalytics(newAnalytics);
-  }, []); // Empty dependency array since this function doesn't depend on any values
+    setAnalytics(prev => ({
+      ...prev,
+      ...newAnalytics
+    }));
+  }, []);
 
   // Update the warning modal close handler
   const handleWarningModalClose = useCallback(() => {
@@ -1646,7 +1643,8 @@ export default function TakeTest() {
               setAnswers={(mcqAnswers) => handleAnswerUpdate('mcq', mcqAnswers)}
               onSubmitMCQs={handleMCQSubmission}
               analytics={analytics}
-              setAnalytics={updateAnalytics}
+              setAnalytics={handleSetAnalytics}
+              test={test}
             />
           ) : (
             <CodingSection
@@ -1654,9 +1652,11 @@ export default function TakeTest() {
               answers={answers.coding}
               setAnswers={(codingAnswers) => handleAnswerUpdate('coding', codingAnswers)}
               onSubmitCoding={handleCodingSubmission}
-              testId={uuid}
-              analytics={analytics}
               setAnalytics={handleSetAnalytics}
+              testId={uuid}
+              testStartTime={localStorage.getItem('testStartTime')}
+              test={test}
+              
             />
           )}
         </div>

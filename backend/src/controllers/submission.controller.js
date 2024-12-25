@@ -417,16 +417,27 @@ export const getTestSubmissions = async (req, res) => {
   try {
     const { testId } = req.params;
     
+    // Validate testId
+    if (!testId || !mongoose.Types.ObjectId.isValid(testId)) {
+      return res.status(400).json({ 
+        success: false,
+        error: 'Invalid test ID' 
+      });
+    }
+
     // Get test details with correct answers
     const test = await Test.findById(testId)
       .select('mcqs codingChallenges')
       .lean();
     
     if (!test) {
-      return res.status(404).json({ error: 'Test not found' });
+      return res.status(404).json({ 
+        success: false,
+        error: 'Test not found' 
+      });
     }
 
-    // Get all submissions for this test
+    // Get all submissions for this test with proper population
     const submissions = await Submission.find({ 
       test: testId,
       status: { $in: ['completed', 'mcq_completed', 'coding_completed'] }
@@ -434,16 +445,21 @@ export const getTestSubmissions = async (req, res) => {
     .populate('user', 'name email')
     .lean();
 
-    // Process MCQ submissions with corrected array comparison
+    // Process MCQ submissions with null checks
     const mcqSubmissions = submissions
-      .filter(sub => sub.mcqSubmission?.completed)
+      .filter(sub => sub?.mcqSubmission?.completed)
       .map(sub => {
-        // Calculate MCQ answers and total score
-        const answers = sub.mcqSubmission.answers.map(answer => {
+        if (!sub?.user?._id) return null; // Skip if user data is missing
+
+        // Calculate answers and their correctness
+        const answers = (sub.mcqSubmission?.answers || []).map(answer => {
           const question = test.mcqs?.find(q => 
-            q._id.toString() === answer.questionId.toString()
+            q?._id?.toString() === answer?.questionId?.toString()
           );
-          const correctOptions = question?.correctOptions || [];
+          
+          if (!question) return null;
+
+          const correctOptions = question.correctOptions || [];
           const selectedOptions = answer.selectedOptions || [];
           
           const isCorrect = Array.isArray(correctOptions) && 
@@ -457,121 +473,77 @@ export const getTestSubmissions = async (req, res) => {
             questionId: answer.questionId,
             selectedOptions: selectedOptions,
             isCorrect: isCorrect,
-            marks: isCorrect ? (question?.marks || 0) : 0
+            marks: isCorrect ? (question.marks || 0) : 0
           };
-        });
+        }).filter(Boolean); // Remove null answers
 
-        // Calculate MCQ total score
-        const mcqTotalScore = answers.reduce((sum, answer) => sum + answer.marks, 0);
+        // Calculate total score
+        const totalScore = answers.reduce((sum, answer) => sum + (answer.marks || 0), 0);
 
         return {
           submissionId: sub._id,
           userId: sub.user._id,
-          userName: sub.user.name,
-          userEmail: sub.user.email,
-          mcqScore: mcqTotalScore,
-          codingScore: sub.codingSubmission?.totalScore || 0,
-          totalScore: (mcqTotalScore + (sub.codingSubmission?.totalScore || 0)),
-          submittedAt: sub.mcqSubmission.submittedAt,
-          answers
+          userName: sub.user.name || 'Unknown User',
+          userEmail: sub.user.email || 'No Email',
+          answers,
+          totalScore,
+          submittedAt: sub.mcqSubmission.submittedAt
         };
-      });
+      }).filter(Boolean); // Remove null submissions
 
-    // Process coding submissions with total score calculation
+    // Process coding submissions with null checks
     const codingSubmissions = submissions
-      .filter(sub => sub.codingSubmission?.completed)
+      .filter(sub => sub?.codingSubmission?.completed)
       .map(sub => {
-        // Calculate coding total score from best attempt of each challenge
-        const challenges = sub.codingSubmission.challenges.map(challenge => {
-          const bestSubmission = challenge.submissions.reduce((best, current) => {
-            return (current.marks > best.marks) ? current : best;
-          }, { marks: 0 });
+        if (!sub?.user?._id) return null;
 
-          return {
-            challengeId: challenge.challengeId,
-            submissions: challenge.submissions.map(submission => ({
-              code: submission.code,
-              language: submission.language,
-              status: submission.status,
-              marks: submission.marks,
-              testCaseResults: submission.testCaseResults,
-              executionTime: submission.executionTime,
-              memory: submission.memory
-            })),
-            bestScore: bestSubmission.marks
-          };
-        });
-
-        const codingTotalScore = challenges.reduce((sum, challenge) => 
-          sum + challenge.bestScore, 0);
+        const challenges = (sub.codingSubmission?.challenges || []).map(challenge => ({
+          challengeId: challenge.challengeId,
+          submissions: challenge.submissions?.map(submission => ({
+            code: submission.code || '',
+            language: submission.language || 'unknown',
+            status: submission.status || 'unknown',
+            marks: submission.marks || 0,
+            testCaseResults: submission.testCaseResults || [],
+            executionTime: submission.executionTime || 0,
+            memory: submission.memory || 0
+          })) || [],
+          bestScore: Math.max(...(challenge.submissions || []).map(s => s.marks || 0), 0)
+        }));
 
         return {
           submissionId: sub._id,
           userId: sub.user._id,
-          userName: sub.user.name,
-          userEmail: sub.user.email,
-          mcqScore: sub.mcqSubmission?.totalScore || 0,
-          codingScore: codingTotalScore,
-          totalScore: (sub.mcqSubmission?.totalScore || 0) + codingTotalScore,
-          submittedAt: sub.codingSubmission.submittedAt,
-          challenges
+          userName: sub.user.name || 'Unknown User',
+          userEmail: sub.user.email || 'No Email',
+          challenges,
+          totalScore: challenges.reduce((sum, c) => sum + c.bestScore, 0),
+          submittedAt: sub.codingSubmission.submittedAt
         };
-      });
-
-    // Calculate overall statistics
-    const overallStats = submissions.map(sub => {
-      const mcqScore = sub.mcqSubmission?.answers?.reduce((sum, answer) => {
-        const question = test.mcqs?.find(q => 
-          q._id.toString() === answer.questionId.toString()
-        );
-        const correctOptions = question?.correctOptions || [];
-        const selectedOptions = answer.selectedOptions || [];
-        
-        const isCorrect = Array.isArray(correctOptions) && 
-          Array.isArray(selectedOptions) &&
-          correctOptions.length === selectedOptions.length &&
-          [...correctOptions].sort().every((opt, idx) => 
-            opt === [...selectedOptions].sort()[idx]
-          );
-
-        return sum + (isCorrect ? (question?.marks || 0) : 0);
-      }, 0) || 0;
-
-      const codingScore = sub.codingSubmission?.challenges?.reduce((sum, challenge) => {
-        const bestMark = Math.max(...challenge.submissions.map(s => s.marks || 0), 0);
-        return sum + bestMark;
-      }, 0) || 0;
-
-      return {
-        userId: sub.user._id,
-        totalScore: mcqScore + codingScore,
-        mcqScore,
-        codingScore
-      };
-    });
+      }).filter(Boolean);
 
     res.json({
-      mcq: mcqSubmissions,
-      coding: codingSubmissions,
-      summary: {
-        totalSubmissions: submissions.length,
-        mcqSubmissions: mcqSubmissions.length,
-        codingSubmissions: codingSubmissions.length,
-        averageScore: overallStats.length > 0 
-          ? Math.round(overallStats.reduce((sum, stat) => sum + stat.totalScore, 0) / overallStats.length) 
-          : 0,
-        averageMCQScore: overallStats.length > 0
-          ? Math.round(overallStats.reduce((sum, stat) => sum + stat.mcqScore, 0) / overallStats.length)
-          : 0,
-        averageCodingScore: overallStats.length > 0
-          ? Math.round(overallStats.reduce((sum, stat) => sum + stat.codingScore, 0) / overallStats.length)
-          : 0
+      success: true,
+      data: {
+        mcq: mcqSubmissions,
+        coding: codingSubmissions,
+        summary: {
+          totalSubmissions: submissions.length,
+          mcqSubmissions: mcqSubmissions.length,
+          codingSubmissions: codingSubmissions.length,
+          averageScore: submissions.length > 0 
+            ? Math.round(submissions.reduce((sum, sub) => 
+                sum + ((sub.mcqSubmission?.totalScore || 0) + 
+                      (sub.codingSubmission?.totalScore || 0)), 0) / submissions.length) 
+            : 0
+        }
       }
     });
 
   } catch (error) {
     console.error('Error in getTestSubmissions:', error);
     res.status(500).json({ 
+      success: false,
       error: 'Failed to retrieve submissions',
       details: error.message 
     });
@@ -978,6 +950,61 @@ export const getSubmissionDetails = async (req, res) => {
     res.status(500).json({ 
       error: 'Failed to fetch submission details',
       message: error.message 
+    });
+  }
+};
+
+// Add this new controller function
+export const updateSubmissionStatus = async (req, res) => {
+  try {
+    const { testId, status } = req.body;
+
+    // Validate required fields
+    if (!testId || !status) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required fields',
+        message: 'testId and status are required'
+      });
+    }
+
+    // Validate status
+    const validStatuses = ['in_progress', 'mcq_completed', 'coding_completed', 'completed'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid status',
+        message: `Status must be one of: ${validStatuses.join(', ')}`
+      });
+    }
+
+    // Find and update all submissions for this test
+    const result = await Submission.updateMany(
+      { test: testId },
+      { 
+        $set: { 
+          status,
+          ...(status === 'completed' ? { endTime: new Date() } : {})
+        }
+      }
+    );
+
+    res.json({
+      success: true,
+      data: {
+        testId,
+        status,
+        updatedCount: result.modifiedCount,
+        updatedAt: new Date()
+      }
+    });
+
+  } catch (error) {
+    console.error('Error in updateSubmissionStatus:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to update submission status',
+      message: error.message
     });
   }
 }; 

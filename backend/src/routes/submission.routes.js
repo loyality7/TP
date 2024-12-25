@@ -13,7 +13,8 @@ import {
   getMCQSubmissions, 
   getTestResults, 
   getSubmissionAttempts, 
-  getSubmissionDetails 
+  getSubmissionDetails, 
+  updateSubmissionStatus 
 } from '../controllers/submission.controller.js';
 import { validateSubmission } from '../middleware/validateSubmission.js';
 import { validateTestAccess } from '../middleware/validateTestAccess.js';
@@ -579,5 +580,59 @@ router.get('/test/:testId/user/:userId/attempts', auth, getSubmissionAttempts);
  *         description: Submission not found
  */
 router.get('/test/:testId/user/:userId/details', auth, getSubmissionDetails);
+
+/**
+ * @swagger
+ * /api/submissions/update-status:
+ *   post:
+ *     summary: Update status for all submissions of a test
+ *     tags: [Submissions]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - testId
+ *               - status
+ *             properties:
+ *               testId:
+ *                 type: string
+ *                 description: ID of the test
+ *               status:
+ *                 type: string
+ *                 enum: [in_progress, mcq_completed, coding_completed, completed]
+ *                 description: New status to set for all submissions of this test
+ *     responses:
+ *       200:
+ *         description: Status updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     testId:
+ *                       type: string
+ *                     status:
+ *                       type: string
+ *                     updatedCount:
+ *                       type: number
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *       400:
+ *         description: Invalid input or missing required fields
+ *       500:
+ *         description: Server error while updating status
+ */
+router.post('/update-status', auth, updateSubmissionStatus);
 
 export default router; 

@@ -2,12 +2,19 @@ import React, { useState, useEffect, useCallback } from 'react';
 import MonacoEditor from '@monaco-editor/react';
 import { 
   Check, X, Play, ChevronLeft, ChevronRight, 
-  Eye, Sun, Moon, Maximize2, RotateCcw, Clock, Database
+  Eye, Sun, Moon, Maximize2, RotateCcw, Clock, Database, CheckCircle
 } from 'lucide-react';
 import { apiService } from '../../../services/api';
 import { toast } from 'react-hot-toast';
 
-export default function CodingSection({ challenges, answers, setAnswers, onSubmitCoding, setAnalytics }) {
+export default function CodingSection({ 
+  challenges, 
+  answers, 
+  setAnswers, 
+  onSubmitCoding, 
+  setAnalytics,
+  test
+}) {
   // Move ALL state declarations to the top
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [language, setLanguage] = useState('');
@@ -15,17 +22,20 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showTestPanel, setShowTestPanel] = useState(false);
   const [theme, setTheme] = useState('vs-dark');
-  const [submissionStatus, setSubmissionStatus] = useState(() => {
-    // Try to load saved submission status from localStorage
-    const savedStatus = localStorage.getItem('coding_submission_status');
-    return savedStatus ? JSON.parse(savedStatus) : {};
-  });
+  const [submissionStatus, setSubmissionStatus] = useState({});
   const [isLoadingTestId, setIsLoadingTestId] = useState(false);
   const [fontSize, setFontSize] = useState(14);
   const [showLineNumbers, setShowLineNumbers] = useState(true);
   const [wordWrap, setWordWrap] = useState(true);
   const [autoComplete, setAutoComplete] = useState(true);
-  const [editorValue, setEditorValue] = useState('// Please select a language to start coding\n');
+  const [editorValue, setEditorValue] = useState(() => {
+    const savedState = localStorage.getItem(`coding_state_${test?._id}`);
+    if (savedState) {
+      const parsed = JSON.parse(savedState);
+      return parsed.editorValue || '// Please select a language to start coding\n';
+    }
+    return '// Please select a language to start coding\n';
+  });
   const [executingTests, setExecutingTests] = useState(new Set());
   const [layout, setLayout] = useState({
     leftPanel: 35,
@@ -34,6 +44,10 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
   });
   const [isExecuting, setIsExecuting] = useState(false);
   const [challengeStartTime, setChallengeStartTime] = useState(Date.now());
+  const [isTestSubmitted, setIsTestSubmitted] = useState(() => {
+    // Check if test is already completed from localStorage or test prop
+    return test?.status === 'completed' || localStorage.getItem('testStatus') === 'completed';
+  });
 
   // Constants
   const MIN_PANEL_WIDTH = 20;
@@ -109,19 +123,12 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
 
   useEffect(() => {
     if (challenges?.length > 0) {
-      // Load existing status from localStorage
-      const savedStatus = localStorage.getItem('coding_submission_status');
-      const existingStatus = savedStatus ? JSON.parse(savedStatus) : {};
-      
-      // Initialize status for any new challenges
+      // Initialize submission status for all challenges
       const initialStatus = {};
       challenges.forEach(challenge => {
-        initialStatus[challenge._id] = existingStatus[challenge._id] || undefined;
+        initialStatus[challenge._id] = undefined;
       });
-      
       setSubmissionStatus(initialStatus);
-      // Save to localStorage
-      localStorage.setItem('coding_submission_status', JSON.stringify(initialStatus));
     }
   }, [challenges]);
 
@@ -239,7 +246,96 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
     };
   }, [layout.isDragging, handleLeftResize, handleRightResize]);
 
-  // Now your early returns are after all state declarations
+  // Move these useEffect hooks up, right after all state declarations and before any early returns
+  useEffect(() => {
+    if (test?._id) {
+      const stateToSave = {
+        editorValue,
+        currentChallenge,
+        language,
+        answers,
+        submissionStatus,
+        testResults,
+        theme,
+        fontSize,
+        showLineNumbers,
+        wordWrap,
+        autoComplete,
+      };
+
+      localStorage.setItem(`coding_state_${test._id}`, JSON.stringify(stateToSave));
+    }
+  }, [
+    test?._id,
+    editorValue,
+    currentChallenge,
+    language,
+    answers,
+    submissionStatus,
+    testResults,
+    theme,
+    fontSize,
+    showLineNumbers,
+    wordWrap,
+    autoComplete,
+  ]);
+
+  useEffect(() => {
+    if (test?._id) {
+      const savedState = localStorage.getItem(`coding_state_${test._id}`);
+      if (savedState) {
+        const parsed = JSON.parse(savedState);
+        
+        // Restore all saved states
+        setCurrentChallenge(parsed.currentChallenge || 0);
+        setLanguage(parsed.language || '');
+        setAnswers(parsed.answers || {});
+        setSubmissionStatus(parsed.submissionStatus || {});
+        setTestResults(parsed.testResults || {});
+        setTheme(parsed.theme || 'vs-dark');
+        setFontSize(parsed.fontSize || 14);
+        setShowLineNumbers(parsed.showLineNumbers ?? true);
+        setWordWrap(parsed.wordWrap ?? true);
+        setAutoComplete(parsed.autoComplete ?? true);
+      }
+    }
+  }, [test?._id, setAnswers]);
+
+  // Update useEffect to load submission status
+  useEffect(() => {
+    // Load saved submission status
+    const loadSubmissionStatus = () => {
+      try {
+        // Check test status from props or localStorage
+        const isCompleted = test?.status === 'completed' || 
+                          localStorage.getItem('testStatus') === 'completed';
+        
+        if (isCompleted) {
+          setIsTestSubmitted(true);
+          
+          // Load submission statuses for all challenges
+          challenges.forEach(challenge => {
+            setSubmissionStatus(prev => ({
+              ...prev,
+              [challenge._id]: 'submitted'
+            }));
+          });
+        } else {
+          // Load individual challenge submission states
+          const savedStatus = localStorage.getItem('codingSubmissionStatus');
+          if (savedStatus) {
+            setSubmissionStatus(JSON.parse(savedStatus));
+          }
+        }
+      } catch (error) {
+        console.error('Error loading submission status:', error);
+      }
+    };
+
+    loadSubmissionStatus();
+  }, [test, challenges]);
+
+  // Now your early returns
   if (!challenges || challenges.length === 0) {
     return <div>No challenges available</div>;
   }
@@ -248,7 +344,7 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
     return <div>Challenge not found</div>;
   }
 
-  // Update handleSubmitChallenge to persist submission status
+  // Update handleSubmitChallenge to save submission status
   const handleSubmitChallenge = async () => {
     try {
       const currentTestId = localStorage.getItem('currentTestId');
@@ -259,13 +355,7 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
       }
 
       // Set submitting status
-      const newStatus = { 
-        ...submissionStatus, 
-        [challenge._id]: 'submitting' 
-      };
-      setSubmissionStatus(newStatus);
-      // Save to localStorage
-      localStorage.setItem('coding_submission_status', JSON.stringify(newStatus));
+      setSubmissionStatus(prev => ({ ...prev, [challenge._id]: 'submitting' }));
       
       const currentAnswer = answers[challenge._id];
       if (!currentAnswer?.code) {
@@ -275,7 +365,7 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
       }
 
       // First run the code to get results
-      const results = await handleExecuteCode(true); // Pass true to indicate this is a submission
+      const results = await handleExecuteCode(true);
       if (!results) {
         throw new Error('Code execution failed');
       }
@@ -304,21 +394,26 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
         }]
       };
 
-      console.log('Submitting solution...');
-      
       const response = await apiService.post('submissions/submit/coding', submissionData);
 
       // Handle successful submission
       if (response?.status === 201 || response?.statusText === 'Created') {
-        // Update submission status for this challenge
-        const newStatus = { 
-          ...submissionStatus, 
-          [challenge._id]: 'submitted' 
+        // Update submission status
+        const newSubmissionStatus = {
+          ...submissionStatus,
+          [challenge._id]: 'submitted'
         };
-        setSubmissionStatus(newStatus);
-        // Save to localStorage
-        localStorage.setItem('coding_submission_status', JSON.stringify(newStatus));
+        setSubmissionStatus(newSubmissionStatus);
         
+        // Save to localStorage
+        localStorage.setItem('codingSubmissionStatus', JSON.stringify(newSubmissionStatus));
+
+        // If test is completed, update test status
+        if (response.data.submission.status === 'completed') {
+          localStorage.setItem('testStatus', 'completed');
+          setIsTestSubmitted(true);
+        }
+
         toast.success('Challenge submitted successfully!');
         
         // Check if all challenges are completed
@@ -332,6 +427,8 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
             codingSubmission: response.data.submission.codingSubmission,
             totalScore: response.data.submission.totalScore || 0
           });
+          // Clear stored state
+          localStorage.removeItem(`coding_state_${test?._id}`);
         } else if (currentChallenge < challenges.length - 1) {
           // Move to next challenge after successful submission
           setTimeout(() => setCurrentChallenge(prev => prev + 1), 1500);
@@ -341,16 +438,11 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
       }
 
     } catch (error) {
-      // Update error status
-      const newStatus = { 
-        ...submissionStatus, 
-        [challenge._id]: undefined 
-      };
-      setSubmissionStatus(newStatus);
-      // Save to localStorage
-      localStorage.setItem('coding_submission_status', JSON.stringify(newStatus));
-      
       console.error('Submission Error:', error);
+      setSubmissionStatus(prev => ({
+        ...prev,
+        [challenge._id]: undefined
+      }));
       toast.error('Failed to submit: ' + (error.response?.data?.error || error.message));
     }
   };
@@ -833,6 +925,21 @@ export default function CodingSection({ challenges, answers, setAnswers, onSubmi
     e.preventDefault();
     return false;
   };
+
+  // Update the render logic to show completed state
+  if (isTestSubmitted) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full p-8">
+        <div className="bg-white shadow-sm rounded-lg p-8 text-center max-w-md">
+          <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold mb-2">Test Completed!</h2>
+          <p className="text-gray-600 mb-4">
+            You have already submitted all sections of the test.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative h-full" onContextMenu={handleContextMenu}>
