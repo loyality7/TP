@@ -1007,4 +1007,166 @@ export const updateSubmissionStatus = async (req, res) => {
       message: error.message
     });
   }
+};
+
+// Get comprehensive test submission details
+export const getComprehensiveSubmission = async (req, res) => {
+  try {
+    const { testId, userId } = req.params;
+
+    // Validate IDs
+    if (!mongoose.Types.ObjectId.isValid(testId) || !mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid test ID or user ID format'
+      });
+    }
+
+    // Authorization check
+    const isAdmin = req.user.role === 'admin';
+    const isOwnSubmission = req.user._id.toString() === userId;
+    const isVendor = req.user.role === 'vendor';
+
+    if (!isAdmin && !isOwnSubmission && !isVendor) {
+      return res.status(403).json({
+        success: false,
+        error: 'Not authorized to access this submission'
+      });
+    }
+
+    // Get test details with MCQs and coding challenges
+    const test = await Test.findById(testId)
+      .populate('mcqs')
+      .populate('codingChallenges')
+      .lean();
+
+    if (!test) {
+      return res.status(404).json({
+        success: false,
+        error: 'Test not found'
+      });
+    }
+
+    // Get submission details
+    const submission = await Submission.findOne({
+      test: testId,
+      user: userId
+    })
+    .populate('user', 'name email')
+    .lean();
+
+    if (!submission) {
+      return res.status(404).json({
+        success: false,
+        error: 'No submission found'
+      });
+    }
+
+    // Process MCQ submissions
+    const mcqDetails = submission.mcqSubmission ? {
+      completed: submission.mcqSubmission.completed,
+      submittedAt: submission.mcqSubmission.submittedAt,
+      totalScore: submission.mcqSubmission.totalScore,
+      answers: submission.mcqSubmission.answers.map(answer => {
+        const question = test.mcqs.find(q => 
+          q._id.toString() === answer.questionId.toString()
+        );
+        
+        const correctOptions = question?.correctOptions || [];
+        const selectedOptions = answer.selectedOptions || [];
+        
+        const isCorrect = Array.isArray(correctOptions) && 
+          Array.isArray(selectedOptions) &&
+          correctOptions.length === selectedOptions.length &&
+          [...correctOptions].sort().every((opt, idx) => 
+            opt === [...selectedOptions].sort()[idx]
+          );
+
+        return {
+          questionId: answer.questionId,
+          question: question?.question,
+          selectedOptions: answer.selectedOptions,
+          correctOptions: question?.correctOptions,
+          isCorrect,
+          marks: isCorrect ? question?.marks : 0,
+          maxMarks: question?.marks,
+          explanation: question?.explanation
+        };
+      })
+    } : null;
+
+    // Process coding submissions
+    const codingDetails = submission.codingSubmission ? {
+      completed: submission.codingSubmission.completed,
+      submittedAt: submission.codingSubmission.submittedAt,
+      totalScore: submission.codingSubmission.totalScore,
+      challenges: submission.codingSubmission.challenges.map(challenge => {
+        const challengeDetails = test.codingChallenges.find(c => 
+          c._id.toString() === challenge.challengeId.toString()
+        );
+
+        return {
+          challengeId: challenge.challengeId,
+          title: challengeDetails?.title,
+          description: challengeDetails?.description,
+          difficulty: challengeDetails?.difficulty,
+          submissions: challenge.submissions.map(sub => ({
+            submittedAt: sub.submittedAt,
+            code: sub.code,
+            language: sub.language,
+            status: sub.status,
+            executionTime: sub.executionTime,
+            memory: sub.memory,
+            output: sub.output,
+            error: sub.error,
+            marks: sub.marks,
+            testCaseResults: sub.testCaseResults.map(tc => ({
+              input: tc.input,
+              expectedOutput: tc.expectedOutput,
+              actualOutput: tc.actualOutput,
+              passed: tc.passed,
+              error: tc.error
+            }))
+          })),
+          bestScore: Math.max(...challenge.submissions.map(s => s.marks || 0), 0)
+        };
+      })
+    } : null;
+
+    res.json({
+      success: true,
+      data: {
+        submissionId: submission._id,
+        testId: test._id,
+        testTitle: test.title,
+        user: {
+          id: submission.user._id,
+          name: submission.user.name,
+          email: submission.user.email
+        },
+        status: submission.status,
+        startTime: submission.startTime,
+        endTime: submission.endTime,
+        duration: submission.endTime ? 
+          Math.round((submission.endTime - submission.startTime) / 1000) : null,
+        scores: {
+          total: submission.totalScore,
+          mcq: mcqDetails?.totalScore || 0,
+          coding: codingDetails?.totalScore || 0,
+          percentage: Math.round((submission.totalScore / test.totalMarks) * 100),
+          passed: submission.totalScore >= test.passingMarks
+        },
+        mcq: mcqDetails,
+        coding: codingDetails
+      }
+    });
+
+  } catch (error) {
+    console.error('Error in getComprehensiveSubmission:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch submission details',
+      message: error.message
+    });
+  }
 }; 

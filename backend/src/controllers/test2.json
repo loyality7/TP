@@ -1,7 +1,7 @@
 {
-  "title": "Aptitude and Programming Test",
+  "title": "Aptitude and Programming Test 4 ",
   "description": "A comprehensive test for MITS students covering Quantitative Aptitude (R.S. Agarwal), Basic Programming, and Problem Solving skills.",
-  "duration": 60,
+  "duration": 90,
   "proctoring": true,
   "type": "coding_challenge",
   "category": "Aptitude and Programming",
@@ -77,21 +77,6 @@
       "marks": 4,
       "difficulty": "medium",
       "explanation": "let the numbers be x,x+2,x+4 and x+6. Then, (x+(x+2)+(x+4)+(x+6))/4 = 27, (4x+12)/4= 27, x+3=27, x=24. Therefore the largest number=(x+6)=24+6=30."
-    },
-    {
-      "question": "In a row of 20 students, when Rohit was shifted to his left by 4 places his number from left end became 10. What was his earlier position from the right end?",
-      "options": [
-        "6",
-        "7",
-        "8",
-        "9"
-      ],
-      "correctOptions": [1],
-      "answerType": "single",
-      "marks": 1,
-      "section": "Sec-1",
-      "difficulty": "medium",
-      "explanation": "His new position from left is 10. Earlier he was at (10+4)=14th position from left. So from right end he was at (20-14+1)=7th position."
     },
     {
       "question": "If TEACHER is coded as VGCEJGT, then how will STUDENT be coded?",
@@ -272,186 +257,6 @@
       "section": "Sec-1",
       "difficulty": "medium",
       "explanation": "Each letter is replaced by the next letter in the alphabet. Therefore, BOMBAY becomes CPNCBZ"
-    },
-    {
-      "question": "Find the odd one out: Teacher, Doctor, Engineer, Nurse, Carpenter",
-      "options": [
-        "Teacher",
-        "Doctor",
-        "Engineer",
-        "Carpenter"
-      ],
-      "correctOptions": [3],
-      "answerType": "single",
-      "marks": 1,
-      "section": "Sec-1",
-      "difficulty": "easy",
-      "explanation": "Carpenter is the only profession that doesn't require a formal degree education"
-    },
-    {
-      "question": "Complete the series: FAG, GAF, HAI, IAH, ___",
-      "options": [
-        "JAK",
-        "HAK",
-        "JAI",
-        "HAI"
-      ],
-      "correctOptions": [0],
-      "answerType": "single",
-      "marks": 1,
-      "section": "Sec-1",
-      "difficulty": "hard",
-      "explanation": "First letter increases by 1, second letter remains A, third letter increases by 1 in alternate terms. Therefore, JAK is next"
-    },
-    {
-      "question": "What is the time complexity of quicksort in the average case?",
-      "options": [
-        "O(n)",
-        "O(n log n)",
-        "O(n²)",
-        "O(log n)"
-      ],
-      "correctOptions": [1],
-      "answerType": "single",
-      "marks": 1,
-      "section": "Sec-2",
-      "difficulty": "medium",
-      "explanation": "Quicksort has an average time complexity of O(n log n) due to its divide-and-conquer approach."
-    },
-    {
-      "question": "Which of the following is NOT a valid access modifier in Java?",
-      "options": [
-        "public",
-        "private",
-        "friendly",
-        "protected"
-      ],
-      "correctOptions": [2],
-      "answerType": "single",
-      "marks": 1,
-      "section": "Sec-2",
-      "difficulty": "medium",
-      "explanation": "'friendly' is not a valid access modifier in Java. The correct term is 'default' or package-private (when no modifier is specified)."
-    },
-    {
-      "question": "What is the output of: SELECT COUNT(*) FROM table WHERE column IS NULL?",
-      "options": [
-        "Returns error",
-        "Returns 0",
-        "Returns count of NULL values",
-        "Returns count of non-NULL values"
-      ],
-      "correctOptions": [2],
-      "answerType": "single",
-      "marks": 1,
-      "section": "Sec-2",
-      "difficulty": "medium",
-      "explanation": "The query counts the number of rows where the specified column contains NULL values."
-    },
-    {
-      "question": "In IPv4, how many bits are used for the network address in a Class C network?",
-      "options": [
-        "8 bits",
-        "16 bits",
-        "24 bits",
-        "32 bits"
-      ],
-      "correctOptions": [2],
-      "answerType": "single",
-      "marks": 1,
-      "section": "Sec-2",
-      "difficulty": "medium",
-      "explanation": "In a Class C network, the first 24 bits are used for the network address, leaving 8 bits for host addresses."
-    },
-    {
-      "question": "What is the result of 5 & 3 in binary operations?",
-      "options": [
-        "1",
-        "2",
-        "3",
-        "8"
-      ],
-      "correctOptions": [0],
-      "answerType": "single",
-      "marks": 1,
-      "section": "Sec-2",
-      "difficulty": "medium",
-      "explanation": "5 in binary is 101, 3 in binary is 011. Performing AND operation: 101 & 011 = 001 = 1 in decimal."
-    },
-    {
-      "question": "Which data structure is typically used to implement undo functionality in a text editor?",
-      "options": [
-        "Queue",
-        "Stack",
-        "Linked List",
-        "Binary Tree"
-      ],
-      "correctOptions": [1],
-      "answerType": "single",
-      "marks": 1,
-      "section": "Sec-2",
-      "difficulty": "medium",
-      "explanation": "Stack is used because it follows Last-In-First-Out (LIFO) principle, perfect for undoing the most recent actions."
-    },
-    {
-      "question": "What is the main purpose of a primary key in a database?",
-      "options": [
-        "To encrypt data",
-        "To speed up queries",
-        "To uniquely identify records",
-        "To compress data"
-      ],
-      "correctOptions": [2],
-      "answerType": "single",
-      "marks": 1,
-      "section": "Sec-2",
-      "difficulty": "easy",
-      "explanation": "A primary key uniquely identifies each record in a database table, ensuring data integrity and relationships between tables."
-    },
-    {
-      "question": "Which HTTP status code indicates a successful request?",
-      "options": [
-        "200",
-        "404",
-        "500",
-        "301"
-      ],
-      "correctOptions": [0],
-      "answerType": "single",
-      "marks": 1,
-      "section": "Sec-2",
-      "difficulty": "easy",
-      "explanation": "200 (OK) status code indicates that the request has succeeded and the server has returned the expected content."
-    },
-    {
-      "question": "What is the output of: console.log(typeof typeof 1);",
-      "options": [
-        "number",
-        "string",
-        "undefined",
-        "object"
-      ],
-      "correctOptions": [1],
-      "answerType": "single",
-      "marks": 1,
-      "section": "Sec-2",
-      "difficulty": "hard",
-      "explanation": "typeof 1 returns 'number', then typeof 'number' returns 'string' because typeof always returns a string."
-    },
-    {
-      "question": "Which design pattern is used when you need a single instance of a class throughout the application?",
-      "options": [
-        "Factory",
-        "Observer",
-        "Singleton",
-        "Decorator"
-      ],
-      "correctOptions": [2],
-      "answerType": "single",
-      "marks": 1,
-      "section": "Sec-2",
-      "difficulty": "medium",
-      "explanation": "Singleton pattern ensures a class has only one instance and provides a global point of access to it."
     },
     {
       "question": "Choose the word that is closest in meaning to 'BENEVOLENT'",
@@ -932,6 +737,161 @@
       "section": "Sec-6",
       "difficulty": "medium",
       "explanation": "The introductory modifier 'Walking down the street' should describe the subject 'I' of the main clause to avoid a dangling modifier."
+    },
+    {
+      "question": "What is the output of this pseudocode?\nX = 5\nY = 3\nWHILE X > 0\n  Y = Y + X\n  X = X - 1\nPRINT Y",
+      "options": [
+        "18",
+        "15",
+        "20",
+        "25"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 2,
+      "difficulty": "medium",
+      "explanation": "Loop runs 5 times. Y accumulates: 3+5+4+3+2+1 = 18"
+    },
+    {
+      "question": "What is the time complexity of this pseudocode?\nFOR i = 1 TO n\n  FOR j = i TO n\n    PRINT i,j\n  ENDFOR\nENDFOR",
+      "options": [
+        "O(n)",
+        "O(n log n)",
+        "O(n²)",
+        "O(2ⁿ)"
+      ],
+      "correctOptions": [2],
+      "answerType": "single",
+      "marks": 2,
+      "difficulty": "hard",
+      "explanation": "First iteration: n steps, Second: n-1 steps, etc. Sum = n(n+1)/2 which is O(n²)"
+    },
+    {
+      "question": "What will this recursive function return for input 4?\nFUNCTION F(n)\n  IF n ≤ 1 THEN\n    RETURN 1\n  ELSE\n    RETURN n + F(n-1)\n  ENDIF\nENDFUNCTION",
+      "options": [
+        "24",
+        "10",
+        "16",
+        "4"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 2,
+      "difficulty": "medium",
+      "explanation": "F(4) = 4 + F(3) = 4 + 3 + F(2) = 4 + 3 + 2 + F(1) = 4 + 3 + 2 + 1 = 10"
+    },
+    {
+      "question": "What will be stored in array A after this code executes?\nA = [5,2,8,1]\nFOR i = 0 TO 2\n  IF A[i] > A[i+1] THEN\n    SWAP A[i], A[i+1]\n  ENDIF\nENDFOR",
+      "options": [
+        "[2,5,1,8]",
+        "[2,1,5,8]",
+        "[1,2,5,8]",
+        "[5,2,1,8]"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 2,
+      "difficulty": "medium",
+      "explanation": "One pass of bubble sort: 5,2,8,1 → 2,5,8,1 → 2,5,8,1 → 2,5,1,8"
+    },
+    {
+      "question": "What is the output of this code?\nX = 10\nCOUNT = 0\nWHILE X > 0\n  IF X MOD 2 = 0 THEN\n    COUNT = COUNT + 1\n  ENDIF\n  X = X DIV 2\nENDWHILE\nPRINT COUNT",
+      "options": [
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 2,
+      "difficulty": "medium",
+      "explanation": "10→5→2→1: Counts even numbers (10,2). Answer is 2"
+    },
+    {
+      "question": "What will this function return for input array [1,2,3,4,5]?\nFUNCTION Mystery(arr)\n  IF LENGTH(arr) ≤ 1 THEN\n    RETURN arr[0]\n  ENDIF\n  mid = LENGTH(arr) DIV 2\n  RETURN Mystery(arr[mid:]) + Mystery(arr[:mid])\nENDFUNCTION",
+      "options": [
+        "15",
+        "5",
+        "9",
+        "12"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 3,
+      "difficulty": "hard",
+      "explanation": "Recursively splits array and sums all elements: 1+2+3+4+5=15"
+    },
+    {
+      "question": "What is the output?\nA = 1\nB = 1\nFOR i = 1 TO 4\n  C = A + B\n  A = B\n  B = C\nENDFOR\nPRINT C",
+      "options": [
+        "5",
+        "8",
+        "3",
+        "13"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 2,
+      "difficulty": "medium",
+      "explanation": "Generates Fibonacci sequence: 1,1,2,3,5,8. After 4 iterations, C=8"
+    },
+    {
+      "question": "What is the space complexity of this recursive function?\nFUNCTION F(n)\n  IF n ≤ 1 THEN RETURN 1\n  RETURN F(n-1) + F(n-1)\nENDFUNCTION",
+      "options": [
+        "O(n)",
+        "O(log n)",
+        "O(2ⁿ)",
+        "O(n²)"
+      ],
+      "correctOptions": [2],
+      "answerType": "single",
+      "marks": 3,
+      "difficulty": "hard",
+      "explanation": "Each call spawns 2 more calls, creating a binary tree of depth n, resulting in O(2ⁿ) space"
+    },
+    {
+      "question": "What will be the value of X after this code executes?\nX = 25\nWHILE X > 1\n  IF X MOD 2 = 0 THEN\n    X = X DIV 2\n  ELSE\n    X = 3 * X + 1\n  ENDIF\nENDWHILE",
+      "options": [
+        "1",
+        "4",
+        "2",
+        "0"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 2,
+      "difficulty": "medium",
+      "explanation": "Collatz sequence: 25→76→38→19→58→29→88→44→22→11→34→17→52→26→13→40→20→10→5→16→8→4→2→1"
+    },
+    {
+      "question": "What is the output of this code?\nFUNCTION GCD(a, b)\n  IF b = 0 THEN RETURN a\n  RETURN GCD(b, a MOD b)\nENDFUNCTION\nPRINT GCD(48, 18)",
+      "options": [
+        "6",
+        "2",
+        "3",
+        "9"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 2,
+      "difficulty": "medium",
+      "explanation": "Euclidean algorithm: GCD(48,18)→GCD(18,12)→GCD(12,6)→GCD(6,0)→6"
+    },
+    {
+      "question": "What is the correct order of logical operator precedence in most programming languages?",
+      "options": [
+        "NOT, AND, OR",
+        "AND, OR, NOT",
+        "OR, AND, NOT",
+        "AND, NOT, OR"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 2,
+      "section": "Sec-4",
+      "difficulty": "medium",
+      "explanation": "The order of precedence is: NOT (highest), AND, OR (lowest). This is similar to arithmetic where NOT is like negation, AND is like multiplication, and OR is like addition."
     }
   ],
   "codingChallenges": [
@@ -995,6 +955,627 @@
       "memoryLimit": 256,
       "difficulty": "medium",
       "tags": ["arithmetic", "basic-math"]
+    },
+    {
+      "title": "Even or Odd",
+      "description": "Determine if a number is even or odd",
+      "problemStatement": "Write a program that takes an integer as input and prints 'Even' if the number is even and 'Odd' if the number is odd.",
+      "constraints": "1. -10^9 <= number <= 10^9",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "python": {
+          "visibleCode": "# Write your code here",
+          "invisibleCode": "# Write your code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "4",
+          "output": "Even",
+          "isVisible": true
+        },
+        {
+          "input": "7",
+          "output": "Odd",
+          "isVisible": true
+        },
+        {
+          "input": "0",
+          "output": "Even",
+          "isVisible": true
+        },
+        {
+          "input": "-9",
+          "output": "Odd",
+          "isVisible": true
+        }
+      ],
+      "marks": 5,
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "difficulty": "easy",
+      "tags": ["if-else", "basic"]
+    },
+    {
+      "title": "Grade Calculator",
+      "description": "Calculate grades based on marks",
+      "problemStatement": "Write a program that takes marks (0-100) as input and outputs the grade: 'A' for ≥90, 'B' for ≥80, 'C' for ≥70, 'D' for ≥60, 'F' for <60.",
+      "constraints": "0 <= marks <= 100",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "python": {
+          "visibleCode": "# Write your code here",
+          "invisibleCode": "# Write your code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "95",
+          "output": "A",
+          "isVisible": true
+        },
+        {
+          "input": "82",
+          "output": "B",
+          "isVisible": true
+        },
+        {
+          "input": "75",
+          "output": "C",
+          "isVisible": true
+        },
+        {
+          "input": "65",
+          "output": "D",
+          "isVisible": true
+        },
+        {
+          "input": "45",
+          "output": "F",
+          "isVisible": true
+        }
+      ],
+      "marks": 5,
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "difficulty": "easy",
+      "tags": ["if-else", "basic"]
+    },
+    {
+      "title": "Count Set Bits",
+      "description": "Count the number of 1s in binary representation",
+      "problemStatement": "Write a program that takes an integer as input and returns the count of 1s in its binary representation.",
+      "constraints": "0 <= number <= 10^9",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "python": {
+          "visibleCode": "# Write your code here",
+          "invisibleCode": "# Write your code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "7",
+          "output": "3",
+          "isVisible": true
+        },
+        {
+          "input": "4",
+          "output": "1",
+          "isVisible": true
+        },
+        {
+          "input": "15",
+          "output": "4",
+          "isVisible": true
+        },
+        {
+          "input": "0",
+          "output": "0",
+          "isVisible": true
+        }
+      ],
+      "marks": 10,
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "difficulty": "medium",
+      "tags": ["bitwise", "binary"]
+    },
+    {
+      "title": "Power of Two",
+      "description": "Check if a number is a power of 2",
+      "problemStatement": "Write a program that takes an integer as input and returns 'Yes' if it's a power of 2, and 'No' otherwise. Use bitwise operations.",
+      "constraints": "0 <= number <= 10^9",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "python": {
+          "visibleCode": "# Write your code here",
+          "invisibleCode": "# Write your code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "8",
+          "output": "Yes",
+          "isVisible": true
+        },
+        {
+          "input": "6",
+          "output": "No",
+          "isVisible": true
+        },
+        {
+          "input": "1",
+          "output": "Yes",
+          "isVisible": true
+        },
+        {
+          "input": "0",
+          "output": "No",
+          "isVisible": true
+        }
+      ],
+      "marks": 10,
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "difficulty": "medium",
+      "tags": ["bitwise", "math"]
+    },
+    {
+      "title": "Sum of Digits",
+      "description": "Calculate sum of digits in a number",
+      "problemStatement": "Write a program that takes a number as input and returns the sum of its digits.",
+      "constraints": "0 <= number <= 10^9",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "python": {
+          "visibleCode": "# Write your code here",
+          "invisibleCode": "# Write your code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "123",
+          "output": "6",
+          "isVisible": true
+        },
+        {
+          "input": "9999",
+          "output": "36",
+          "isVisible": true
+        },
+        {
+          "input": "0",
+          "output": "0",
+          "isVisible": true
+        },
+        {
+          "input": "10",
+          "output": "1",
+          "isVisible": true
+        }
+      ],
+      "marks": 5,
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "difficulty": "easy",
+      "tags": ["arithmetic", "basic-math"]
+    },
+    {
+      "title": "Factorial Calculator",
+      "description": "Calculate factorial of a number",
+      "problemStatement": "Write a program that takes a non-negative integer as input and returns its factorial.",
+      "constraints": "0 <= number <= 20",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "python": {
+          "visibleCode": "# Write your code here",
+          "invisibleCode": "# Write your code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "5",
+          "output": "120",
+          "isVisible": true
+        },
+        {
+          "input": "0",
+          "output": "1",
+          "isVisible": true
+        },
+        {
+          "input": "3",
+          "output": "6",
+          "isVisible": true
+        },
+        {
+          "input": "7",
+          "output": "5040",
+          "isVisible": true
+        }
+      ],
+      "marks": 10,
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "difficulty": "medium",
+      "tags": ["arithmetic", "loops"]
+    },
+    {
+      "title": "List Reversal",
+      "description": "Reverse elements in a list",
+      "problemStatement": "Write a program that takes a list of numbers as input and returns the list in reverse order.",
+      "constraints": "1 <= list size <= 100\n-1000 <= elements <= 1000",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "python": {
+          "visibleCode": "# Write your code here",
+          "invisibleCode": "# Write your code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "[1, 2, 3, 4]",
+          "output": "[4, 3, 2, 1]",
+          "isVisible": true
+        },
+        {
+          "input": "[0]",
+          "output": "[0]",
+          "isVisible": true
+        },
+        {
+          "input": "[-1, 5, -6, 9]",
+          "output": "[9, -6, 5, -1]",
+          "isVisible": true
+        },
+        {
+          "input": "[10, 20]",
+          "output": "[20, 10]",
+          "isVisible": true
+        }
+      ],
+      "marks": 10,
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "difficulty": "medium",
+      "tags": ["lists", "loops"]
+    },
+    {
+      "title": "Find Maximum",
+      "description": "Find maximum element in a list",
+      "problemStatement": "Write a program that takes a list of numbers as input and returns the maximum value in the list.",
+      "constraints": "1 <= list size <= 100\n-1000 <= elements <= 1000",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "python": {
+          "visibleCode": "# Write your code here",
+          "invisibleCode": "# Write your code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "[1, 5, 3, 9, 2]",
+          "output": "9",
+          "isVisible": true
+        },
+        {
+          "input": "[-1, -5, -2]",
+          "output": "-1",
+          "isVisible": true
+        },
+        {
+          "input": "[0]",
+          "output": "0",
+          "isVisible": true
+        },
+        {
+          "input": "[10, 10, 10]",
+          "output": "10",
+          "isVisible": true
+        }
+      ],
+      "marks": 5,
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "difficulty": "easy",
+      "tags": ["lists", "loops"]
+    },
+    {
+      "title": "Pattern Printing",
+      "description": "Print a right-angled triangle pattern",
+      "problemStatement": "Write a program that takes a number n as input and prints a right-angled triangle pattern of n rows using asterisks (*).",
+      "constraints": "1 <= n <= 10",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "python": {
+          "visibleCode": "# Write your code here",
+          "invisibleCode": "# Write your code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "3",
+          "output": "*\n**\n***",
+          "isVisible": true
+        },
+        {
+          "input": "1",
+          "output": "*",
+          "isVisible": true
+        },
+        {
+          "input": "4",
+          "output": "*\n**\n***\n****",
+          "isVisible": true
+        },
+        {
+          "input": "2",
+          "output": "*\n**",
+          "isVisible": true
+        }
+      ],
+      "marks": 10,
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "difficulty": "medium",
+      "tags": ["nested-loops", "patterns"]
+    },
+    {
+      "title": "Multiplication Table",
+      "description": "Print multiplication table",
+      "problemStatement": "Write a program that takes a number n as input and prints its multiplication table up to 10.",
+      "constraints": "1 <= n <= 20",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "python": {
+          "visibleCode": "# Write your code here",
+          "invisibleCode": "# Write your code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "2",
+          "output": "2 x 1 = 2\n2 x 2 = 4\n2 x 3 = 6\n2 x 4 = 8\n2 x 5 = 10\n2 x 6 = 12\n2 x 7 = 14\n2 x 8 = 16\n2 x 9 = 18\n2 x 10 = 20",
+          "isVisible": true
+        },
+        {
+          "input": "5",
+          "output": "5 x 1 = 5\n5 x 2 = 10\n5 x 3 = 15\n5 x 4 = 20\n5 x 5 = 25\n5 x 6 = 30\n5 x 7 = 35\n5 x 8 = 40\n5 x 9 = 45\n5 x 10 = 50",
+          "isVisible": true
+        },
+        {
+          "input": "1",
+          "output": "1 x 1 = 1\n1 x 2 = 2\n1 x 3 = 3\n1 x 4 = 4\n1 x 5 = 5\n1 x 6 = 6\n1 x 7 = 7\n1 x 8 = 8\n1 x 9 = 9\n1 x 10 = 10",
+          "isVisible": true
+        },
+        {
+          "input": "3",
+          "output": "3 x 1 = 3\n3 x 2 = 6\n3 x 3 = 9\n3 x 4 = 12\n3 x 5 = 15\n3 x 6 = 18\n3 x 7 = 21\n3 x 8 = 24\n3 x 9 = 27\n3 x 10 = 30",
+          "isVisible": true
+        }
+      ],
+      "marks": 10,
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "difficulty": "medium",
+      "tags": ["nested-loops", "arithmetic"]
+    },
+    {
+      "title": "Leap Year Checker",
+      "description": "Check if a year is a leap year",
+      "problemStatement": "Write a program that takes a year as input and returns 'Leap Year' if it's a leap year, and 'Not a Leap Year' otherwise. A year is a leap year if it's divisible by 4, except for century years (years ending with 00). Century years are leap years only if they are perfectly divisible by 400.",
+      "constraints": "1 <= year <= 9999",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "python": {
+          "visibleCode": "# Write your code here",
+          "invisibleCode": "# Write your code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "2000",
+          "output": "Leap Year",
+          "isVisible": true
+        },
+        {
+          "input": "2100",
+          "output": "Not a Leap Year",
+          "isVisible": true
+        },
+        {
+          "input": "2024",
+          "output": "Leap Year",
+          "isVisible": true
+        },
+        {
+          "input": "2023",
+          "output": "Not a Leap Year",
+          "isVisible": true
+        }
+      ],
+      "marks": 5,
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "difficulty": "easy",
+      "tags": ["if-else", "basic"]
+    },
+    {
+      "title": "Count Trailing Zeros",
+      "description": "Count the number of trailing zeros in binary",
+      "problemStatement": "Write a program that takes an integer as input and returns the count of trailing zeros in its binary representation. For example, 8 (1000 in binary) has 3 trailing zeros.",
+      "constraints": "0 <= number <= 10^9",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "python": {
+          "visibleCode": "# Write your code here",
+          "invisibleCode": "# Write your code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "8",
+          "output": "3",
+          "isVisible": true
+        },
+        {
+          "input": "16",
+          "output": "4",
+          "isVisible": true
+        },
+        {
+          "input": "7",
+          "output": "0",
+          "isVisible": true
+        },
+        {
+          "input": "0",
+          "output": "0",
+          "isVisible": true
+        }
+      ],
+      "marks": 10,
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "difficulty": "medium",
+      "tags": ["bitwise", "binary"]
+    },
+    {
+      "title": "Temperature Converter",
+      "description": "Convert between Celsius and Fahrenheit",
+      "problemStatement": "Write a program that takes a temperature and its unit ('C' or 'F') as input and converts it to the other unit. Round the result to 2 decimal places. Formula: (°F = °C × 9/5 + 32) or (°C = (°F - 32) × 5/9)",
+      "constraints": "-100 <= temperature <= 100",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "python": {
+          "visibleCode": "# Write your code here",
+          "invisibleCode": "# Write your code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "32 F",
+          "output": "0.00 C",
+          "isVisible": true
+        },
+        {
+          "input": "0 C",
+          "output": "32.00 F",
+          "isVisible": true
+        },
+        {
+          "input": "100 C",
+          "output": "212.00 F",
+          "isVisible": true
+        },
+        {
+          "input": "-40 F",
+          "output": "-40.00 C",
+          "isVisible": true
+        }
+      ],
+      "marks": 10,
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "difficulty": "medium",
+      "tags": ["arithmetic", "basic-math"]
+    },
+    {
+      "title": "String Palindrome",
+      "description": "Check if a string is a palindrome",
+      "problemStatement": "Write a program that takes a string as input and returns 'Yes' if it's a palindrome, and 'No' otherwise. A palindrome reads the same forwards and backwards, ignoring case and non-alphanumeric characters.",
+      "constraints": "1 <= string length <= 100",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "python": {
+          "visibleCode": "# Write your code here",
+          "invisibleCode": "# Write your code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "A man, a plan, a canal: Panama",
+          "output": "Yes",
+          "isVisible": true
+        },
+        {
+          "input": "race a car",
+          "output": "No",
+          "isVisible": true
+        },
+        {
+          "input": "Was it a car or a cat I saw?",
+          "output": "Yes",
+          "isVisible": true
+        },
+        {
+          "input": "hello",
+          "output": "No",
+          "isVisible": true
+        }
+      ],
+      "marks": 15,
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "difficulty": "medium",
+      "tags": ["strings", "two-pointers"]
     }
   ]
 }

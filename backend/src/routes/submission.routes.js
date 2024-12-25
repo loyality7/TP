@@ -14,7 +14,8 @@ import {
   getTestResults, 
   getSubmissionAttempts, 
   getSubmissionDetails, 
-  updateSubmissionStatus 
+  updateSubmissionStatus, 
+  getComprehensiveSubmission 
 } from '../controllers/submission.controller.js';
 import { validateSubmission } from '../middleware/validateSubmission.js';
 import { validateTestAccess } from '../middleware/validateTestAccess.js';
@@ -634,5 +635,189 @@ router.get('/test/:testId/user/:userId/details', auth, getSubmissionDetails);
  *         description: Server error while updating status
  */
 router.post('/update-status', auth, updateSubmissionStatus);
+
+/**
+ * @swagger
+ * /api/submissions/comprehensive/{testId}/{userId}:
+ *   get:
+ *     summary: Get comprehensive submission details including MCQs and coding challenges
+ *     tags: [Submissions]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: testId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the test
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the user
+ *     responses:
+ *       200:
+ *         description: Comprehensive submission details retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     submissionId:
+ *                       type: string
+ *                     testId:
+ *                       type: string
+ *                     testTitle:
+ *                       type: string
+ *                     user:
+ *                       type: object
+ *                       properties:
+ *                         id:
+ *                           type: string
+ *                         name:
+ *                           type: string
+ *                         email:
+ *                           type: string
+ *                     status:
+ *                       type: string
+ *                       enum: [in_progress, mcq_completed, coding_completed, completed]
+ *                     startTime:
+ *                       type: string
+ *                       format: date-time
+ *                     endTime:
+ *                       type: string
+ *                       format: date-time
+ *                     duration:
+ *                       type: number
+ *                       description: Duration in seconds
+ *                     scores:
+ *                       type: object
+ *                       properties:
+ *                         total:
+ *                           type: number
+ *                         mcq:
+ *                           type: number
+ *                         coding:
+ *                           type: number
+ *                         percentage:
+ *                           type: number
+ *                         passed:
+ *                           type: boolean
+ *                     mcq:
+ *                       type: object
+ *                       properties:
+ *                         completed:
+ *                           type: boolean
+ *                         submittedAt:
+ *                           type: string
+ *                           format: date-time
+ *                         totalScore:
+ *                           type: number
+ *                         answers:
+ *                           type: array
+ *                           items:
+ *                             type: object
+ *                             properties:
+ *                               questionId:
+ *                                 type: string
+ *                               question:
+ *                                 type: string
+ *                               selectedOptions:
+ *                                 type: array
+ *                                 items:
+ *                                   type: number
+ *                               correctOptions:
+ *                                 type: array
+ *                                 items:
+ *                                   type: number
+ *                               isCorrect:
+ *                                 type: boolean
+ *                               marks:
+ *                                 type: number
+ *                               maxMarks:
+ *                                 type: number
+ *                               explanation:
+ *                                 type: string
+ *                     coding:
+ *                       type: object
+ *                       properties:
+ *                         completed:
+ *                           type: boolean
+ *                         submittedAt:
+ *                           type: string
+ *                           format: date-time
+ *                         totalScore:
+ *                           type: number
+ *                         challenges:
+ *                           type: array
+ *                           items:
+ *                             type: object
+ *                             properties:
+ *                               challengeId:
+ *                                 type: string
+ *                               title:
+ *                                 type: string
+ *                               description:
+ *                                 type: string
+ *                               difficulty:
+ *                                 type: string
+ *                               submissions:
+ *                                 type: array
+ *                                 items:
+ *                                   type: object
+ *                                   properties:
+ *                                     submittedAt:
+ *                                       type: string
+ *                                       format: date-time
+ *                                     code:
+ *                                       type: string
+ *                                     language:
+ *                                       type: string
+ *                                     status:
+ *                                       type: string
+ *                                     executionTime:
+ *                                       type: number
+ *                                     memory:
+ *                                       type: number
+ *                                     output:
+ *                                       type: string
+ *                                     error:
+ *                                       type: string
+ *                                     marks:
+ *                                       type: number
+ *                                     testCaseResults:
+ *                                       type: array
+ *                                       items:
+ *                                         type: object
+ *                                         properties:
+ *                                           input:
+ *                                             type: string
+ *                                           expectedOutput:
+ *                                             type: string
+ *                                           actualOutput:
+ *                                             type: string
+ *                                           passed:
+ *                                             type: boolean
+ *                                           error:
+ *                                             type: string
+ *                               bestScore:
+ *                                 type: number
+ *       400:
+ *         description: Invalid test ID or user ID format
+ *       403:
+ *         description: Not authorized to access this submission
+ *       404:
+ *         description: Test or submission not found
+ *       500:
+ *         description: Server error while fetching submission details
+ */
+router.get('/comprehensive/:testId/:userId', auth, getComprehensiveSubmission);
 
 export default router; 
