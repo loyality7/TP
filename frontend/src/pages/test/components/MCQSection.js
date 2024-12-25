@@ -39,7 +39,7 @@ export default function MCQSection({
       setError(null);
       setIsSubmitting(true);
 
-      const currentTestId = testId || localStorage.getItem('currentTestId');
+      const currentTestId = testId || test?._id || localStorage.getItem('currentTestId');
       if (!currentTestId) {
         toast.error('Test ID not found');
         return;
@@ -94,7 +94,7 @@ export default function MCQSection({
     } finally {
       setIsSubmitting(false);
     }
-  }, [testId, answers, onSubmitMCQs, mcqs]);
+  }, [testId, test, answers, onSubmitMCQs, mcqs]);
 
   const handleOptionSelect = (questionId, optionIndex) => {
     setAnswers(prev => {
@@ -220,7 +220,8 @@ export default function MCQSection({
           <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
           <h2 className="text-2xl font-bold mb-2">MCQs Completed!</h2>
           <p className="text-gray-600 mb-4">
-            You have already submitted the MCQ section. Please proceed to the Coding section.
+            You have completed the MCQ section{test?.name ? ` for ${test.name}` : ''}. 
+            Please proceed to the Coding section.
           </p>
         </div>
       </div>
