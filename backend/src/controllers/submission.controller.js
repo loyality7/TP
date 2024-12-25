@@ -299,13 +299,17 @@ export const getUserSubmissions = async (req, res) => {
       query.test = { $in: vendorTests.map(test => test._id) };
     }
 
+    // Update the populate to include codingSubmission details
     const submissions = await Submission.find(query)
       .populate({
         path: 'test',
         select: 'title type category difficulty totalMarks passingMarks vendor codingChallenges mcqs',
         populate: [
           { path: 'vendor', select: 'name email' },
-          { path: 'codingChallenges', select: 'title description' }
+          { 
+            path: 'codingChallenges', 
+            select: 'title description testCases marks'
+          }
         ]
       })
       .sort({ submittedAt: -1 })
@@ -325,26 +329,26 @@ export const getUserSubmissions = async (req, res) => {
           passingMarks: sub.test?.passingMarks,
           status: sub.status,
           submittedAt: sub.codingSubmission?.submittedAt,
-          challenges: sub.codingSubmission.challenges.map(challenge => ({
-            challengeId: challenge.challengeId,
-            challengeTitle: sub.test.codingChallenges.find(
+          challenges: (sub.codingSubmission?.challenges || []).map(challenge => {
+            const challengeDetails = sub.test.codingChallenges.find(
               c => c._id.toString() === challenge.challengeId.toString()
-            )?.title,
-            submissions: challenge.submissions.map(submission => ({
-              submittedAt: submission.submittedAt,
-              language: submission.language,
-              status: submission.status,
-              marks: submission.marks,
-              testCasesPassed: submission.testCaseResults?.filter(tc => tc.passed).length || 0,
-              totalTestCases: submission.testCaseResults?.length || 0
-            })),
-            bestScore: Math.max(...challenge.submissions.map(s => s.marks || 0), 0)
-          })),
-          vendor: {
-            id: sub.test?.vendor?._id,
-            name: sub.test?.vendor?.name,
-            email: sub.test?.vendor?.email
-          }
+            );
+            
+            return {
+              challengeId: challenge.challengeId,
+              challengeTitle: challengeDetails?.title || 'Unknown Challenge',
+              submissions: (challenge.submissions || []).map(submission => ({
+                submittedAt: submission.submittedAt,
+                language: submission.language,
+                status: submission.status,
+                marks: submission.marks,
+                testCasesPassed: submission.testCaseResults?.filter(tc => tc.passed).length || 0,
+                totalTestCases: submission.testCaseResults?.length || 0,
+                code: submission.code // Include the code
+              })),
+              bestScore: Math.max(...(challenge.submissions || []).map(s => s.marks || 0), 0)
+            };
+          })
         })),
       // Keep existing MCQ submissions transformation
       mcq: submissions
@@ -357,8 +361,8 @@ export const getUserSubmissions = async (req, res) => {
       data: transformedSubmissions,
       meta: {
         totalSubmissions: submissions.length,
-        mcqCount: transformedSubmissions.mcq.length,
-        codingCount: transformedSubmissions.coding.length
+        mcqCount: transformedSubmissions.mcq?.length || 0,
+        codingCount: transformedSubmissions.coding?.length || 0
       }
     });
 
