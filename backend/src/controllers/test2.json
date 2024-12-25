@@ -1,7 +1,7 @@
 {
-  "title": "Aptitude and Programming Test 4 ",
+  "title": "Aptitude and Programming Test 5 ",
   "description": "A comprehensive test for MITS students covering Quantitative Aptitude (R.S. Agarwal), Basic Programming, and Problem Solving skills.",
-  "duration": 90,
+  "duration": 210,
   "proctoring": true,
   "type": "coding_challenge",
   "category": "Aptitude and Programming",
@@ -9,149 +9,229 @@
   "instructions": "1. Complete all sections: Aptitude MCQs and Programming Questions\n2. Each coding solution must handle basic test cases\n3. Time management is crucial - attempt all questions\n4. Read each question carefully before answering",
   "mcqs": [
     {
-      "question": "A train running at 90 kmph crosses a pole in 10 seconds. What is the length of the train?",
+      "question": "What is the output of the following pseudocode?\n\n```\nBEGIN\n  SET x TO 4\n  SET y TO x * x\n  PRINT y\nEND\n```",
       "options": [
-        "200 meters",
-        "250 meters",
-        "225 meters",
-        "275 meters"
-      ],
-      "correctOptions": [1],
-      "answerType": "single",
-      "marks": 4,
-      "difficulty": "medium",
-      "explanation": "Speed = 90 kmph = 25 m/s, Time = 10s, Length = Speed × Time = 25 × 10 = 250 meters"
-    },
-    {
-      "question": "Find the average of all prime numbers between 30 and 50?",
-      "options": [
-        "39.6",
-        "42",
-        "38",
-        "39.8"
-      ],
-      "correctOptions": [3],
-      "answerType": "single",
-      "marks": 4,
-      "difficulty": "medium",
-      "explanation": "There are five prime numbers between 30 and 50. They are 31,37,41,43 and 47. Therefore the required average=(31+37+41+43+47)/5=199/5=39.8."
-    },
-    {
-      "question": "Find the average of first 40 natural numbers?",
-      "options": [
-        "19.5",
-        "19",
-        "20.5",
+        "4",
+        "8",
+        "16",
         "20"
       ],
       "correctOptions": [2],
       "answerType": "single",
-      "marks": 4,
-      "difficulty": "medium",
-      "explanation": "sum of first n natural numbers=n(n+1)/2; So,sum of 40 natural numbers=(40∗41)/2=820. Therefore the required average=820/40=20.5."
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "y is set to 4 * 4 = 16, which is printed."
     },
     {
-      "question": "Find the average of first 20 multiples of 7?",
+      "question": "Which pseudocode construct is used to execute code based on different cases?",
       "options": [
-        "73.32",
-        "73.5",
-        "73.05",
-        "73"
+        "IF...THEN...ELSE",
+        "FOR...END_FOR",
+        "SWITCH...CASE",
+        "WHILE...DO"
       ],
-      "correctOptions": [1],
-      "answerType": "single",
-      "marks": 4,
-      "difficulty": "medium",
-      "explanation": "Required average =7*(1+2+3+…….+20)/20=(7∗20∗21)/(20∗2)=147/2=73.5."
-    },
-    {
-      "question": "The average of four consecutive even numbers is 27. find the largest of these numbers?",
-      "options": [
-        "30",
-        "24",
-        "26",
-        "28"
-      ],
-      "correctOptions": [0],
-      "answerType": "single",
-      "marks": 4,
-      "difficulty": "medium",
-      "explanation": "let the numbers be x,x+2,x+4 and x+6. Then, (x+(x+2)+(x+4)+(x+6))/4 = 27, (4x+12)/4= 27, x+3=27, x=24. Therefore the largest number=(x+6)=24+6=30."
-    },
-    {
-      "question": "If TEACHER is coded as VGCEJGT, then how will STUDENT be coded?",
-      "options": [
-        "UVWFGPV",
-        "UVWFGPZ",
-        "UVWFCPV",
-        "UVWFGPY"
-      ],
-      "correctOptions": [0],
+      "correctOptions": [2],
       "answerType": "single",
       "marks": 1,
-      "section": "Sec-1",
+      "section": "Sec-3",
       "difficulty": "medium",
-      "explanation": "Each letter is replaced by letter 2 positions ahead in alphabet. Therefore, STUDENT becomes UVWFGPV"
+      "explanation": "'SWITCH...CASE' is used to execute code based on different conditions."
     },
     {
-      "question": "If South-East becomes North, North-East becomes West, then what will North-West become?",
+      "question": "What is the purpose of initializing variables before using them in pseudocode?",
       "options": [
-        "South",
-        "East",
-        "South-West",
-        "North-East"
+        "To allocate memory",
+        "To set a starting value",
+        "To define their data type",
+        "All of the above"
       ],
       "correctOptions": [1],
       "answerType": "single",
       "marks": 1,
-      "section": "Sec-1",
-      "difficulty": "medium",
-      "explanation": "The pattern shows 135° clockwise rotation. Following this, North-West will become East"
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "Initializing variables sets their starting value, which is essential for accurate computations."
     },
     {
-      "question": "Find the missing number: 2, 6, 12, 20, 30, ?",
+      "question": "What does the 'END_WHILE' keyword signify in pseudocode?",
       "options": [
-        "42",
-        "40",
-        "44",
-        "46"
+        "The start of a while loop",
+        "The end of a while loop",
+        "A condition within a while loop",
+        "None of the above"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "'END_WHILE' indicates the termination of a WHILE loop."
+    },
+    {
+      "question": "In pseudocode, how would you represent a decision to execute code only if a number is even?",
+      "options": [
+        "IF number MOD 2 == 0 THEN",
+        "WHILE number MOD 2 == 0",
+        "FOR number FROM 2 TO n",
+        "SET number TO EVEN"
       ],
       "correctOptions": [0],
       "answerType": "single",
       "marks": 1,
-      "section": "Sec-1",
+      "section": "Sec-3",
       "difficulty": "medium",
-      "explanation": "The pattern is +4, +6, +8, +10, +12. So next number is 30+12=42"
+      "explanation": "'IF number MOD 2 == 0 THEN' checks if a number is even."
     },
     {
-      "question": "If A + B means A is the mother of B; A - B means A is the brother of B; A × B means A is the sister of B and A ÷ B means A is the father of B, then which of the following means M is the aunt of N?",
+      "question": "What is the role of the 'SET' command in pseudocode?",
       "options": [
-        "M × P + N",
-        "M - P + N",
-        "M + P - N",
-        "M ÷ P + N"
+        "To declare a variable",
+        "To assign a value to a variable",
+        "To print a variable's value",
+        "To start a loop"
       ],
-      "correctOptions": [0],
+      "correctOptions": [1],
       "answerType": "single",
       "marks": 1,
-      "section": "Sec-1",
-      "difficulty": "hard",
-      "explanation": "M × P + N means M is sister of P and P is mother of N, making M the aunt of N"
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "'SET' assigns a value to a variable."
     },
     {
-      "question": "In a certain code, '256' means 'bright red light', '637' means 'light red rose' and '358' means 'green bright rose'. Which digit stands for 'bright'?",
+      "question": "What does the following pseudocode print?\n\n```\nBEGIN\n  SET a TO 2\n  SET b TO 3\n  PRINT a + b * 4\nEND\n```",
       "options": [
-        "2",
+        "20",
+        "14",
         "5",
+        "Error"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "medium",
+      "explanation": "According to order of operations, b * 4 =12; then a +12 =14."
+    },
+    {
+      "question": "Which construct is used to execute a block of code at least once before checking a condition?",
+      "options": [
+        "WHILE loop",
+        "FOR loop",
+        "DO...WHILE loop",
+        "IF...THEN...ELSE"
+      ],
+      "correctOptions": [2],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "hard",
+      "explanation": "'DO...WHILE' ensures the block executes at least once before condition checking."
+    },
+    {
+      "question": "What is the output of the following pseudocode?\n\n```\nBEGIN\n  SET x TO 1\n  FOR i FROM 1 TO 3\n    SET x TO x + i\n  END_FOR\n  PRINT x\nEND\n```",
+      "options": [
+        "3",
         "6",
-        "3"
+        "7",
+        "9"
+      ],
+      "correctOptions": [2],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "x =1+1=2; then 2+2=4; then 4+3=7."
+    },
+    {
+      "question": "In pseudocode, what does the 'MOD' operator represent?",
+      "options": [
+        "Multiplication",
+        "Division",
+        "Modulus (remainder)",
+        "Exponentiation"
+      ],
+      "correctOptions": [2],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "'MOD' returns the remainder after division."
+    },
+    {
+      "question": "What is the purpose of the 'BEGIN' keyword in pseudocode?",
+      "options": [
+        "To start the pseudocode",
+        "To define a loop",
+        "To declare a variable",
+        "To end the pseudocode"
       ],
       "correctOptions": [0],
       "answerType": "single",
       "marks": 1,
-      "section": "Sec-1",
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "'BEGIN' signifies the start of the pseudocode."
+    },
+    {
+      "question": "What does the 'ELSE' keyword do in an IF statement in pseudocode?",
+      "options": [
+        "Begins a new IF condition",
+        "Specifies an alternative block if the IF condition is false",
+        "Ends the IF statement",
+        "Repeats the IF condition"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
       "difficulty": "medium",
-      "explanation": "Comparing the codes, '2' is common between 'bright red light' and 'bright rose', so 2 represents 'bright'"
+      "explanation": "'ELSE' provides an alternative block of code if the IF condition is false."
+    },
+    {
+      "question": "How would you represent an infinite loop in pseudocode?",
+      "options": [
+        "FOR i FROM 1 TO INFINITY",
+        "WHILE TRUE DO",
+        "REPEAT UNTIL FALSE",
+        "All of the above"
+      ],
+      "correctOptions": [3],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "hard",
+      "explanation": "All listed options can be used to create infinite loops in pseudocode."
+    },
+    {
+      "question": "What is the final value of 'sum' after executing the following pseudocode?\n\n```\nBEGIN\n  SET sum TO 0\n  FOR i FROM 1 TO 4\n    SET sum TO sum + i\n  END_FOR\nEND\n```",
+      "options": [
+        "6",
+        "10",
+        "15",
+        "5"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "sum =1+2+3+4=10"
+    },
+    {
+      "question": "Which keyword signifies the end of a function in pseudocode?",
+      "options": [
+        "END_FUNCTION",
+        "FINISH",
+        "CLOSE",
+        "END"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "'END_FUNCTION' denotes the termination of a function block."
     },
     {
       "question": "If MOUSE is written as PRUQC, then how will SHIFT be written in that code?",
@@ -227,6 +307,306 @@
       "section": "Sec-1",
       "difficulty": "medium",
       "explanation": "Each letter is moved 2 positions forward in the alphabet. Therefore, CANDLE becomes DCQIKG"
+    },
+    {
+      "question": "What is the output of the following pseudocode snippet?\n\n```\nBEGIN\n  SET sum TO 0\n  FOR i FROM 1 TO 5\n    SET sum TO sum + i\n  END_FOR\n  PRINT sum\nEND\n```",
+      "options": [
+        "5",
+        "10",
+        "15",
+        "20"
+      ],
+      "correctOptions": [2],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "It calculates the sum 1+2+3+4+5 = 15 and prints the result."
+    },
+    {
+      "question": "In pseudocode, which of the following represents a loop that repeats until a condition is false?",
+      "options": [
+        "IF...THEN...ELSE",
+        "FOR...TO...STEP",
+        "WHILE...DO",
+        "FUNCTION...END_FUNCTION"
+      ],
+      "correctOptions": [2],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "medium",
+      "explanation": "'WHILE...DO' loop continues to repeat as long as the condition is true."
+    },
+    {
+      "question": "What is the output of this pseudocode?\n\n```\nBEGIN\n  SET a TO 10\n  SET b TO 20\n  IF a > b THEN\n    PRINT \"A is greater\"\n  ELSE\n    PRINT \"B is greater\"\n  END_IF\nEND\n```",
+      "options": [
+        "A is greater",
+        "B is greater",
+        "A and B are equal",
+        "No output"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "Since 10 < 20, it prints 'B is greater'."
+    },
+    {
+      "question": "What is missing in the following pseudocode to correctly compute the factorial of a number?\n\n```\nBEGIN\n  SET n TO 5\n  SET factorial TO 1\n  FOR i FROM 1 TO n\n    SET factorial TO factorial * i\n  // Missing end\n  PRINT factorial\nEND\n```",
+      "options": [
+        "END_FOR",
+        "END_IF",
+        "END_LOOP",
+        "Nothing, it is correct"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "hard",
+      "explanation": "Proper closure of the FOR loop is needed with 'END_FOR'."
+    },
+    {
+      "question": "In pseudocode, what keyword is used to stop the execution of a loop prematurely?",
+      "options": [
+        "EXIT",
+        "BREAK",
+        "STOP",
+        "Both A and B"
+      ],
+      "correctOptions": [3],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "medium",
+      "explanation": "Both 'EXIT' and 'BREAK' can be used to terminate loops early."
+    },
+    {
+      "question": "What is the value of 'x' after executing the following pseudocode?\n\n```\nBEGIN\n  SET x TO 0\n  FOR i FROM 1 TO 4\n    SET x TO x + i\n  END_FOR\nEND\n```",
+      "options": [
+        "4",
+        "6",
+        "10",
+        "15"
+      ],
+      "correctOptions": [2],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "x = 1+2+3+4 = 10"
+    },
+    {
+      "question": "What does the 'READ' command do in pseudocode?",
+      "options": [
+        "Outputs data to the screen.",
+        "Takes input from the user.",
+        "Executes a function.",
+        "Initializes variables."
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "'READ' is used to take input from the user."
+    },
+    {
+      "question": "How do you represent an array in pseudocode?",
+      "options": [
+        "ARRAY A[5]",
+        "DECLARE A AS ARRAY OF 5",
+        "SET A TO {1,2,3,4,5}",
+        "All of the above"
+      ],
+      "correctOptions": [3],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "Various syntaxes can represent arrays in pseudocode."
+    },
+    {
+      "question": "What is the output of the following pseudocode?\n\n```\nBEGIN\n  SET a TO 3\n  SET b TO a * a\n  SET a TO 5\n  PRINT b\nEND\n```",
+      "options": [
+        "3",
+        "5",
+        "9",
+        "25"
+      ],
+      "correctOptions": [2],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "b is set to 3*3=9 before a is changed to 5."
+    },
+    {
+      "question": "Which construct is used to repeat a block of code as long as a condition holds true in pseudocode?",
+      "options": [
+        "IF",
+        "FOR",
+        "REPEAT...UNTIL",
+        "SWITCH"
+      ],
+      "correctOptions": [2],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "medium",
+      "explanation": "'REPEAT...UNTIL' is used to repeat a block until a condition becomes true."
+    },
+    {
+      "question": "What is wrong with the following pseudocode?\n\n```\nBEGIN\n  SET x TO 10\n  SET y TO 20\n  SET z TO x + y\n  PRINT z\n```",
+      "options": [
+        "Missing END",
+        "Missing BEGIN",
+        "No errors",
+        "Missing END_PRINT"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "There is no 'END' to signify the end of the block."
+    },
+    {
+      "question": "How would you declare a variable 'total' in pseudocode?",
+      "options": [
+        "SET total",
+        "DECLARE total AS INTEGER",
+        "INTEGER total",
+        "Both B and C"
+      ],
+      "correctOptions": [3],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "In pseudocode, variables can be declared using 'DECLARE' or by specifying type before the name."
+    },
+    {
+      "question": "What is the output of the following pseudocode?\n\n```\nBEGIN\n  SET sum TO 0\n  SET i TO 1\n  WHILE i <= 5\n    SET sum TO sum + i\n    SET i TO i + 1\n  END_WHILE\n  PRINT sum\nEND\n```",
+      "options": [
+        "5",
+        "10",
+        "15",
+        "20"
+      ],
+      "correctOptions": [2],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "Sum of 1+2+3+4+5 = 15"
+    },
+    {
+      "question": "Which of the following is a conditional loop in pseudocode?",
+      "options": [
+        "FOR",
+        "WHILE",
+        "REPEAT",
+        "All of the above"
+      ],
+      "correctOptions": [3],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "medium",
+      "explanation": "All listed options can be used for conditional loops."
+    },
+    {
+      "question": "In pseudocode, how do you represent the start of a loop that runs indefinitely?",
+      "options": [
+        "FOR i FROM 1 TO INFINITY",
+        "WHILE TRUE DO",
+        "LOOP UNTIL FALSE",
+        "All of the above"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "hard",
+      "explanation": "'WHILE TRUE DO' represents an infinite loop."
+    },
+    {
+      "question": "What is the correct pseudocode to calculate the sum of elements in an array A of size n?",
+      "options": [
+        "BEGIN\n  SET sum TO 0\n  FOR i FROM 1 TO n\n    SET sum TO sum + A[i]\n  END_FOR\n  PRINT sum\nEND",
+        "BEGIN\n  SET sum TO A[1]\n  FOR i FROM 2 TO n\n    SET sum TO sum * A[i]\n  END_FOR\n  PRINT sum\nEND",
+        "BEGIN\n  SET sum TO 0\n  WHILE i < n\n    SET sum TO sum + A[i]\n    SET i TO i +1\n  END_WHILE\n  PRINT sum\nEND",
+        "All of the above"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "hard",
+      "explanation": "Option A correctly sums the elements; others perform different operations or have issues."
+    },
+    {
+      "question": "In pseudocode, how can you comment a line?",
+      "options": [
+        "// This is a comment",
+        "/* This is a comment */",
+        "# This is a comment",
+        "All of the above"
+      ],
+      "correctOptions": [3],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "Various commenting styles can be used in pseudocode."
+    },
+    {
+      "question": "What is the output of the following pseudocode?\n\n```\nBEGIN\n  SET a TO 5\n  SET b TO a * 2\n  SET a TO 3\n  PRINT b\nEND\n```",
+      "options": [
+        "5",
+        "3",
+        "10",
+        "6"
+      ],
+      "correctOptions": [2],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "b is set to 5*2=10 before a is changed to 3."
+    },
+    {
+      "question": "Which pseudocode construct is used for decision-making based on multiple conditions?",
+      "options": [
+        "IF...THEN",
+        "ELSE IF...THEN",
+        "SWITCH...CASE",
+        "All of the above"
+      ],
+      "correctOptions": [3],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "medium",
+      "explanation": "All listed constructs can handle multiple condition decisions."
+    },
+    {
+      "question": "What does the following pseudocode do?\n\n```\nBEGIN\n  SET total TO 0\n  FOR i FROM 1 TO 3\n    SET j TO 1\n    WHILE j <= i\n      SET total TO total + j\n      SET j TO j + 1\n    END_WHILE\n  END_FOR\n  PRINT total\nEND\n```",
+      "options": [
+        "Sums numbers from 1 to 3",
+        "Calculates the factorial of 3",
+        "Prints 6",
+        "Prints 10"
+      ],
+      "correctOptions": [3],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "hard",
+      "explanation": "The nested loops add 1 + (1+2) + (1+2+3) = 10."
     },
     {
       "question": "In a row of boys, A is 7th from the left and B is 12th from the right. If A is 8th from the right, what is B's position from the left?",
@@ -649,21 +1029,6 @@
       "explanation": "Using (M₁ × D₁ × H₁) = (M₂ × D₂ × H₂)\n8 × 12 × 6 = 6 × D × 8\n576 = 48D\nD = 10 days"
     },
     {
-      "question": "A mixture contains milk and water in the ratio 4:1. If 10 liters of water is added, the ratio becomes 4:3. Find the initial quantity of milk in the mixture.",
-      "options": [
-        "20 liters",
-        "25 liters",
-        "30 liters",
-        "40 liters"
-      ],
-      "correctOptions": [0],
-      "answerType": "single",
-      "marks": 1,
-      "section": "Sec-5",
-      "difficulty": "hard",
-      "explanation": "Let initial milk be x liters\nInitial ratio: x : x/4 = 4 : 1\nAfter adding water: x : (x/4 + 10) = 4 : 3\nx/4 + 10 = 3x/4\n40 = 2x\nx = 20 liters"
-    },
-    {
       "question": "Choose the sentence with correct parallel structure:",
       "options": [
         "He likes swimming, running, and to play tennis",
@@ -892,9 +1257,530 @@
       "section": "Sec-4",
       "difficulty": "medium",
       "explanation": "The order of precedence is: NOT (highest), AND, OR (lowest). This is similar to arithmetic where NOT is like negation, AND is like multiplication, and OR is like addition."
+    },
+    {
+      "question": "What is the output of the following pseudocode?\n\n```\nBEGIN\n  SET count TO 0\n  WHILE count < 3\n    PRINT count\n    SET count TO count + 1\n  END_WHILE\nEND\n```",
+      "options": [
+        "0 1 2",
+        "1 2 3",
+        "0 1 2 3",
+        "Error"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "The loop runs while count is less than 3, printing 0, 1, and 2."
+    },
+    {
+      "question": "What is the purpose of a 'FOR' loop in pseudocode?",
+      "options": [
+        "To execute a block of code only once.",
+        "To execute a block of code multiple times with a counter.",
+        "To make a decision based on a condition.",
+        "To define a function."
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "medium",
+      "explanation": "'FOR' loops are used to iterate a block of code a specific number of times using a counter."
+    },
+    {
+      "question": "In pseudocode, how do you denote the start of a function named 'Calculate'?",
+      "options": [
+        "FUNCTION Calculate()",
+        "BEGIN Calculate",
+        "START Function Calculate",
+        "DEFINE Calculate()"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "The correct syntax is 'FUNCTION Calculate()' to denote the start of a function."
+    },
+   
+    {
+      "question": "In pseudocode, which keyword is used to define a function?",
+      "options": [
+        "FUNCTION",
+        "DEFINE",
+        "PROCEDURE",
+        "METHOD"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "'FUNCTION' is commonly used to define a function in pseudocode."
+    },
+    {
+      "question": "What is the output of the following pseudocode?\n\n```\nBEGIN\n  SET x TO 2\n  FOR i FROM 1 TO 3\n    SET x TO x * 2\n  END_FOR\n  PRINT x\nEND\n```",
+      "options": [
+        "4",
+        "6",
+        "8",
+        "10"
+      ],
+      "correctOptions": [2],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "x is doubled three times: 2→4→8↨, so output is 8."
+    },
+    {
+      "question": "Which pseudocode construct is used to handle multiple execution paths based on different conditions?",
+      "options": [
+        "IF...THEN...ELSE",
+        "FOR...END_FOR",
+        "WHILE...DO",
+        "REPEAT...UNTIL"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "medium",
+      "explanation": "'IF...THEN...ELSE' allows handling multiple conditions and paths."
+    },
+    {
+      "question": "What is the role of the 'END_IF' keyword in pseudocode?",
+      "options": [
+        "Starts an if condition",
+        "Ends an if condition",
+        "Begins a loop",
+        "Ends a loop"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "'END_IF' signifies the end of an IF block."
+    },
+    {
+      "question": "How do you initialize a variable 'counter' to 10 in pseudocode?",
+      "options": [
+        "SET counter TO 10",
+        "INITIALIZE counter TO 10",
+        "DECLARE counter = 10",
+        "ALL OF THE ABOVE"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "'SET counter TO 10' is a common way to initialize variables in pseudocode."
+    },
+    {
+      "question": "What is the purpose of the 'PRINT' statement in pseudocode?",
+      "options": [
+        "To take input from the user",
+        "To output data to the screen",
+        "To perform calculations",
+        "To start a loop"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "'PRINT' is used to display output to the screen."
+    },
+    {
+      "question": "What does the following pseudocode print?\n\n```\nBEGIN\n  SET count TO 1\n  WHILE count <= 5\n    IF count MOD 2 == 0 THEN\n      PRINT count\n    END_IF\n    SET count TO count + 1\n  END_WHILE\nEND\n```",
+      "options": [
+        "Prints all numbers from 1 to 5",
+        "Prints even numbers between 1 and 5",
+        "Prints odd numbers between 1 and 5",
+        "Prints nothing"
+      ],
+      "correctOptions": [1],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "medium",
+      "explanation": "The pseudocode prints numbers where count is even: 2 and 4."
+    },
+    {
+      "question": "In pseudocode, how is a subroutine typically invoked?",
+      "options": [
+        "CALL SubroutineName",
+        "START SubroutineName",
+        "FUNCTION SubroutineName",
+        "BEGIN SubroutineName"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "medium",
+      "explanation": "'CALL SubroutineName' is used to invoke a subroutine."
+    },
+    {
+      "question": "What is the purpose of the 'RETURN' statement in a pseudocode function?",
+      "options": [
+        "To end the program",
+        "To exit a loop",
+        "To send a value back to the calling code",
+        "To start a new function"
+      ],
+      "correctOptions": [2],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "'RETURN' sends a value back to where the function was called."
+    },
+    {
+      "question": "What is the output of the following pseudocode?\n\n```\nBEGIN\n  SET a TO 1\n  SET b TO 2\n  SET c TO 3\n  PRINT a + b * c\nEND\n```",
+      "options": [
+        "9",
+        "7",
+        "5",
+        "11"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "hard",
+      "explanation": "According to order of operations, b * c = 6; then a + 6 = 7"
+    },
+    {
+      "question": "Which keyword is used to define the end of a function in pseudocode?",
+      "options": [
+        "END_FUNCTION",
+        "FINISH_FUNCTION",
+        "END",
+        "DONE"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "'END_FUNCTION' denotes the end of a function block."
+    },
+    {
+      "question": "What does the following pseudocode do?\n\n```\nBEGIN\n  SET total TO 0\n  FOR i FROM 1 TO 3\n    SET total TO total + i\n  END_FOR\n  PRINT total\nEND\n```",
+      "options": [
+        "Calculates the sum of 1, 2, and 3",
+        "Calculates the product of 1, 2, and 3",
+        "Prints the values 1, 2, and 3",
+        "Prints an error"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "It sums the numbers 1, 2, and 3 to get 6."
+    },
+    {
+      "question": "In pseudocode, which construct is used to handle multiple conditions?",
+      "options": [
+        "IF...ELSE IF...ELSE",
+        "FOR...END_FOR",
+        "WHILE...DO",
+        "REPEAT...UNTIL"
+      ],
+      "correctOptions": [0],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "medium",
+      "explanation": "'IF...ELSE IF...ELSE' allows handling multiple conditions."
     }
   ],
   "codingChallenges": [
+    {
+      "title": "Array Leaders",
+      "description": "Find leaders in array",
+      "problemStatement": "Write a program to find all elements which are greater than all elements to their right side in the array.",
+      "constraints": "1 <= array size <= 100\n-10^3 <= elements <= 10^3",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "python": {
+          "visibleCode": "# Write your code here",
+          "invisibleCode": "# Write your code here"
+        },
+        "java": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "c": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "cpp": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "[16,17,4,3,5,2]",
+          "output": "[17,5,2]",
+          "isVisible": true
+        },
+        {
+          "input": "[1,2,3,4,0]",
+          "output": "[4,0]",
+          "isVisible": true
+        },
+        {
+          "input": "[7,4,5,7,3]",
+          "output": "[7,7,3]",
+          "isVisible": true
+        },
+        {
+          "input": "[10,22,12,3,0,6]",
+          "output": "[22,12,6]",
+          "isVisible": true
+        }
+      ],
+      "marks": 10,
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "difficulty": "medium",
+      "tags": ["arrays", "leaders"]
+    },
+    {
+      "title": "Toggle Case",
+      "description": "Toggle character case using bitwise",
+      "problemStatement": "Write a program to toggle the case of each character in a string using bitwise operations.",
+      "constraints": "1 <= string length <= 100\nString contains only letters",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "python": {
+          "visibleCode": "# Write your code here",
+          "invisibleCode": "# Write your code here"
+        },
+        "java": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "c": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "cpp": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "Hello World",
+          "output": "hELLO wORLD",
+          "isVisible": true
+        },
+        {
+          "input": "Python",
+          "output": "pYTHON",
+          "isVisible": true
+        },
+        {
+          "input": "JavaScript",
+          "output": "jAVASCRIPT",
+          "isVisible": true
+        },
+        {
+          "input": "C++",
+          "output": "c++",
+          "isVisible": true
+        }
+      ],
+      "marks": 10,
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "difficulty": "medium",
+      "tags": ["strings", "bitwise"]
+    },
+    {
+      "title": "Count Zeros and Ones",
+      "description": "Count binary digits",
+      "problemStatement": "Write a program to count the number of 0s and 1s in the binary representation of a number.",
+      "constraints": "0 <= number <= 10^9",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "python": {
+          "visibleCode": "# Write your code here",
+          "invisibleCode": "# Write your code here"
+        },
+        "java": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "c": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "cpp": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "14",
+          "output": "Zeros: 1, Ones: 3",
+          "isVisible": true
+        },
+        {
+          "input": "8",
+          "output": "Zeros: 3, Ones: 1",
+          "isVisible": true
+        },
+        {
+          "input": "15",
+          "output": "Zeros: 0, Ones: 4",
+          "isVisible": true
+        },
+        {
+          "input": "16",
+          "output": "Zeros: 4, Ones: 1",
+          "isVisible": true
+        }
+      ],
+      "marks": 10,
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "difficulty": "medium",
+      "tags": ["bitwise", "counting"]
+    },
+    {
+      "title": "Fibonacci Pattern",
+      "description": "Print Fibonacci pattern triangle",
+      "problemStatement": "Write a program to print a triangle pattern where each row contains Fibonacci numbers up to that row number.",
+      "constraints": "1 <= n <= 10",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "python": {
+          "visibleCode": "# Write your code here",
+          "invisibleCode": "# Write your code here"
+        },
+        "java": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "c": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "cpp": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "3",
+          "output": "1\n1\n2",
+          "isVisible": true
+        },
+        {
+          "input": "5",
+          "output": "1\n1\n2\n3\n5",
+          "isVisible": true
+        },
+        {
+          "input": "1",
+          "output": "1",
+          "isVisible": true
+        },
+        {
+          "input": "10",
+          "output": "1\n1\n2\n3\n5\n8\n13\n21\n34\n55",
+          "isVisible": true
+        }
+      ],
+      "marks": 10,
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "difficulty": "medium",
+      "tags": ["patterns", "fibonacci"]
+    },
+    {
+      "title": "Count Pairs",
+      "description": "Count pairs with given sum",
+      "problemStatement": "Write a program to count pairs in an array with a given sum. For example, if array is [1,5,7,1] and sum is 6, output should be 2 (pairs: 1,5 and 5,1).",
+      "constraints": "1 <= array size <= 100\n-1000 <= elements <= 1000",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "python": {
+          "visibleCode": "# Write your code here",
+          "invisibleCode": "# Write your code here"
+        },
+        "java": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "c": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "cpp": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "[1,5,7,1] 6",
+          "output": "2",
+          "isVisible": true
+        },
+        {
+          "input": "[1,1,1,1] 2",
+          "output": "6",
+          "isVisible": true
+        },
+        {
+          "input": "[2,4,6,8,10] 12",
+          "output": "2",
+          "isVisible": true
+        },
+        {
+          "input": "[3,3,3] 6",
+          "output": "3",
+          "isVisible": true
+        }
+      ],
+      "marks": 10,
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "difficulty": "medium",
+      "tags": ["arrays", "loops"]
+    },
     {
       "title": "Basic Calculator",
       "description": "Implement a basic calculator that performs arithmetic operations",
@@ -951,7 +1837,7 @@
         }
       ],
       "marks": 10,
-      "timeLimit": 2,
+      "timeLimit": 1,
       "memoryLimit": 256,
       "difficulty": "medium",
       "tags": ["arithmetic", "basic-math"]
@@ -970,6 +1856,18 @@
         "python": {
           "visibleCode": "# Write your code here",
           "invisibleCode": "# Write your code here"
+        },
+        "java": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "c": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "cpp": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
         }
       },
       "testCases": [
@@ -1014,6 +1912,18 @@
         "python": {
           "visibleCode": "# Write your code here",
           "invisibleCode": "# Write your code here"
+        },
+        "java": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "c": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "cpp": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
         }
       },
       "testCases": [
@@ -1063,6 +1973,18 @@
         "python": {
           "visibleCode": "# Write your code here",
           "invisibleCode": "# Write your code here"
+        },
+        "java": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "c": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "cpp": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
         }
       },
       "testCases": [
@@ -1107,6 +2029,18 @@
         "python": {
           "visibleCode": "# Write your code here",
           "invisibleCode": "# Write your code here"
+        },
+        "java": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "c": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "cpp": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
         }
       },
       "testCases": [
@@ -1151,6 +2085,18 @@
         "python": {
           "visibleCode": "# Write your code here",
           "invisibleCode": "# Write your code here"
+        },
+        "java": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "c": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "cpp": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
         }
       },
       "testCases": [
@@ -1195,6 +2141,18 @@
         "python": {
           "visibleCode": "# Write your code here",
           "invisibleCode": "# Write your code here"
+        },
+        "java": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "c": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "cpp": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
         }
       },
       "testCases": [
@@ -1239,6 +2197,18 @@
         "python": {
           "visibleCode": "# Write your code here",
           "invisibleCode": "# Write your code here"
+        },
+        "java": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "c": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "cpp": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
         }
       },
       "testCases": [
@@ -1270,10 +2240,10 @@
       "tags": ["lists", "loops"]
     },
     {
-      "title": "Find Maximum",
-      "description": "Find maximum element in a list",
-      "problemStatement": "Write a program that takes a list of numbers as input and returns the maximum value in the list.",
-      "constraints": "1 <= list size <= 100\n-1000 <= elements <= 1000",
+      "title": "Binary Addition",
+      "description": "Add numbers using bitwise",
+      "problemStatement": "Write a program to add two numbers using only bitwise operators (no + operator allowed).",
+      "constraints": "0 <= numbers <= 10^9",
       "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
       "languageImplementations": {
         "javascript": {
@@ -1283,40 +2253,165 @@
         "python": {
           "visibleCode": "# Write your code here",
           "invisibleCode": "# Write your code here"
+        },
+        "java": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "c": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "cpp": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
         }
       },
       "testCases": [
         {
-          "input": "[1, 5, 3, 9, 2]",
-          "output": "9",
+          "input": "5 3",
+          "output": "8",
           "isVisible": true
         },
         {
-          "input": "[-1, -5, -2]",
-          "output": "-1",
+          "input": "10 12",
+          "output": "22",
           "isVisible": true
         },
         {
-          "input": "[0]",
-          "output": "0",
+          "input": "15 15",
+          "output": "30",
           "isVisible": true
         },
         {
-          "input": "[10, 10, 10]",
-          "output": "10",
+          "input": "0 7",
+          "output": "7",
           "isVisible": true
         }
       ],
-      "marks": 5,
+      "marks": 15,
       "timeLimit": 1,
       "memoryLimit": 256,
-      "difficulty": "easy",
-      "tags": ["lists", "loops"]
+      "difficulty": "hard",
+      "tags": ["bitwise", "arithmetic"]
     },
     {
-      "title": "Pattern Printing",
-      "description": "Print a right-angled triangle pattern",
-      "problemStatement": "Write a program that takes a number n as input and prints a right-angled triangle pattern of n rows using asterisks (*).",
+      "title": "Number Pattern Pyramid",
+      "description": "Print number pyramid pattern",
+      "problemStatement": "Write a program to print a pyramid pattern where each row contains the row number repeated with proper spacing.",
+      "constraints": "1 <= n <= 9",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "python": {
+          "visibleCode": "# Write your code here",
+          "invisibleCode": "# Write your code here"
+        },
+        "java": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "c": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "cpp": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "4",
+          "output": "   1\n  2 2\n 3 3 3\n4 4 4 4",
+          "isVisible": true
+        },
+        {
+          "input": "3",
+          "output": "  1\n 2 2\n3 3 3",
+          "isVisible": true
+        },
+        {
+          "input": "2",
+          "output": " 1\n2 2",
+          "isVisible": true
+        },
+        {
+          "input": "1",
+          "output": "1",
+          "isVisible": true
+        }
+      ],
+      "marks": 10,
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "difficulty": "medium",
+      "section": "Sec-3",
+      "tags": ["nested-loops", "patterns"]
+    },
+    {
+      "title": "Array Wave Form",
+      "description": "Arrange array in wave form",
+      "problemStatement": "Write a program to arrange array elements in a wave form (a1 >= a2 <= a3 >= a4 <= a5). For example: [1,2,3,4] becomes [2,1,4,3].",
+      "constraints": "1 <= array size <= 100\n-1000 <= elements <= 1000",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "python": {
+          "visibleCode": "# Write your code here",
+          "invisibleCode": "# Write your code here"
+        },
+        "java": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "c": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "cpp": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "[1,2,3,4]",
+          "output": "[2,1,4,3]",
+          "isVisible": true
+        },
+        {
+          "input": "[1,5,2,6,3]",
+          "output": "[5,1,6,2,3]",
+          "isVisible": true
+        },
+        {
+          "input": "[1,1,1,1]",
+          "output": "[1,1,1,1]",
+          "isVisible": true
+        },
+        {
+          "input": "[5,4,3,2,1]",
+          "output": "[5,3,4,1,2]",
+          "isVisible": true
+        }
+      ],
+      "marks": 10,
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "difficulty": "medium",
+      "tags": ["arrays", "sorting"]
+    },
+    {
+      "title": "Floyd's Triangle",
+      "description": "Print Floyd's triangle pattern",
+      "problemStatement": "Write a program to print Floyd's triangle pattern with n rows. Numbers start from 1 and increment by 1 in each position.",
       "constraints": "1 <= n <= 10",
       "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
       "languageImplementations": {
@@ -1327,27 +2422,39 @@
         "python": {
           "visibleCode": "# Write your code here",
           "invisibleCode": "# Write your code here"
+        },
+        "java": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "c": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "cpp": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
         }
       },
       "testCases": [
         {
-          "input": "3",
-          "output": "*\n**\n***",
-          "isVisible": true
-        },
-        {
-          "input": "1",
-          "output": "*",
-          "isVisible": true
-        },
-        {
           "input": "4",
-          "output": "*\n**\n***\n****",
+          "output": "1\n2 3\n4 5 6\n7 8 9 10",
+          "isVisible": true
+        },
+        {
+          "input": "3",
+          "output": "1\n2 3\n4 5 6",
           "isVisible": true
         },
         {
           "input": "2",
-          "output": "*\n**",
+          "output": "1\n2 3",
+          "isVisible": true
+        },
+        {
+          "input": "5",
+          "output": "1\n2 3\n4 5 6\n7 8 9 10\n11 12 13 14 15",
           "isVisible": true
         }
       ],
@@ -1358,10 +2465,10 @@
       "tags": ["nested-loops", "patterns"]
     },
     {
-      "title": "Multiplication Table",
-      "description": "Print multiplication table",
-      "problemStatement": "Write a program that takes a number n as input and prints its multiplication table up to 10.",
-      "constraints": "1 <= n <= 20",
+      "title": "Array Rearrange",
+      "description": "Rearrange array elements",
+      "problemStatement": "Write a program to rearrange array elements so that arr[i] becomes arr[arr[i]]. For example: [1,0,2,3] becomes [0,1,2,3].",
+      "constraints": "0 <= arr[i] < n (array size)",
       "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
       "languageImplementations": {
         "javascript": {
@@ -1371,128 +2478,52 @@
         "python": {
           "visibleCode": "# Write your code here",
           "invisibleCode": "# Write your code here"
-        }
-      },
-      "testCases": [
-        {
-          "input": "2",
-          "output": "2 x 1 = 2\n2 x 2 = 4\n2 x 3 = 6\n2 x 4 = 8\n2 x 5 = 10\n2 x 6 = 12\n2 x 7 = 14\n2 x 8 = 16\n2 x 9 = 18\n2 x 10 = 20",
-          "isVisible": true
         },
-        {
-          "input": "5",
-          "output": "5 x 1 = 5\n5 x 2 = 10\n5 x 3 = 15\n5 x 4 = 20\n5 x 5 = 25\n5 x 6 = 30\n5 x 7 = 35\n5 x 8 = 40\n5 x 9 = 45\n5 x 10 = 50",
-          "isVisible": true
-        },
-        {
-          "input": "1",
-          "output": "1 x 1 = 1\n1 x 2 = 2\n1 x 3 = 3\n1 x 4 = 4\n1 x 5 = 5\n1 x 6 = 6\n1 x 7 = 7\n1 x 8 = 8\n1 x 9 = 9\n1 x 10 = 10",
-          "isVisible": true
-        },
-        {
-          "input": "3",
-          "output": "3 x 1 = 3\n3 x 2 = 6\n3 x 3 = 9\n3 x 4 = 12\n3 x 5 = 15\n3 x 6 = 18\n3 x 7 = 21\n3 x 8 = 24\n3 x 9 = 27\n3 x 10 = 30",
-          "isVisible": true
-        }
-      ],
-      "marks": 10,
-      "timeLimit": 1,
-      "memoryLimit": 256,
-      "difficulty": "medium",
-      "tags": ["nested-loops", "arithmetic"]
-    },
-    {
-      "title": "Leap Year Checker",
-      "description": "Check if a year is a leap year",
-      "problemStatement": "Write a program that takes a year as input and returns 'Leap Year' if it's a leap year, and 'Not a Leap Year' otherwise. A year is a leap year if it's divisible by 4, except for century years (years ending with 00). Century years are leap years only if they are perfectly divisible by 400.",
-      "constraints": "1 <= year <= 9999",
-      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
-      "languageImplementations": {
-        "javascript": {
+        "java": {
           "visibleCode": "// Write your code here",
           "invisibleCode": "// Write your code here"
         },
-        "python": {
-          "visibleCode": "# Write your code here",
-          "invisibleCode": "# Write your code here"
-        }
-      },
-      "testCases": [
-        {
-          "input": "2000",
-          "output": "Leap Year",
-          "isVisible": true
-        },
-        {
-          "input": "2100",
-          "output": "Not a Leap Year",
-          "isVisible": true
-        },
-        {
-          "input": "2024",
-          "output": "Leap Year",
-          "isVisible": true
-        },
-        {
-          "input": "2023",
-          "output": "Not a Leap Year",
-          "isVisible": true
-        }
-      ],
-      "marks": 5,
-      "timeLimit": 1,
-      "memoryLimit": 256,
-      "difficulty": "easy",
-      "tags": ["if-else", "basic"]
-    },
-    {
-      "title": "Count Trailing Zeros",
-      "description": "Count the number of trailing zeros in binary",
-      "problemStatement": "Write a program that takes an integer as input and returns the count of trailing zeros in its binary representation. For example, 8 (1000 in binary) has 3 trailing zeros.",
-      "constraints": "0 <= number <= 10^9",
-      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
-      "languageImplementations": {
-        "javascript": {
+        "c": {
           "visibleCode": "// Write your code here",
           "invisibleCode": "// Write your code here"
         },
-        "python": {
-          "visibleCode": "# Write your code here",
-          "invisibleCode": "# Write your code here"
+        "cpp": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
         }
       },
       "testCases": [
         {
-          "input": "8",
-          "output": "3",
+          "input": "[1,0,2,3]",
+          "output": "[0,1,2,3]",
           "isVisible": true
         },
         {
-          "input": "16",
-          "output": "4",
+          "input": "[2,0,1,4,3]",
+          "output": "[1,2,0,3,4]",
           "isVisible": true
         },
         {
-          "input": "7",
-          "output": "0",
+          "input": "[0,1,2]",
+          "output": "[0,1,2]",
           "isVisible": true
         },
         {
-          "input": "0",
-          "output": "0",
+          "input": "[3,2,1,0]",
+          "output": "[0,1,2,3]",
           "isVisible": true
         }
       ],
-      "marks": 10,
+      "marks": 15,
       "timeLimit": 1,
       "memoryLimit": 256,
-      "difficulty": "medium",
-      "tags": ["bitwise", "binary"]
+      "difficulty": "hard",
+      "tags": ["arrays", "rearrangement"]
     },
     {
       "title": "Temperature Converter",
-      "description": "Convert between Celsius and Fahrenheit",
-      "problemStatement": "Write a program that takes a temperature and its unit ('C' or 'F') as input and converts it to the other unit. Round the result to 2 decimal places. Formula: (°F = °C × 9/5 + 32) or (°C = (°F - 32) × 5/9)",
+      "description": "Convert between temperature scales",
+      "problemStatement": "Write a program that converts temperature between Celsius and Fahrenheit. If input starts with 'C', convert from Celsius to Fahrenheit. If input starts with 'F', convert from Fahrenheit to Celsius. Format: 'C 23' or 'F 73'",
       "constraints": "-100 <= temperature <= 100",
       "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
       "languageImplementations": {
@@ -1503,41 +2534,48 @@
         "python": {
           "visibleCode": "# Write your code here",
           "invisibleCode": "# Write your code here"
+        },
+        "java": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "c": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "cpp": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
         }
       },
       "testCases": [
         {
-          "input": "32 F",
-          "output": "0.00 C",
+          "input": "C 0",
+          "output": "32.0",
           "isVisible": true
         },
         {
-          "input": "0 C",
-          "output": "32.00 F",
+          "input": "F 32",
+          "output": "0.0",
           "isVisible": true
         },
         {
-          "input": "100 C",
-          "output": "212.00 F",
-          "isVisible": true
-        },
-        {
-          "input": "-40 F",
-          "output": "-40.00 C",
+          "input": "C 100",
+          "output": "212.0",
           "isVisible": true
         }
       ],
-      "marks": 10,
+      "marks": 5,
       "timeLimit": 1,
       "memoryLimit": 256,
-      "difficulty": "medium",
-      "tags": ["arithmetic", "basic-math"]
+      "difficulty": "easy",
+      "tags": ["if-else", "arithmetic"]
     },
     {
-      "title": "String Palindrome",
-      "description": "Check if a string is a palindrome",
-      "problemStatement": "Write a program that takes a string as input and returns 'Yes' if it's a palindrome, and 'No' otherwise. A palindrome reads the same forwards and backwards, ignoring case and non-alphanumeric characters.",
-      "constraints": "1 <= string length <= 100",
+      "title": "Bit Position Swapper",
+      "description": "Swap bits at given positions",
+      "problemStatement": "Write a program that takes a number and two bit positions (p1, p2) as input. Swap the bits at these positions and return the new number.",
+      "constraints": "0 <= number <= 1024\n0 <= p1,p2 <= 10",
       "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
       "languageImplementations": {
         "javascript": {
@@ -1547,35 +2585,612 @@
         "python": {
           "visibleCode": "# Write your code here",
           "invisibleCode": "# Write your code here"
+        },
+        "java": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "c": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "cpp": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
         }
       },
       "testCases": [
         {
-          "input": "A man, a plan, a canal: Panama",
-          "output": "Yes",
+          "input": "10 1 3",
+          "output": "14",
           "isVisible": true
         },
         {
-          "input": "race a car",
-          "output": "No",
+          "input": "7 0 2",
+          "output": "3",
           "isVisible": true
         },
         {
-          "input": "Was it a car or a cat I saw?",
-          "output": "Yes",
+          "input": "1024 0 10",
+          "output": "1",
           "isVisible": true
         },
         {
-          "input": "hello",
-          "output": "No",
+          "input": "15 1 2",
+          "output": "15",
+          "isVisible": false
+        }
+      ],
+      "marks": 10,
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "difficulty": "medium",
+      "tags": ["bitwise"]
+    },
+    {
+      "title": "List Element Counter",
+      "description": "Count occurrences with conditions",
+      "problemStatement": "Write a program that counts how many elements in a list are greater than their right neighbor. Last element should be counted if it's greater than the first element (circular comparison).",
+      "constraints": "2 <= list size <= 100\n-1000 <= elements <= 1000",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "python": {
+          "visibleCode": "# Write your code here",
+          "invisibleCode": "# Write your code here"
+        },
+        "java": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "c": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "cpp": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "[5,2,3,7,1]",
+          "output": "2",
+          "isVisible": true
+        },
+        {
+          "input": "[1,2,3,4]",
+          "output": "0",
+          "isVisible": true
+        },
+        {
+          "input": "[9,9,9,9]",
+          "output": "0",
+          "isVisible": true
+        },
+        {
+          "input": "[3,1,4,1,5,9,2,6]",
+          "output": "4",
+          "isVisible": false
+        }
+      ],
+      "marks": 10,
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "difficulty": "medium",
+      "tags": ["lists", "loops"]
+    },
+    {
+      "title": "Multiplication Table Generator",
+      "description": "Generate custom multiplication table",
+      "problemStatement": "Write a program that generates a multiplication table for a given number up to n rows. Format each number to have the same width.",
+      "constraints": "1 <= number <= 20\n1 <= n <= 10",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "python": {
+          "visibleCode": "# Write your code here",
+          "invisibleCode": "# Write your code here"
+        },
+        "java": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "c": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "cpp": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "5 3",
+          "output": "5 x 1 = 5\n5 x 2 = 10\n5 x 3 = 15",
+          "isVisible": true
+        },
+        {
+          "input": "2 4",
+          "output": "2 x 1 = 2\n2 x 2 = 4\n2 x 3 = 6\n2 x 4 = 8",
+          "isVisible": true
+        },
+        {
+          "input": "12 2",
+          "output": "12 x 1 = 12\n12 x 2 = 24",
+          "isVisible": true
+        },
+        {
+          "input": "7 5",
+          "output": "7 x 1 = 7\n7 x 2 = 14\n7 x 3 = 21\n7 x 4 = 28\n7 x 5 = 35",
+          "isVisible": false
+        }
+      ],
+      "marks": 5,
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "difficulty": "easy",
+      "tags": ["for-loop", "arithmetic"]
+    },
+    {
+      "title": "Number Triangle",
+      "description": "Print number triangle pattern",
+      "problemStatement": "Write a program to print a triangle where each row contains numbers from 1 to row number, but only odd numbers.",
+      "constraints": "1 <= n <= 9",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "python": {
+          "visibleCode": "# Write your code here",
+          "invisibleCode": "# Write your code here"
+        },
+        "java": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "c": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "cpp": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "4",
+          "output": "1\n1 3\n1 3 5\n1 3 5 7",
+          "isVisible": true
+        },
+        {
+          "input": "3",
+          "output": "1\n1 3\n1 3 5",
+          "isVisible": true
+        },
+        {
+          "input": "1",
+          "output": "1",
+          "isVisible": true
+        },
+        {
+          "input": "5",
+          "output": "1\n1 3\n1 3 5\n1 3 5 7\n1 3 5 7 9",
+          "isVisible": false
+        }
+      ],
+      "marks": 10,
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "difficulty": "medium",
+      "tags": ["nested-for-loop", "patterns"]
+    },
+    {
+      "title": "Digit Manipulator",
+      "description": "Manipulate digits using arithmetic",
+      "problemStatement": "Write a program that takes a number and performs the following: multiply digits at odd positions by 2 and subtract 1 from digits at even positions. Return the new number.",
+      "constraints": "10 <= number <= 10^6",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "python": {
+          "visibleCode": "# Write your code here",
+          "invisibleCode": "# Write your code here"
+        },
+        "java": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "c": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "cpp": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "1234",
+          "output": "2163",
+          "isVisible": true
+        },
+        {
+          "input": "5678",
+          "output": "10557",
+          "isVisible": true
+        },
+        {
+          "input": "1111",
+          "output": "2121",
+          "isVisible": true
+        },
+        {
+          "input": "9999",
+          "output": "18989",
+          "isVisible": true
+        },
+        {
+          "input": "1000",
+          "output": "2001",
+          "isVisible": false
+        }
+      ],
+      "marks": 10,
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "difficulty": "medium",
+      "tags": ["arithmetic", "loops"]
+    },
+    {
+      "title": "List Compressor",
+      "description": "Compress consecutive elements",
+      "problemStatement": "Write a program that compresses a list by replacing consecutive repeated elements with a single element followed by the count. Return as a list of [element, count] pairs.",
+      "constraints": "1 <= list size <= 100\n-1000 <= elements <= 1000",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "python": {
+          "visibleCode": "# Write your code here",
+          "invisibleCode": "# Write your code here"
+        },
+        "java": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "c": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "cpp": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "[1,1,1,2,2,3]",
+          "output": "[[1,3],[2,2],[3,1]]",
+          "isVisible": true
+        },
+        {
+          "input": "[5,5,5,5]",
+          "output": "[[5,4]]",
+          "isVisible": true
+        },
+        {
+          "input": "[1,2,3,4]",
+          "output": "[[1,1],[2,1],[3,1],[4,1]]",
+          "isVisible": true
+        },
+        {
+          "input": "[1]",
+          "output": "[[1,1]]",
+          "isVisible": true
+        },
+        {
+          "input": "[4,4,4,4,3,3,2,2,2]",
+          "output": "[[4,4],[3,2],[2,3]]",
+          "isVisible": false
+        }
+      ],
+      "marks": 10,
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "difficulty": "medium",
+      "tags": ["lists", "loops"]
+    },
+    {
+      "title": "Bit Counter Range",
+      "description": "Count bits in range",
+      "problemStatement": "Write a program that counts the total number of set bits (1s) in all numbers from 1 to n using bitwise operations.",
+      "constraints": "1 <= n <= 100",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "python": {
+          "visibleCode": "# Write your code here",
+          "invisibleCode": "# Write your code here"
+        },
+        "java": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "c": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "cpp": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "4",
+          "output": "5",
+          "isVisible": true
+        },
+        {
+          "input": "7",
+          "output": "12",
+          "isVisible": true
+        },
+        {
+          "input": "1",
+          "output": "1",
+          "isVisible": true
+        },
+        {
+          "input": "16",
+          "output": "20",
+          "isVisible": true
+        },
+        {
+          "input": "32",
+          "output": "47",
+          "isVisible": false
+        }
+      ],
+      "marks": 15,
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "difficulty": "hard",
+      "tags": ["bitwise", "loops"]
+    },
+    {
+      "title": "Grade Analyzer",
+      "description": "Analyze student grades",
+      "problemStatement": "Write a program that takes a list of grades and returns: 'Excellent' if all grades are above 90, 'Good' if average is above 80, 'Average' if average is above 70, else 'Need Improvement'.",
+      "constraints": "1 <= list size <= 50\n0 <= grades <= 100",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "python": {
+          "visibleCode": "# Write your code here",
+          "invisibleCode": "# Write your code here"
+        },
+        "java": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "c": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "cpp": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "[95,92,91]",
+          "output": "Excellent",
+          "isVisible": true
+        },
+        {
+          "input": "[85,82,78]",
+          "output": "Good",
+          "isVisible": true
+        },
+        {
+          "input": "[75,72,78]",
+          "output": "Average",
+          "isVisible": true
+        },
+        {
+          "input": "[65,62,68]",
+          "output": "Need Improvement",
+          "isVisible": true
+        },
+        {
+          "input": "[90,89,91]",
+          "output": "Good",
+          "isVisible": false
+        }
+      ],
+      "marks": 5,
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "difficulty": "easy",
+      "tags": ["if-else", "lists"]
+    },
+    {
+      "title": "String Rotation Checker",
+      "description": "Check if one string is rotation of another",
+      "problemStatement": "Write a program that determines if string s2 is a rotation of string s1. For example, 'waterbottle' is a rotation of 'erbottlewat'.",
+      "constraints": "1 <= string length <= 10^4\nStrings contain only lowercase letters",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "python": {
+          "visibleCode": "# Write your code here",
+          "invisibleCode": "# Write your code here"
+        },
+        "java": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "c": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "cpp": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "waterbottle erbottlewat",
+          "output": "true",
+          "isVisible": true
+        },
+        {
+          "input": "hello world",
+          "output": "false",
+          "isVisible": true
+        },
+        {
+          "input": "abcde eabcd",
+          "output": "true",
+          "isVisible": true
+        }
+      ],
+      "marks": 10,
+      "timeLimit": 1, 
+      "memoryLimit": 256,
+      "difficulty": "medium",
+      "tags": ["strings", "pattern-matching"]
+    },
+    {
+      "title": "Matrix Spiral Printer",
+      "description": "Print matrix elements in spiral order",
+      "problemStatement": "Write a program that prints the elements of an n x m matrix in spiral order (clockwise, starting from top-left corner).",
+      "constraints": "1 <= n,m <= 10\n-100 <= matrix elements <= 100",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "python": {
+          "visibleCode": "# Write your code here",
+          "invisibleCode": "# Write your code here"
+        },
+        "java": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "c": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "cpp": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "[[1,2,3],[4,5,6],[7,8,9]]",
+          "output": "[1,2,3,6,9,8,7,4,5]",
+          "isVisible": true
+        },
+        {
+          "input": "[[1,2],[3,4]]",
+          "output": "[1,2,4,3]",
+          "isVisible": true
+        },
+        {
+          "input": "[[1]]",
+          "output": "[1]",
           "isVisible": true
         }
       ],
       "marks": 15,
       "timeLimit": 1,
       "memoryLimit": 256,
-      "difficulty": "medium",
-      "tags": ["strings", "two-pointers"]
+      "difficulty": "hard",
+      "tags": ["matrix", "arrays"]
+    },
+    {
+      "title": "Balanced Parentheses Generator",
+      "description": "Generate valid parentheses combinations",
+      "problemStatement": "Write a program that generates all possible valid combinations of n pairs of parentheses. For example, for n=2, valid combinations are: '(())', '()()'.",
+      "constraints": "1 <= n <= 8",
+      "allowedLanguages": ["javascript", "python", "java", "c", "cpp"],
+      "languageImplementations": {
+        "javascript": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "python": {
+          "visibleCode": "# Write your code here",
+          "invisibleCode": "# Write your code here"
+        },
+        "java": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "c": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        },
+        "cpp": {
+          "visibleCode": "// Write your code here",
+          "invisibleCode": "// Write your code here"
+        }
+      },
+      "testCases": [
+        {
+          "input": "2",
+          "output": "['(())', '()()']",
+          "isVisible": true
+        },
+        {
+          "input": "1",
+          "output": "['()']",
+          "isVisible": true
+        },
+        {
+          "input": "3",
+          "output": "['((()))', '(()())', '(())()', '()(())', '()()()']",
+          "isVisible": true
+        }
+      ],
+      "marks": 15,
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "difficulty": "hard",
+      "tags": ["recursion", "backtracking"]
     }
   ]
 }
