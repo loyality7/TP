@@ -256,12 +256,12 @@ export const getTestResults = async (req, res) => {
       codingChallenges: test.codingChallenges.length
     };
 
-    // Process candidate results using same logic as user controller
+    // Process candidate results using same logic as comprehensive submission
     const candidateResults = submissions.map(currentSubmission => {
-      // Calculate MCQ scores using the same logic as user controller
+      // Calculate MCQ scores
       const mcqAnswers = (currentSubmission.mcqSubmission?.answers || []).map(answer => {
         const question = test.mcqs.find(q => 
-          q._id.toString() === answer.questionId.toString()
+          q._id.toString() === answer.questionId?.toString()
         );
 
         const isCorrect = checkMCQAnswer(
@@ -269,12 +269,10 @@ export const getTestResults = async (req, res) => {
           answer.selectedOptions || []
         );
 
-        const marks = isCorrect ? (question?.marks || 0) : 0;
-
         return {
-          questionName: question?.question.substring(0, 50) + "...",
+          questionName: question?.question?.substring(0, 50) + "...",
           timeTaken: answer.timeTaken || 0,
-          score: marks,
+          score: isCorrect ? (question?.marks || 0) : 0,
           maxMarks: question?.marks || 0,
           isCorrect
         };
@@ -283,41 +281,57 @@ export const getTestResults = async (req, res) => {
       // Calculate MCQ total score
       const mcqScore = mcqAnswers.reduce((total, answer) => total + answer.score, 0);
 
-      // Calculate coding scores using the same logic as user controller
+      // Process coding submissions like in comprehensive submission
       const codingDetails = test.codingChallenges.map(challenge => {
-        const submittedChallenge = currentSubmission.codingSubmission?.challenges?.find(
+        const challengeSubmission = currentSubmission.codingSubmission?.challenges?.find(
           c => c.challengeId?.toString() === challenge._id?.toString()
         );
 
-        // Check if there are any submissions at all
-        const hasAttempted = submittedChallenge?.submissions?.length > 0;
-        
-        // Find the submission with highest marks
-        const bestSubmission = submittedChallenge?.submissions?.reduce((best, current) => {
+        if (!challengeSubmission) {
+          return {
+            challengeName: challenge.title,
+            timeTaken: 0,
+            score: 0,
+            maxMarks: challenge.marks,
+            testCasesPassed: 0,
+            totalTestCases: challenge.testCases?.length || 0,
+            status: 'not attempted',
+            submissions: 0,
+            bestScore: 0
+          };
+        }
+
+        // Get the best submission based on marks
+        const submissions = challengeSubmission.submissions || [];
+        const bestSubmission = submissions.reduce((best, current) => {
           return (current.marks > (best?.marks || 0)) ? current : best;
         }, null);
 
-        // Calculate score based on best submission
-        const score = bestSubmission ? (bestSubmission.marks * challenge.marks / 100) : 0;
+        // Calculate actual score based on challenge marks and submission percentage
+        const score = bestSubmission 
+          ? (bestSubmission.marks * challenge.marks / 100)
+          : 0;
 
         return {
           challengeName: challenge.title,
-          timeTaken: submittedChallenge?.totalTime || 0,
-          score: Math.round(score * 100) / 100, // Round to 2 decimal places
+          timeTaken: challengeSubmission.totalTime || 0,
+          score: Math.round(score * 100) / 100,
           maxMarks: challenge.marks,
           testCasesPassed: bestSubmission?.testCaseResults?.filter(tc => tc.passed)?.length || 0,
-          totalTestCases: bestSubmission?.testCaseResults?.length || 0,
-          status: bestSubmission?.status || (hasAttempted ? 'attempted' : 'not attempted'),
-          submissions: submittedChallenge?.submissions?.length || 0,
-          bestScore: bestSubmission?.marks || 0
+          totalTestCases: challenge.testCases?.length || 0,
+          status: submissions.length > 0 ? (bestSubmission?.status || 'attempted') : 'not attempted',
+          submissions: submissions.length,
+          bestScore: bestSubmission?.marks || 0,
+          lastSubmittedAt: bestSubmission?.submittedAt,
+          language: bestSubmission?.language
         };
       });
 
-      // Update coding score calculation
+      // Calculate total coding score
       const codingScore = codingDetails.reduce((total, challenge) => 
         total + (challenge.score || 0), 0);
 
-      // Calculate total score and time taken
+      // Calculate total score and time
       const totalScore = mcqScore + codingScore;
       const timeTaken = currentSubmission.duration || 0;
 
@@ -326,9 +340,9 @@ export const getTestResults = async (req, res) => {
         name: currentSubmission.user.name,
         email: currentSubmission.user.email,
         scores: {
-          total: totalScore,
+          total: Math.round(totalScore * 100) / 100,
           mcq: mcqScore,
-          coding: codingScore,
+          coding: Math.round(codingScore * 100) / 100,
           percentage: Math.round((totalScore / test.totalMarks) * 100)
         },
         status: totalScore >= test.passingMarks ? 'PASSED' : 'FAILED',
@@ -341,7 +355,9 @@ export const getTestResults = async (req, res) => {
         overallPerformance: Math.round((totalScore / test.totalMarks) * 100),
         startTime: currentSubmission.startTime,
         endTime: currentSubmission.endTime,
-        completionStatus: currentSubmission.completionStatus || 'completed'
+        completionStatus: currentSubmission.status || 'completed',
+        submissionDate: currentSubmission.createdAt,
+        lastUpdated: currentSubmission.updatedAt
       };
     });
 
