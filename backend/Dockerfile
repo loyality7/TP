@@ -7,15 +7,19 @@ WORKDIR /app
 # Install Python and pip
 RUN apk add --no-cache python3 py3-pip
 
+# Create and activate virtual environment
+RUN python3 -m venv /app/venv
+ENV PATH="/app/venv/bin:$PATH"
+
 # Copy package files
 COPY package*.json ./
 
 # Install dependencies
 RUN npm ci
 
-# Install Python dependencies
+# Install Python dependencies in virtual environment
 COPY requirements.txt ./
-RUN pip3 install -r requirements.txt
+RUN . /app/venv/bin/activate && pip3 install -r requirements.txt
 
 # Copy source code
 COPY . .
@@ -26,6 +30,10 @@ FROM node:20-alpine
 # Install Python and pip
 RUN apk add --no-cache python3 py3-pip
 
+# Create and activate virtual environment
+RUN python3 -m venv /app/venv
+ENV PATH="/app/venv/bin:$PATH"
+
 # Set working directory
 WORKDIR /app
 
@@ -35,9 +43,9 @@ COPY package*.json ./
 # Install production dependencies
 RUN npm ci --only=production
 
-# Install Python dependencies
+# Install Python dependencies in virtual environment
 COPY requirements.txt ./
-RUN pip3 install -r requirements.txt
+RUN . /app/venv/bin/activate && pip3 install -r requirements.txt
 
 # Copy built application from builder stage
 COPY --from=builder /app/src ./src

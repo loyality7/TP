@@ -5,6 +5,10 @@ WORKDIR /app
 # Install Python and pip
 RUN apk add --no-cache python3 py3-pip
 
+# Create and activate virtual environment
+RUN python3 -m venv /app/venv
+ENV PATH="/app/venv/bin:$PATH"
+
 # Install nodemon globally for development
 RUN npm install -g nodemon
 
@@ -14,9 +18,9 @@ COPY package*.json ./
 # Install all dependencies (including devDependencies)
 RUN npm install
 
-# Install Python dependencies
+# Install Python dependencies in virtual environment
 COPY requirements.txt ./
-RUN pip3 install -r requirements.txt
+RUN . /app/venv/bin/activate && pip3 install -r requirements.txt
 
 # Create temp directory for file processing
 RUN mkdir temp && chmod 777 temp
