@@ -1521,4 +1521,184 @@ function stylePerformanceRow(row, percentage) {
       fgColor: { argb: color }
     };
   });
+}
+
+// Add these statistics calculation functions
+
+function calculateMCQStatistics(submissions, mcqs) {
+  const stats = {
+    totalAttempts: 0,
+    averageScore: 0,
+    questionStats: mcqs.map(q => ({
+      questionId: q._id,
+      question: q.question,
+      totalAttempts: 0,
+      correctAttempts: 0,
+      accuracy: 0
+    }))
+  };
+
+  submissions.forEach(sub => {
+    if (sub.mcqSubmission?.answers?.length > 0) {
+      stats.totalAttempts++;
+      
+      sub.mcqSubmission.answers.forEach(answer => {
+        const questionStat = stats.questionStats.find(
+          qs => qs.questionId.toString() === answer.questionId.toString()
+        );
+        if (questionStat) {
+          questionStat.totalAttempts++;
+          if (answer.isCorrect) {
+            questionStat.correctAttempts++;
+          }
+        }
+      });
+    }
+  });
+
+  // Calculate accuracies
+  stats.questionStats.forEach(qs => {
+    qs.accuracy = qs.totalAttempts > 0 
+      ? Math.round((qs.correctAttempts / qs.totalAttempts) * 100) 
+      : 0;
+  });
+
+  // Calculate average score
+  stats.averageScore = stats.totalAttempts > 0
+    ? Math.round(stats.questionStats.reduce((sum, qs) => sum + qs.accuracy, 0) / stats.questionStats.length)
+    : 0;
+
+  return stats;
+}
+
+function calculateCodingStatistics(submissions, challenges) {
+  const stats = {
+    totalAttempts: 0,
+    averageScore: 0,
+    challengeStats: challenges.map(c => ({
+      challengeId: c._id,
+      title: c.title,
+      totalAttempts: 0,
+      successfulAttempts: 0,
+      averageExecutionTime: 0,
+      successRate: 0,
+      languages: {}
+    }))
+  };
+
+  submissions.forEach(sub => {
+    if (sub.codingSubmission?.challenges?.length > 0) {
+      stats.totalAttempts++;
+      
+      sub.codingSubmission.challenges.forEach(challenge => {
+        const challengeStat = stats.challengeStats.find(
+          cs => cs.challengeId.toString() === challenge.challengeId.toString()
+        );
+        
+        if (challengeStat) {
+          challengeStat.totalAttempts += challenge.submissions?.length || 0;
+          
+          challenge.submissions?.forEach(submission => {
+            // Track languages used
+            challengeStat.languages[submission.language] = 
+              (challengeStat.languages[submission.language] || 0) + 1;
+
+            // Track successful submissions
+            if (submission.status === 'passed') {
+              challengeStat.successfulAttempts++;
+            }
+
+            // Track execution time
+            if (submission.executionTime) {
+              challengeStat.averageExecutionTime += submission.executionTime;
+            }
+          });
+        }
+      });
+    }
+  });
+
+  // Calculate statistics
+  stats.challengeStats.forEach(cs => {
+    cs.successRate = cs.totalAttempts > 0
+      ? Math.round((cs.successfulAttempts / cs.totalAttempts) * 100)
+      : 0;
+    
+    cs.averageExecutionTime = cs.totalAttempts > 0
+      ? Math.round(cs.averageExecutionTime / cs.totalAttempts)
+      : 0;
+
+    // Get most used language
+    cs.mostUsedLanguage = Object.entries(cs.languages)
+      .sort(([,a], [,b]) => b - a)[0]?.[0] || 'N/A';
+  });
+
+  // Calculate overall average score
+  stats.averageScore = stats.challengeStats.length > 0
+    ? Math.round(stats.challengeStats.reduce((sum, cs) => sum + cs.successRate, 0) / stats.challengeStats.length)
+    : 0;
+
+  return stats;
+}
+
+// Add chart creation functions
+function createMCQChart(worksheet, stats, startRow) {
+  const chartData = [
+    ['Question', 'Accuracy %'],
+    ...stats.questionStats.map(qs => [
+      `Q${stats.questionStats.indexOf(qs) + 1}`,
+      qs.accuracy
+    ])
+  ];
+
+  // Add data for chart
+  const dataRange = worksheet.getCell(startRow, 1).address;
+  chartData.forEach((row, i) => {
+    worksheet.getRow(startRow + i).values = row;
+  });
+
+  // Create chart
+  const chart = worksheet.workbook.addChart({
+    type: 'column',
+    title: { text: 'MCQ Question Accuracy' },
+    legend: { position: 'right' },
+    series: [{
+      name: 'Accuracy',
+      categories: `=${worksheet.name}!$A$${startRow + 1}:$A$${startRow + stats.questionStats.length}`,
+      values: `=${worksheet.name}!$B$${startRow + 1}:$B$${startRow + stats.questionStats.length}`
+    }]
+  });
+
+  // Add chart to worksheet
+  worksheet.addChart(chart, `A${startRow + stats.questionStats.length + 2}`);
+}
+
+function createCodingChart(worksheet, stats, startRow) {
+  const chartData = [
+    ['Challenge', 'Success Rate %'],
+    ...stats.challengeStats.map(cs => [
+      cs.title,
+      cs.successRate
+    ])
+  ];
+
+  // Add data for chart
+  chartData.forEach((row, i) => {
+    worksheet.getRow(startRow + i).values = row;
+  });
+
+  // Create chart
+  const chart = worksheet.workbook.addChart({
+    type: 'column',
+    title: { text: 'Coding Challenge Success Rate' },
+    legend: { position: 'right' },
+    series: [{
+      name: 'Success Rate',
+      categories: `=${worksheet.name}!$A$${startRow + 1}:$A$${startRow + stats.challengeStats.length}`,
+      values: `=${worksheet.name}!$B$${startRow + 1}:$B$${startRow + stats.challengeStats.length}`
+    }]
+  });
+
+  // Add chart to worksheet
+  worksheet.addChart(chart, `A${startRow + stats.challengeStats.length + 2}`);
 } 
