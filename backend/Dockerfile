@@ -4,37 +4,22 @@ FROM node:20-alpine AS builder
 # Set working directory
 WORKDIR /app
 
-# Install Python and pip
-RUN apk add --no-cache python3 py3-pip
-
-# Create and activate virtual environment
-RUN python3 -m venv /app/venv
-ENV PATH="/app/venv/bin:$PATH"
-
 # Copy package files
 COPY package*.json ./
 
 # Install dependencies
 RUN npm ci
 
-# Install Python dependencies in virtual environment
-COPY requirements.txt ./
-RUN . /app/venv/bin/activate && pip3 install -r requirements.txt
-
 # Copy source code
 COPY . .
+
+# Build the application (if you have a build step)
+# RUN npm run build
 
 # Production stage
 FROM node:20-alpine
 
-# Install Python and pip
-RUN apk add --no-cache python3 py3-pip
-
-# Create and activate virtual environment
-RUN python3 -m venv /app/venv
-ENV PATH="/app/venv/bin:$PATH"
-
-# Set working directory
+# Install production dependencies only
 WORKDIR /app
 
 # Copy package files
@@ -43,15 +28,8 @@ COPY package*.json ./
 # Install production dependencies
 RUN npm ci --only=production
 
-# Install Python dependencies in virtual environment
-COPY requirements.txt ./
-RUN . /app/venv/bin/activate && pip3 install -r requirements.txt
-
 # Copy built application from builder stage
 COPY --from=builder /app/src ./src
-
-# Create temp directory for file processing
-RUN mkdir temp && chmod 777 temp
 
 # Add labels for better maintainability
 LABEL maintainer="Your Name <your.email@example.com>"
@@ -68,7 +46,6 @@ EXPOSE 5000
 # Environment variables
 ENV NODE_ENV=production
 ENV PORT=5000
-ENV PYTHONUNBUFFERED=1
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
