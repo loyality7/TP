@@ -16,7 +16,8 @@ import {
   getSubmissionDetails, 
   updateSubmissionStatus, 
   getComprehensiveSubmission, 
-  generateTestReport 
+  generateTestReport, 
+  downloadTestReport 
 } from '../controllers/submission.controller.js';
 import { validateSubmission } from '../middleware/validateSubmission.js';
 import { validateTestAccess } from '../middleware/validateTestAccess.js';
@@ -931,5 +932,118 @@ router.get('/comprehensive/:testId/:userId', auth, getComprehensiveSubmission);
  *           }
  */
 router.get('/test/:testId/report', generateTestReport);
+
+/**
+ * @swagger
+ * /api/submissions/test/{testId}/report/download:
+ *   get:
+ *     summary: Download detailed Excel report for test submissions
+ *     description: Generates and downloads an Excel report containing test results, MCQ responses, and coding submissions
+ *     tags: [Submissions]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: testId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the test to download report for
+ *         example: "676a482e1d9609f0a125509b"
+ *     responses:
+ *       200:
+ *         description: Excel file download
+ *         content:
+ *           application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *             example: "Binary Excel file content"
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: "Unauthorized access"
+ *       403:
+ *         description: Forbidden - Insufficient permissions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: "Insufficient permissions"
+ *       404:
+ *         description: Test not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: "Test not found"
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: "Failed to generate report"
+ *                 message:
+ *                   type: string
+ *                   example: "Internal server error details"
+ *     x-codeSamples:
+ *       - lang: JavaScript
+ *         label: Fetch API
+ *         source: |
+ *           const downloadReport = async (testId) => {
+ *             try {
+ *               const response = await fetch(
+ *                 `/api/submissions/test/${testId}/report/download`,
+ *                 {
+ *                   headers: {
+ *                     'Authorization': 'Bearer YOUR_TOKEN'
+ *                   }
+ *                 }
+ *               );
+ *               
+ *               if (!response.ok) throw new Error('Download failed');
+ *               
+ *               const blob = await response.blob();
+ *               const url = window.URL.createObjectURL(blob);
+ *               const a = document.createElement('a');
+ *               a.href = url;
+ *               a.download = `test_report_${testId}.xlsx`;
+ *               document.body.appendChild(a);
+ *               a.click();
+ *               window.URL.revokeObjectURL(url);
+ *             } catch (error) {
+ *               console.error('Error:', error);
+ *             }
+ *           };
+ */
+router.get('/test/:testId/report/download', auth, downloadTestReport);
 
 export default router; 

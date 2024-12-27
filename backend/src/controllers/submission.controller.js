@@ -5,6 +5,9 @@ import Submission from '../models/submission.model.js';
 import TestRegistration from '../models/testRegistration.model.js';
 import mongoose from 'mongoose';
 import ExcelJS from 'exceljs';
+import { spawn } from 'child_process';
+import path from 'path';
+import fs from 'fs';
 
 // Add this helper function at the top
 const getTestWithAnswers = async (testId) => {
@@ -1460,4 +1463,98 @@ function styleSheet(sheet) {
         .map(v => v?.toString().length || 10)
     ) + 2, 50);
   });
-} 
+}
+
+// Add this new controller function
+export const downloadTestReport = async (req, res) => {
+  try {
+    const { testId } = req.params;
+    
+    // Get all submissions data
+    const submissions = await getComprehensiveTestData(testId);
+    
+    // Create a temporary JSON file
+    const tempJsonPath = path.join(process.cwd(), 'temp', `${testId}.json`);
+    const tempExcelPath = path.join(process.cwd(), 'temp', `${testId}.xlsx`);
+    
+    // Ensure temp directory exists
+    if (!fs.existsSync(path.join(process.cwd(), 'temp'))) {
+      fs.mkdirSync(path.join(process.cwd(), 'temp'));
+    }
+
+    // Write data to temporary JSON file
+    fs.writeFileSync(tempJsonPath, JSON.stringify({
+      success: true,
+      data: submissions,
+      summary: {
+        totalSubmissions: submissions.length,
+        mcqSubmissions: submissions.filter(s => s.mcqSubmission).length,
+        codingSubmissions: submissions.filter(s => s.codingSubmission).length,
+        averageScore: calculateAverageScore(submissions),
+        testsPassed: submissions.filter(s => s.status === 'completed').length
+      }
+    }));
+
+    // Spawn Python process
+    const pythonProcess = spawn('python3', [
+      path.join(process.cwd(), 'src', 'controllers', 'formater.py'),
+      tempJsonPath,
+      tempExcelPath
+    ]);
+
+    pythonProcess.on('close', (code) => {
+      if (code !== 0) {
+        throw new Error('Python process failed');
+      }
+
+      // Send the Excel file
+      res.download(tempExcelPath, `test_report_${testId}.xlsx`, (err) => {
+        // Cleanup temp files
+        fs.unlinkSync(tempJsonPath);
+        fs.unlinkSync(tempExcelPath);
+        
+        if (err) {
+          console.error('Error sending file:', err);
+        }
+      });
+    });
+
+    pythonProcess.stderr.on('data', (data) => {
+      console.error(`Python Error: ${data}`);
+    });
+
+  } catch (error) {
+    console.error('Error in downloadTestReport:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to generate test report',
+      message: error.message
+    });
+  }
+};
+
+// Helper function to calculate average score
+const calculateAverageScore = (submissions) => {
+  if (!submissions.length) return 0;
+  
+  const totalScore = submissions.reduce((sum, sub) => {
+    const mcqScore = sub.mcqSubmission?.score || 0;
+    const codingScore = calculateCodingScore(sub.codingSubmission);
+    return sum + mcqScore + codingScore;
+  }, 0);
+  
+  return Math.round(totalScore / submissions.length);
+};
+
+// Helper function to calculate coding score
+const calculateCodingScore = (codingSubmission) => {
+  if (!codingSubmission?.challenges) return 0;
+  
+  return codingSubmission.challenges.reduce((sum, challenge) => {
+    const bestScore = challenge.submissions.reduce(
+      (best, sub) => Math.max(best, sub.marks || 0),
+      0
+    );
+    return sum + bestScore;
+  }, 0);
+}; 
