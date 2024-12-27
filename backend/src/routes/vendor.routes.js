@@ -823,13 +823,11 @@ router.get("/tests/:testId/candidates", auth, checkRole(["vendor"]), checkVendor
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the test
  *       - in: path
  *         name: userId
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the candidate
  *     responses:
  *       200:
  *         description: Candidate test details retrieved successfully
@@ -841,73 +839,148 @@ router.get("/tests/:testId/candidates", auth, checkRole(["vendor"]), checkVendor
  *                 candidateInfo:
  *                   type: object
  *                   properties:
+ *                     _id:
+ *                       type: string
  *                     name:
  *                       type: string
- *                       description: Candidate's full name
  *                     email:
  *                       type: string
- *                       description: Candidate's email address
  *                     status:
  *                       type: string
  *                       enum: [not_started, in_progress, completed]
- *                       description: Current test status for the candidate
- *                 testDetails:
+ *                     attempts:
+ *                       type: number
+ *                     lastAttempt:
+ *                       type: string
+ *                       format: date-time
+ *                 testInfo:
  *                   type: object
  *                   properties:
- *                     title:
+ *                     testId:
  *                       type: string
- *                       description: Test title
- *                     startTime:
+ *                     testTitle:
  *                       type: string
- *                       format: date-time
- *                       description: When the candidate started the test
- *                     endTime:
- *                       type: string
- *                       format: date-time
- *                       description: When the candidate completed the test
+ *                     totalMarks:
+ *                       type: number
+ *                     passingMarks:
+ *                       type: number
  *                     duration:
  *                       type: number
- *                       description: Time spent on test in minutes
- *                     score:
- *                       type: number
- *                       description: Overall test score
- *                 performance:
- *                   type: object
- *                   properties:
- *                     mcqScore:
- *                       type: number
- *                       description: Score in MCQ section
- *                     codingScore:
- *                       type: number
- *                       description: Score in coding section
- *                     skillScores:
- *                       type: object
- *                       properties:
- *                         problemSolving:
- *                           type: number
- *                         codeQuality:
- *                           type: number
- *                         efficiency:
- *                           type: number
- *                     completionRate:
- *                       type: number
- *                       description: Percentage of test completed
+ *                 submissions:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       mcqSection:
+ *                         type: object
+ *                         properties:
+ *                           score:
+ *                             type: number
+ *                           maxScore:
+ *                             type: number
+ *                           percentage:
+ *                             type: number
+ *                           questions:
+ *                             type: array
+ *                             items:
+ *                               type: object
+ *                               properties:
+ *                                 questionId:
+ *                                   type: string
+ *                                 question:
+ *                                   type: string
+ *                                 selectedOption:
+ *                                   type: string
+ *                                 correctOption:
+ *                                   type: string
+ *                                 isCorrect:
+ *                                   type: boolean
+ *                                 marks:
+ *                                   type: number
+ *                       codingSection:
+ *                         type: object
+ *                         properties:
+ *                           score:
+ *                             type: number
+ *                           maxScore:
+ *                             type: number
+ *                           percentage:
+ *                             type: number
+ *                           challenges:
+ *                             type: array
+ *                             items:
+ *                               type: object
+ *                               properties:
+ *                                 challengeId:
+ *                                   type: string
+ *                                 title:
+ *                                   type: string
+ *                                 code:
+ *                                   type: string
+ *                                 language:
+ *                                   type: string
+ *                                 score:
+ *                                   type: number
+ *                                 maxScore:
+ *                                   type: number
+ *                                 testCases:
+ *                                   type: array
+ *                                   items:
+ *                                     type: object
+ *                                     properties:
+ *                                       input:
+ *                                         type: string
+ *                                       expectedOutput:
+ *                                         type: string
+ *                                       actualOutput:
+ *                                         type: string
+ *                                       passed:
+ *                                         type: boolean
+ *                                       error:
+ *                                         type: string
+ *                                 executionMetrics:
+ *                                   type: object
+ *                                   properties:
+ *                                     time:
+ *                                       type: number
+ *                                     memory:
+ *                                       type: number
+ *                                     status:
+ *                                       type: string
  *                 behaviorMetrics:
  *                   type: object
  *                   properties:
  *                     tabSwitches:
  *                       type: number
- *                       description: Number of times candidate switched tabs
  *                     focusLost:
  *                       type: number
- *                       description: Number of times candidate lost focus
  *                     warnings:
  *                       type: number
- *                       description: Number of warnings issued
+ *                     copyPaste:
+ *                       type: number
+ *                 timeMetrics:
+ *                   type: object
+ *                   properties:
+ *                     startTime:
+ *                       type: string
+ *                       format: date-time
+ *                     endTime:
+ *                       type: string
+ *                       format: date-time
+ *                     duration:
+ *                       type: number
+ *                     timePerQuestion:
+ *                       type: object
+ *                       additionalProperties:
+ *                         type: number
+ *                     timePerChallenge:
+ *                       type: object
+ *                       additionalProperties:
+ *                         type: number
  *       401:
  *         description: Unauthorized - Invalid or missing token
  *       403:
- *         description: Forbidden - User is not a vendor or lacks access to this test
+ *         description: Forbidden - User is not a vendor or lacks access
  *       404:
  *         description: Test or candidate not found
  *       500:
