@@ -3934,7 +3934,10 @@ export const getCandidateTestDetails = async (req, res) => {
 const calculateAverage = (submissions, field) => {
   if (!submissions.length) return 0;
   return Math.round(
-    submissions.reduce((sum, s) => sum + (get(s, field) || 0), 0) / submissions.length
+    submissions.reduce((sum, s) => {
+      const value = field.split('.').reduce((obj, key) => obj?.[key], s);
+      return sum + (value || 0);
+    }, 0) / submissions.length
   );
 };
 
