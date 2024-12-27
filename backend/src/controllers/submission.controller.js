@@ -1281,174 +1281,206 @@ export const generateTestReport = async (req, res) => {
   try {
     const { testId } = req.params;
 
-    // Validate testId
-    if (!testId || !mongoose.Types.ObjectId.isValid(testId)) {
-      return res.status(400).json({
-        success: false,
-        error: 'Invalid test ID'
-      });
-    }
-
-    // Get test details with populated fields
+    // Get test details
     const test = await Test.findById(testId)
       .populate('mcqs')
       .populate('codingChallenges')
       .lean();
 
     if (!test) {
-      return res.status(404).json({
-        success: false,
-        error: 'Test not found'
+      return res.status(404).json({ 
+        success: false, 
+        error: 'Test not found' 
       });
     }
 
-    // Get all submissions
+    // Get submissions
     const submissions = await Submission.find({ test: testId })
       .populate('user', 'name email')
-      .populate({
-        path: 'test',
-        select: 'title type category difficulty totalMarks passingMarks mcqs codingChallenges timeLimit'
-      })
       .lean();
 
-    // Create workbook and add worksheets
     const workbook = new ExcelJS.Workbook();
-    workbook.creator = 'Test Platform';
-    workbook.lastModifiedBy = 'Test Platform';
-    workbook.created = new Date();
-    workbook.modified = new Date();
 
-    // Summary Sheet with styling
-    const summarySheet = workbook.addWorksheet('Summary', {
-      properties: { tabColor: { argb: '0077CC' } }
-    });
-
-    // Style for headers
-    const headerStyle = {
-      font: { bold: true, size: 12 },
-      fill: {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FFE0E0E0' }
-      }
+    // SUMMARY SHEET
+    const summarySheet = workbook.addWorksheet('Summary');
+    
+    // Title styling
+    summarySheet.getCell('A1').value = 'Test Report';
+    summarySheet.getCell('A1').font = {
+      bold: true,
+      size: 16,
+      color: { argb: '000000' }
     };
+    summarySheet.mergeCells('A1:D1');
 
-    // Add test information with styling
-    summarySheet.addRow(['Test Report']).font = { bold: true, size: 16 };
-    summarySheet.addRow([]);
+    // Test Details Section
+    summarySheet.getCell('A3').value = 'Test Details';
+    summarySheet.getCell('A3').font = { bold: true };
     
     const testDetails = [
-      ['Test Details', ''],
-      ['Title', test.title],
-      ['Category', test.category],
-      ['Difficulty', test.difficulty],
-      ['Total Marks', test.totalMarks],
-      ['Passing Marks', test.passingMarks],
-      ['Time Limit', `${test.timeLimit} minutes`]
+      ['Title:', test.title],
+      ['Category:', test.category || 'N/A'],
+      ['Type:', test.type || 'N/A'],
+      ['Difficulty:', test.difficulty || 'N/A'],
+      ['Total Marks:', test.totalMarks || 0],
+      ['Passing Marks:', test.passingMarks || 0],
+      ['Time Limit:', `${test.timeLimit || 0} minutes`]
     ];
 
-    testDetails.forEach((row, index) => {
-      const currentRow = summarySheet.addRow(row);
-      if (index === 0) currentRow.eachCell(cell => Object.assign(cell, headerStyle));
+    testDetails.forEach((detail, index) => {
+      summarySheet.getCell(`A${index + 4}`).value = detail[0];
+      summarySheet.getCell(`B${index + 4}`).value = detail[1];
+      summarySheet.getCell(`A${index + 4}`).font = { bold: true };
     });
 
-    summarySheet.addRow([]);
+    // Statistics Section
+    summarySheet.getCell('A12').value = 'Submission Statistics';
+    summarySheet.getCell('A12').font = { bold: true };
 
-    // Calculate statistics
-    const stats = calculateTestStats(submissions, test);
+    const stats = {
+      totalSubmissions: submissions.length,
+      mcqSubmissions: submissions.filter(s => s.mcqSubmission?.completed).length,
+      codingSubmissions: submissions.filter(s => s.codingSubmission?.completed).length,
+      averageScore: submissions.length > 0 
+        ? Math.round(submissions.reduce((acc, sub) => acc + (sub.totalScore || 0), 0) / submissions.length)
+        : 0,
+      passRate: Math.round((submissions.filter(s => (s.totalScore || 0) >= test.passingMarks).length / submissions.length) * 100) || 0
+    };
+
+    const statsData = [
+      ['Total Submissions:', stats.totalSubmissions],
+      ['MCQ Submissions:', stats.mcqSubmissions],
+      ['Coding Submissions:', stats.codingSubmissions],
+      ['Average Score:', `${stats.averageScore}/${test.totalMarks}`],
+      ['Pass Rate:', `${stats.passRate}%`]
+    ];
+
+    statsData.forEach((stat, index) => {
+      summarySheet.getCell(`A${index + 13}`).value = stat[0];
+      summarySheet.getCell(`B${index + 13}`).value = stat[1];
+      summarySheet.getCell(`A${index + 13}`).font = { bold: true };
+    });
+
+    // MCQ ANALYSIS SHEET
+    const mcqSheet = workbook.addWorksheet('MCQ Analysis');
     
-    const statsRows = [
-      ['Statistics', ''],
-      ['Total Submissions', stats.totalSubmissions],
-      ['MCQ Submissions', stats.mcqSubmissions],
-      ['Coding Submissions', stats.codingSubmissions],
-      ['Average Score', `${stats.averageScore}%`],
-      ['Pass Rate', `${stats.passRate}%`],
-      ['Highest Score', `${stats.highestScore}%`],
-      ['Lowest Score', `${stats.lowestScore}%`]
-    ];
-
-    statsRows.forEach((row, index) => {
-      const currentRow = summarySheet.addRow(row);
-      if (index === 0) currentRow.eachCell(cell => Object.assign(cell, headerStyle));
-    });
-
-    // MCQ Analysis Sheet
-    const mcqSheet = workbook.addWorksheet('MCQ Analysis', {
-      properties: { tabColor: { argb: '00FF00' } }
-    });
-
+    // Headers
     const mcqHeaders = [
+      'Question ID',
       'Question',
       'Total Attempts',
       'Correct Answers',
-      'Accuracy',
-      'Average Time (sec)'
-    ];
-
-    mcqSheet.addRow(mcqHeaders).eachCell(cell => Object.assign(cell, headerStyle));
-
-    // Add MCQ analysis data
-    test.mcqs.forEach(mcq => {
-      const mcqStats = calculateMCQStats(submissions, mcq._id);
-      mcqSheet.addRow([
-        mcq.question,
-        mcqStats.attempts,
-        mcqStats.correctAnswers,
-        `${mcqStats.accuracy}%`,
-        mcqStats.avgTime
-      ]);
-    });
-
-    // Coding Analysis Sheet
-    const codingSheet = workbook.addWorksheet('Coding Analysis', {
-      properties: { tabColor: { argb: 'FF0000' } }
-    });
-
-    const codingHeaders = [
-      'Challenge',
-      'Total Attempts',
-      'Successful Submissions',
       'Success Rate',
-      'Avg Execution Time (ms)',
-      'Avg Memory Usage (KB)'
+      'Average Time'
     ];
 
-    codingSheet.addRow(codingHeaders).eachCell(cell => Object.assign(cell, headerStyle));
+    mcqSheet.getRow(1).values = mcqHeaders;
+    mcqSheet.getRow(1).font = { bold: true };
+    mcqSheet.getRow(1).fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'E0E0E0' }
+    };
 
-    // Add coding analysis data
-    test.codingChallenges.forEach(challenge => {
-      const challengeStats = calculateCodingStats(submissions, challenge._id);
-      codingSheet.addRow([
+    // MCQ Data
+    let mcqRow = 2;
+    for (const mcq of test.mcqs || []) {
+      const mcqAttempts = submissions.filter(s => 
+        s.mcqSubmission?.answers?.some(a => a.questionId.toString() === mcq._id.toString())
+      );
+
+      const correctAnswers = mcqAttempts.filter(s =>
+        s.mcqSubmission.answers.find(a => 
+          a.questionId.toString() === mcq._id.toString() && a.isCorrect
+        )
+      ).length;
+
+      mcqSheet.getRow(mcqRow).values = [
+        mcq._id.toString(),
+        mcq.question,
+        mcqAttempts.length,
+        correctAnswers,
+        `${Math.round((correctAnswers / mcqAttempts.length) * 100) || 0}%`,
+        'N/A' // Add time tracking if available
+      ];
+      mcqRow++;
+    }
+
+    // CODING ANALYSIS SHEET
+    const codingSheet = workbook.addWorksheet('Coding Analysis');
+    
+    // Headers
+    const codingHeaders = [
+      'Challenge ID',
+      'Title',
+      'Attempts',
+      'Successful',
+      'Success Rate',
+      'Avg Execution Time',
+      'Avg Memory'
+    ];
+
+    codingSheet.getRow(1).values = codingHeaders;
+    codingSheet.getRow(1).font = { bold: true };
+    codingSheet.getRow(1).fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'E0E0E0' }
+    };
+
+    // Coding Data
+    let codingRow = 2;
+    for (const challenge of test.codingChallenges || []) {
+      const attempts = submissions.filter(s =>
+        s.codingSubmission?.challenges?.some(c => 
+          c.challengeId.toString() === challenge._id.toString()
+        )
+      );
+
+      const successful = attempts.filter(s =>
+        s.codingSubmission.challenges.find(c =>
+          c.challengeId.toString() === challenge._id.toString() &&
+          c.submissions?.some(sub => sub.status === 'passed')
+        )
+      ).length;
+
+      codingSheet.getRow(codingRow).values = [
+        challenge._id.toString(),
         challenge.title,
-        challengeStats.attempts,
-        challengeStats.successful,
-        `${challengeStats.successRate}%`,
-        challengeStats.avgExecTime,
-        challengeStats.avgMemory
-      ]);
-    });
+        attempts.length,
+        successful,
+        `${Math.round((successful / attempts.length) * 100) || 0}%`,
+        'N/A', // Add if available
+        'N/A'  // Add if available
+      ];
+      codingRow++;
+    }
 
-    // Format columns for all sheets
+    // Auto-width columns
     [summarySheet, mcqSheet, codingSheet].forEach(sheet => {
       sheet.columns.forEach(column => {
-        column.width = Math.max(
-          ...sheet.getColumn(column.number).values
-            .map(v => v ? v.toString().length : 0)
-        ) + 2;
+        let maxLength = 0;
+        column.eachCell({ includeEmpty: true }, cell => {
+          const columnLength = cell.value ? cell.value.toString().length : 10;
+          if (columnLength > maxLength) {
+            maxLength = columnLength;
+          }
+        });
+        column.width = maxLength < 10 ? 10 : maxLength + 2;
       });
     });
 
-    // Set response headers and send
+    // Set response headers
     res.setHeader(
       'Content-Type',
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     );
     res.setHeader(
       'Content-Disposition',
-      `attachment; filename=test-report-${test.title.replace(/\s+/g, '-')}.xlsx`
+      `attachment; filename=test-report-${test.title.replace(/[^a-zA-Z0-9]/g, '-')}.xlsx`
     );
 
+    // Write to response
     await workbook.xlsx.write(res);
 
   } catch (error) {
