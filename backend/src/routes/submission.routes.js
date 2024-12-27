@@ -334,60 +334,24 @@ router.get('/user/:userId', auth, getUserSubmissions);
  *         description: ID of the test
  *     responses:
  *       200:
- *         description: Successfully retrieved test submissions
+ *         description: List of test submissions
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 data:
+ *                 mcqSubmissions:
  *                   type: array
  *                   items:
- *                     type: object
- *                     properties:
- *                       submissionId:
- *                         type: string
- *                       user:
- *                         type: object
- *                         properties:
- *                           id:
- *                             type: string
- *                           name:
- *                             type: string
- *                           email:
- *                             type: string
- *                       status:
- *                         type: string
- *                         enum: [in_progress, completed]
- *                       scores:
- *                         type: object
- *                         properties:
- *                           total:
- *                             type: number
- *                           percentage:
- *                             type: number
- *                           passed:
- *                             type: boolean
- *                 summary:
- *                   type: object
- *                   properties:
- *                     totalSubmissions:
- *                       type: number
- *                     completedSubmissions:
- *                       type: number
- *                     averageScore:
- *                       type: number
- *                     passRate:
- *                       type: number
- *       400:
- *         description: Invalid test ID
+ *                     $ref: '#/components/schemas/MCQSubmission'
+ *                 codingSubmissions:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/CodingSubmission'
  *       403:
  *         description: Not authorized
- *       500:
- *         description: Server error
+ *       404:
+ *         description: Test not found
  */
 router.get('/test/:testId', auth, checkRole(['admin', 'vendor']), getTestSubmissions);
 
