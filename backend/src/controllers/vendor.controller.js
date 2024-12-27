@@ -3812,36 +3812,36 @@ export const getCandidateTestDetails = async (req, res) => {
     };
 
     // Process candidates with detailed information
-    const candidates = submissions.reduce((acc, submission) => {
-      if (!submission.user) return acc;
+    const candidates = submissions.reduce((acc, currentSubmission) => {
+      if (!currentSubmission.user) return acc;
       
-      const userId = submission.user._id.toString();
+      const userId = currentSubmission.user._id.toString();
       const existingCandidate = acc.find(c => c._id.toString() === userId);
       
       const candidateData = {
-        _id: submission.user._id,
-        name: submission.user.name,
-        email: submission.user.email,
-        status: submission.status,
+        _id: currentSubmission.user._id,
+        name: currentSubmission.user.name,
+        email: currentSubmission.user.email,
+        status: currentSubmission.status,
         scores: {
           mcq: {
-            score: submission.mcqSubmission?.totalScore || 0,
+            score: currentSubmission.mcqSubmission?.totalScore || 0,
             maxScore: stats.maxPossibleScores.mcq,
-            percentage: calculatePercentage(submission.mcqSubmission?.totalScore, stats.maxPossibleScores.mcq)
+            percentage: calculatePercentage(currentSubmission.mcqSubmission?.totalScore, stats.maxPossibleScores.mcq)
           },
           coding: {
-            score: submission.codingSubmission?.totalScore || 0,
+            score: currentSubmission.codingSubmission?.totalScore || 0,
             maxScore: stats.maxPossibleScores.coding,
-            percentage: calculatePercentage(submission.codingSubmission?.totalScore, stats.maxPossibleScores.coding)
+            percentage: calculatePercentage(currentSubmission.codingSubmission?.totalScore, stats.maxPossibleScores.coding)
           },
           total: {
-            score: submission.totalScore || 0,
+            score: currentSubmission.totalScore || 0,
             maxScore: stats.maxPossibleScores.total,
-            percentage: calculatePercentage(submission.totalScore, stats.maxPossibleScores.total)
+            percentage: calculatePercentage(currentSubmission.totalScore, stats.maxPossibleScores.total)
           }
         },
         mcqDetails: test.mcqs.map(mcq => {
-          const answer = submission.mcqSubmission?.answers?.find(
+          const answer = currentSubmission.mcqSubmission?.answers?.find(
             a => a.questionId.toString() === mcq._id.toString()
           );
           return {
@@ -3860,10 +3860,10 @@ export const getCandidateTestDetails = async (req, res) => {
           };
         }),
         codingDetails: test.codingChallenges.map(challenge => {
-          const submission = submission.codingSubmission?.challenges?.find(
+          const challengeSubmission = currentSubmission.codingSubmission?.challenges?.find(
             c => c.challengeId.toString() === challenge._id.toString()
           );
-          const bestSubmission = submission?.submissions?.reduce((best, current) => {
+          const bestSubmission = challengeSubmission?.submissions?.reduce((best, current) => {
             return (current.marks > (best?.marks || 0)) ? current : best;
           }, null);
           
@@ -3895,22 +3895,22 @@ export const getCandidateTestDetails = async (req, res) => {
           };
         }),
         behaviorMetrics: {
-          tabSwitches: submission.behaviorMetrics?.tabSwitches || 0,
-          focusLost: submission.behaviorMetrics?.focusLost || 0,
-          warnings: submission.behaviorMetrics?.warnings || 0,
-          copyPaste: submission.behaviorMetrics?.copyPaste || 0
+          tabSwitches: currentSubmission.behaviorMetrics?.tabSwitches || 0,
+          focusLost: currentSubmission.behaviorMetrics?.focusLost || 0,
+          warnings: currentSubmission.behaviorMetrics?.warnings || 0,
+          copyPaste: currentSubmission.behaviorMetrics?.copyPaste || 0
         },
         attempts: existingCandidate ? existingCandidate.attempts + 1 : 1,
-        lastAttempt: submission.updatedAt,
-        result: submission.totalScore >= test.passingMarks ? 'PASS' : 'FAIL',
-        startTime: submission.startTime,
-        endTime: submission.endTime,
-        duration: submission.duration
+        lastAttempt: currentSubmission.updatedAt,
+        result: currentSubmission.totalScore >= test.passingMarks ? 'PASS' : 'FAIL',
+        startTime: currentSubmission.startTime,
+        endTime: currentSubmission.endTime,
+        duration: currentSubmission.duration
       };
 
       if (!existingCandidate) {
         acc.push(candidateData);
-      } else if (new Date(submission.updatedAt) > new Date(existingCandidate.lastAttempt)) {
+      } else if (new Date(currentSubmission.updatedAt) > new Date(existingCandidate.lastAttempt)) {
         // Update existing candidate with latest attempt
         Object.assign(existingCandidate, candidateData);
       }
