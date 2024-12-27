@@ -286,26 +286,36 @@ export const getTestResults = async (req, res) => {
       // Calculate coding scores using the same logic as user controller
       const codingDetails = test.codingChallenges.map(challenge => {
         const submittedChallenge = currentSubmission.codingSubmission?.challenges?.find(
-          c => c.challengeId.toString() === challenge._id.toString()
+          c => c.challengeId?.toString() === challenge._id?.toString()
         );
 
-        // Get the latest submission that passed
-        const passedSubmission = submittedChallenge?.submissions?.find(s => s.status === 'passed');
-        const score = passedSubmission ? challenge.marks : 0;
+        // Check if there are any submissions at all
+        const hasAttempted = submittedChallenge?.submissions?.length > 0;
+        
+        // Find the submission with highest marks
+        const bestSubmission = submittedChallenge?.submissions?.reduce((best, current) => {
+          return (current.marks > (best?.marks || 0)) ? current : best;
+        }, null);
+
+        // Calculate score based on best submission
+        const score = bestSubmission ? (bestSubmission.marks * challenge.marks / 100) : 0;
 
         return {
           challengeName: challenge.title,
           timeTaken: submittedChallenge?.totalTime || 0,
-          score: score,
+          score: Math.round(score * 100) / 100, // Round to 2 decimal places
           maxMarks: challenge.marks,
-          testCasesPassed: passedSubmission?.testCaseResults?.filter(tc => tc.passed).length || 0,
-          totalTestCases: challenge.testCases?.length || 0,
-          status: passedSubmission ? 'passed' : (submittedChallenge ? 'attempted' : 'not attempted')
+          testCasesPassed: bestSubmission?.testCaseResults?.filter(tc => tc.passed)?.length || 0,
+          totalTestCases: bestSubmission?.testCaseResults?.length || 0,
+          status: bestSubmission?.status || (hasAttempted ? 'attempted' : 'not attempted'),
+          submissions: submittedChallenge?.submissions?.length || 0,
+          bestScore: bestSubmission?.marks || 0
         };
       });
 
-      // Calculate total coding score
-      const codingScore = codingDetails.reduce((total, challenge) => total + challenge.score, 0);
+      // Update coding score calculation
+      const codingScore = codingDetails.reduce((total, challenge) => 
+        total + (challenge.score || 0), 0);
 
       // Calculate total score and time taken
       const totalScore = mcqScore + codingScore;
