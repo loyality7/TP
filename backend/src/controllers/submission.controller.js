@@ -1281,203 +1281,132 @@ export const generateTestReport = async (req, res) => {
   try {
     const { testId } = req.params;
 
+    // Get test with populated fields
     const test = await Test.findById(testId)
       .populate('mcqs')
       .populate('codingChallenges')
       .lean();
 
+    if (!test) {
+      return res.status(404).json({ success: false, error: 'Test not found' });
+    }
+
+    // Get submissions with populated user data
     const submissions = await Submission.find({ test: testId })
-      .populate('user', 'name email organization batch course')
+      .populate('user', 'name email organization batch')
+      .populate({
+        path: 'mcqSubmission.answers.questionId',
+        model: 'MCQ',
+        select: 'marks'
+      })
+      .populate({
+        path: 'codingSubmission.challenges.challengeId',
+        model: 'CodingChallenge',
+        select: 'marks title'
+      })
       .lean();
 
     const workbook = new ExcelJS.Workbook();
 
-    // DETAILED USER PERFORMANCE SHEET
+    // USER PERFORMANCE SHEET
     const userSheet = workbook.addWorksheet('User Performance', {
       properties: { tabColor: { argb: '4472C4' } }
     });
 
     // Headers
-    const userHeaders = [
-      'Name',
-      'Email',
-      'Organization',
-      'Batch',
-      'MCQ Score',
-      'MCQ %',
-      'Coding Score',
-      'Coding %',
-      'Total Score',
-      'Overall %',
-      'Time Taken',
-      'Status'
+    const headers = [
+      { header: 'Name', key: 'name', width: 25 },
+      { header: 'Email', key: 'email', width: 35 },
+      { header: 'Organization', key: 'org', width: 15 },
+      { header: 'Batch', key: 'batch', width: 15 },
+      { header: 'MCQ Score', key: 'mcqScore', width: 12 },
+      { header: 'MCQ %', key: 'mcqPercent', width: 10 },
+      { header: 'Coding Score', key: 'codingScore', width: 15 },
+      { header: 'Coding %', key: 'codingPercent', width: 12 },
+      { header: 'Total Score', key: 'totalScore', width: 12 },
+      { header: 'Overall %', key: 'overallPercent', width: 12 },
+      { header: 'Time Taken', key: 'timeTaken', width: 15 },
+      { header: 'Status', key: 'status', width: 10 }
     ];
 
-    userSheet.getRow(1).values = userHeaders;
-    styleHeader(userSheet.getRow(1));
+    userSheet.columns = headers;
 
-    // Populate user data with detailed metrics
-    submissions.forEach((sub, index) => {
-      const mcqScore = sub.mcqSubmission?.totalScore || 0;
-      const mcqPercent = calculatePercentage(mcqScore, test.mcqs.reduce((acc, q) => acc + (q.marks || 0), 0));
-      const codingScore = sub.codingSubmission?.totalScore || 0;
-      const codingPercent = calculatePercentage(codingScore, test.codingChallenges.reduce((acc, c) => acc + (c.marks || 0), 0));
+    // Style header row
+    const headerRow = userSheet.getRow(1);
+    headerRow.font = { bold: true, color: { argb: 'FFFFFF' } };
+    headerRow.fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: '4472C4' }
+    };
+
+    // Calculate total possible scores
+    const totalMCQMarks = test.mcqs.reduce((sum, q) => sum + (q.marks || 0), 0);
+    const totalCodingMarks = test.codingChallenges.reduce((sum, c) => sum + (c.marks || 0), 0);
+
+    // Populate user data
+    submissions.forEach((sub, idx) => {
+      // Calculate MCQ scores
+      const mcqScore = sub.mcqSubmission?.answers?.reduce((sum, ans) => {
+        const question = test.mcqs.find(q => q._id.toString() === ans.questionId.toString());
+        return sum + (ans.isCorrect ? (question?.marks || 0) : 0);
+      }, 0) || 0;
+
+      // Calculate Coding scores
+      const codingScore = sub.codingSubmission?.challenges?.reduce((sum, challenge) => {
+        const bestSubmission = challenge.submissions?.reduce((best, curr) => {
+          return (curr.marks > best.marks) ? curr : best;
+        }, { marks: 0 });
+        return sum + (bestSubmission?.marks || 0);
+      }, 0) || 0;
+
       const totalScore = mcqScore + codingScore;
-      const totalPercent = calculatePercentage(totalScore, test.totalMarks);
+      const mcqPercent = calculatePercentage(mcqScore, totalMCQMarks);
+      const codingPercent = calculatePercentage(codingScore, totalCodingMarks);
+      const overallPercent = calculatePercentage(totalScore, test.totalMarks);
 
-      const row = userSheet.getRow(index + 2);
-      row.values = [
-        sub.user.name,
-        sub.user.email,
-        sub.user.organization || 'N/A',
-        sub.user.batch || 'N/A',
-        mcqScore,
-        `${mcqPercent}%`,
-        codingScore,
-        `${codingPercent}%`,
-        totalScore,
-        `${totalPercent}%`,
-        calculateTimeTaken(sub.startTime, sub.endTime),
-        totalScore >= test.passingMarks ? 'PASS' : 'FAIL'
-      ];
-
-      // Style based on performance
-      stylePerformanceRow(row, totalPercent);
-    });
-
-    // USER MCQ DETAILS SHEET
-    const mcqDetailsSheet = workbook.addWorksheet('MCQ Details', {
-      properties: { tabColor: { argb: '70AD47' } }
-    });
-
-    // Headers for MCQ details
-    const mcqDetailHeaders = [
-      'User',
-      ...test.mcqs.map((_, idx) => `Q${idx + 1}`),
-      'Total Correct',
-      'Total Wrong',
-      'Accuracy'
-    ];
-
-    mcqDetailsSheet.getRow(1).values = mcqDetailHeaders;
-    styleHeader(mcqDetailsSheet.getRow(1));
-
-    // Populate MCQ details
-    submissions.forEach((sub, index) => {
-      const row = mcqDetailsSheet.getRow(index + 2);
-      const answers = sub.mcqSubmission?.answers || [];
-      
-      const mcqResults = test.mcqs.map(q => {
-        const answer = answers.find(a => a.questionId.toString() === q._id.toString());
-        return answer?.isCorrect ? '✓' : answer ? '✗' : '-';
+      const row = userSheet.addRow({
+        name: sub.user.name,
+        email: sub.user.email,
+        org: sub.user.organization || 'N/A',
+        batch: sub.user.batch || 'N/A',
+        mcqScore: mcqScore,
+        mcqPercent: `${mcqPercent}%`,
+        codingScore: codingScore,
+        codingPercent: `${codingPercent}%`,
+        totalScore: totalScore,
+        overallPercent: `${overallPercent}%`,
+        timeTaken: calculateTimeTaken(sub.startTime, sub.endTime),
+        status: totalScore >= test.passingMarks ? 'PASS' : 'FAIL'
       });
 
-      const correctCount = mcqResults.filter(r => r === '✓').length;
-      const wrongCount = mcqResults.filter(r => r === '✗').length;
-      const accuracy = calculatePercentage(correctCount, correctCount + wrongCount);
+      // Style row based on performance
+      stylePerformanceRow(row, overallPercent);
 
-      row.values = [
-        sub.user.name,
-        ...mcqResults,
-        correctCount,
-        wrongCount,
-        `${accuracy}%`
-      ];
-
-      styleMCQRow(row, accuracy);
+      // Add conditional formatting for status
+      row.getCell('status').fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: totalScore >= test.passingMarks ? '92D050' : 'FF0000' }
+      };
     });
 
-    // USER CODING DETAILS SHEET
-    const codingDetailsSheet = workbook.addWorksheet('Coding Details', {
-      properties: { tabColor: { argb: 'ED7D31' } }
-    });
-
-    // Headers for coding details
-    const codingDetailHeaders = [
-      'User',
-      ...test.codingChallenges.map((_, idx) => `Challenge ${idx + 1}`),
-      'Total Solved',
-      'Success Rate'
-    ];
-
-    codingDetailsSheet.getRow(1).values = codingDetailHeaders;
-    styleHeader(codingDetailsSheet.getRow(1));
-
-    // Populate coding details
-    submissions.forEach((sub, index) => {
-      const row = codingDetailsSheet.getRow(index + 2);
-      const challenges = sub.codingSubmission?.challenges || [];
-      
-      const challengeResults = test.codingChallenges.map(c => {
-        const challenge = challenges.find(ch => ch.challengeId.toString() === c._id.toString());
-        if (!challenge) return '-';
-        const bestSubmission = challenge.submissions?.sort((a, b) => b.marks - a)[0];
-        return bestSubmission?.status === 'passed' ? '✓' : '✗';
+    // Add borders
+    userSheet.eachRow(row => {
+      row.eachCell(cell => {
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' }
+        };
       });
-
-      const solvedCount = challengeResults.filter(r => r === '✓').length;
-      const successRate = calculatePercentage(solvedCount, test.codingChallenges.length);
-
-      row.values = [
-        sub.user.name,
-        ...challengeResults,
-        solvedCount,
-        `${successRate}%`
-      ];
-
-      styleCodingRow(row, successRate);
     });
 
-    // PERFORMANCE CHARTS
-    const chartsSheet = workbook.addWorksheet('Analytics', {
-      properties: { tabColor: { argb: 'FFC000' } }
-    });
-
-    // Score Distribution Chart
-    const scoreRanges = calculateScoreRanges(submissions, test.totalMarks);
-    
-    // Add chart data
-    chartsSheet.getCell('A1').value = 'Score Distribution';
-    chartsSheet.getCell('A2').value = 'Range';
-    chartsSheet.getCell('B2').value = 'Count';
-
-    Object.entries(scoreRanges).forEach(([range, count], index) => {
-      chartsSheet.getCell(`A${index + 3}`).value = range;
-      chartsSheet.getCell(`B${index + 3}`).value = count;
-    });
-
-    // Time Analysis
-    chartsSheet.getCell('D1').value = 'Time Analysis';
-    chartsSheet.getCell('D2').value = 'Duration';
-    chartsSheet.getCell('E2').value = 'Count';
-
-    const timeRanges = calculateTimeRanges(submissions);
-    Object.entries(timeRanges).forEach(([range, count], index) => {
-      chartsSheet.getCell(`D${index + 3}`).value = range;
-      chartsSheet.getCell(`E${index + 3}`).value = count;
-    });
-
-    // Performance Trends
-    chartsSheet.getCell('G1').value = 'Performance Trends';
-    chartsSheet.getCell('G2').value = 'Metric';
-    chartsSheet.getCell('H2').value = 'Value';
-
-    const trends = calculatePerformanceTrends(submissions, test);
-    Object.entries(trends).forEach(([metric, value], index) => {
-      chartsSheet.getCell(`G${index + 3}`).value = metric;
-      chartsSheet.getCell(`H${index + 3}`).value = value;
-    });
-
-    // Auto-width columns and style all sheets
-    workbook.worksheets.forEach(sheet => {
-      sheet.columns.forEach(column => {
-        let maxLength = 0;
-        column.eachCell({ includeEmpty: true }, cell => {
-          const columnLength = cell.value ? cell.value.toString().length : 10;
-          maxLength = Math.max(maxLength, columnLength);
-        });
-        column.width = Math.min(Math.max(maxLength + 2, 10), 50);
-      });
+    // Add data bars for score columns
+    ['mcqScore', 'codingScore', 'totalScore'].forEach(col => {
+      const colNumber = headers.findIndex(h => h.key === col) + 1;
+      addGradientDataBar(userSheet, colNumber, 2, submissions.length + 1);
     });
 
     // Set response headers
