@@ -16,6 +16,40 @@ import SystemSettings from "../models/systemSettings.model.js";
 import TestRegistration from "../models/testRegistration.model.js";
 import { formatTimeSpent } from '../utils/timeFormatters.js';
 
+// Helper functions
+const checkMCQAnswer = (correctOptions, selectedOptions) => {
+  if (!correctOptions || !selectedOptions) return false;
+  if (correctOptions.length !== selectedOptions.length) return false;
+  return correctOptions.every(opt => selectedOptions.includes(opt));
+};
+
+const calculatePassRate = (submissions, passingMarks) => {
+  if (!submissions || submissions.length === 0) return 0;
+  const passedCount = submissions.filter(s => {
+    const mcqScore = s.mcqSubmission?.answers?.reduce((total, answer) => {
+      const isCorrect = checkMCQAnswer(
+        answer.correctOptions || [],
+        answer.selectedOptions || []
+      );
+      return total + (isCorrect ? (answer.marks || 0) : 0);
+    }, 0) || 0;
+
+    const codingScore = s.codingSubmission?.challenges?.reduce((total, challenge) => {
+      const passedSubmission = challenge.submissions?.find(sub => sub.status === 'passed');
+      return total + (passedSubmission ? challenge.marks : 0);
+    }, 0) || 0;
+
+    const totalScore = mcqScore + codingScore;
+    return totalScore >= passingMarks;
+  }).length;
+  
+  return Math.round((passedCount / submissions.length) * 100);
+};
+
+const calculateTestAverage = (scores) => {
+  if (!scores || scores.length === 0) return 0;
+  return Math.round(scores.reduce((a, b) => a + (b || 0), 0) / scores.length);
+};
 
 export const getVendorDashboard = async (req, res) => {
   try {
@@ -313,37 +347,6 @@ export const getTestResults = async (req, res) => {
       message: error.message 
     });
   }
-};
-
-// Helper function for checking MCQ answers (same as in user controller)
-const checkMCQAnswer = (correctOptions, selectedOptions) => {
-  if (!correctOptions || !selectedOptions) return false;
-  if (correctOptions.length !== selectedOptions.length) return false;
-  return correctOptions.every(opt => selectedOptions.includes(opt));
-};
-
-// Helper function for calculating pass rate
-const calculatePassRate = (submissions, passingMarks) => {
-  if (!submissions || submissions.length === 0) return 0;
-  const passedCount = submissions.filter(s => {
-    const mcqScore = s.mcqSubmission?.answers?.reduce((total, answer) => {
-      const isCorrect = checkMCQAnswer(
-        answer.correctOptions || [],
-        answer.selectedOptions || []
-      );
-      return total + (isCorrect ? (answer.marks || 0) : 0);
-    }, 0) || 0;
-
-    const codingScore = s.codingSubmission?.challenges?.reduce((total, challenge) => {
-      const passedSubmission = challenge.submissions?.find(sub => sub.status === 'passed');
-      return total + (passedSubmission ? challenge.marks : 0);
-    }, 0) || 0;
-
-    const totalScore = mcqScore + codingScore;
-    return totalScore >= passingMarks;
-  }).length;
-  
-  return Math.round((passedCount / submissions.length) * 100);
 };
 
 export const getTestCandidates = async (req, res) => {
@@ -973,11 +976,6 @@ const formatDuration = (duration) => {
   const minutes = Math.floor(duration / 60);
   const seconds = duration % 60;
   return `${minutes}m ${seconds}s`;
-};
-
-const calculateTestAverage = (arr) => {
-  if (!arr || arr.length === 0) return 0;
-  return Math.round(arr.reduce((a, b) => a + (b || 0), 0) / arr.length);
 };
 
 const calculateTestPassRate = (submissions, passingMarks) => {
@@ -3354,15 +3352,6 @@ const calculateProgress = (submission) => {
   };
 };
 
-// Helper function to check MCQ answers
-const checkMCQAnswer = (correctOptions, selectedOptions) => {
-  return Array.isArray(correctOptions) && 
-    Array.isArray(selectedOptions) &&
-    correctOptions.length === selectedOptions.length &&
-    [...correctOptions].sort().every((opt, idx) => 
-      opt === [...selectedOptions].sort()[idx]
-    );
-};
 
 // Calculate scores for candidate metrics
 const calculateScores = (submission) => {
