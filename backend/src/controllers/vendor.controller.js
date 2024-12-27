@@ -3817,6 +3817,70 @@ export const getCandidateTestDetails = async (req, res) => {
       
       const userId = currentSubmission.user._id.toString();
       const existingCandidate = acc.find(c => c._id.toString() === userId);
+
+      // Calculate MCQ scores properly
+      const mcqAnswers = (currentSubmission.mcqSubmission?.answers || []).map(answer => {
+        const question = test.mcqs.find(q => 
+          q._id.toString() === answer.questionId.toString()
+        );
+
+        const isCorrect = checkMCQAnswer(
+          question?.correctOptions || [],
+          answer.selectedOptions || []
+        );
+
+        return {
+          questionId: question?._id,
+          question: question?.question,
+          options: question?.options,
+          selectedOptions: answer.selectedOptions || [],
+          correctOptions: question?.correctOptions,
+          isCorrect,
+          marks: isCorrect ? (question?.marks || 0) : 0,
+          maxMarks: question?.marks || 0,
+          timeTaken: answer.timeTaken || 0,
+          explanation: question?.explanation,
+          category: question?.category,
+          difficulty: question?.difficulty
+        };
+      });
+
+      // Calculate coding scores properly
+      const codingChallenges = test.codingChallenges.map(challenge => {
+        const submittedChallenge = currentSubmission.codingSubmission?.challenges?.find(
+          c => c.challengeId.toString() === challenge._id.toString()
+        );
+
+        // Get the best submission based on marks
+        const bestSubmission = submittedChallenge?.submissions?.reduce((best, current) => {
+          return (current.marks > (best?.marks || 0)) ? current : best;
+        }, null);
+
+        return {
+          challengeId: challenge._id,
+          title: challenge.title,
+          description: challenge.description,
+          code: bestSubmission?.code || '',
+          language: bestSubmission?.language || '',
+          score: bestSubmission?.marks || 0,
+          maxScore: challenge.marks,
+          testCases: challenge.testCases.map((tc, idx) => ({
+            input: tc.input,
+            expectedOutput: tc.output,
+            actualOutput: bestSubmission?.testCaseResults?.[idx]?.output || '',
+            passed: bestSubmission?.testCaseResults?.[idx]?.passed || false,
+            error: bestSubmission?.testCaseResults?.[idx]?.error || ''
+          })),
+          status: bestSubmission?.status || 'not_attempted',
+          executionTime: bestSubmission?.executionTime || 0,
+          memory: bestSubmission?.memory || 0
+        };
+      });
+
+      // Calculate total scores
+      const mcqScore = mcqAnswers.reduce((total, answer) => total + answer.marks, 0);
+      const codingScore = codingChallenges.reduce((total, challenge) => total + challenge.score, 0);
+      const totalScore = mcqScore + codingScore;
       
       const candidateData = {
         _id: currentSubmission.user._id,
@@ -3825,75 +3889,23 @@ export const getCandidateTestDetails = async (req, res) => {
         status: currentSubmission.status,
         scores: {
           mcq: {
-            score: currentSubmission.mcqSubmission?.totalScore || 0,
+            score: mcqScore,
             maxScore: stats.maxPossibleScores.mcq,
-            percentage: calculatePercentage(currentSubmission.mcqSubmission?.totalScore, stats.maxPossibleScores.mcq)
+            percentage: calculatePercentage(mcqScore, stats.maxPossibleScores.mcq)
           },
           coding: {
-            score: currentSubmission.codingSubmission?.totalScore || 0,
+            score: codingScore,
             maxScore: stats.maxPossibleScores.coding,
-            percentage: calculatePercentage(currentSubmission.codingSubmission?.totalScore, stats.maxPossibleScores.coding)
+            percentage: calculatePercentage(codingScore, stats.maxPossibleScores.coding)
           },
           total: {
-            score: currentSubmission.totalScore || 0,
+            score: totalScore,
             maxScore: stats.maxPossibleScores.total,
-            percentage: calculatePercentage(currentSubmission.totalScore, stats.maxPossibleScores.total)
+            percentage: calculatePercentage(totalScore, stats.maxPossibleScores.total)
           }
         },
-        mcqDetails: test.mcqs.map(mcq => {
-          const answer = currentSubmission.mcqSubmission?.answers?.find(
-            a => a.questionId.toString() === mcq._id.toString()
-          );
-          return {
-            questionId: mcq._id,
-            question: mcq.question,
-            options: mcq.options,
-            selectedOptions: answer?.selectedOptions || [],
-            correctOptions: mcq.correctOptions,
-            isCorrect: checkMCQAnswer(mcq.correctOptions, answer?.selectedOptions),
-            marks: mcq.marks,
-            maxMarks: mcq.marks,
-            timeTaken: answer?.timeTaken || 0,
-            explanation: mcq.explanation,
-            category: mcq.category,
-            difficulty: mcq.difficulty
-          };
-        }),
-        codingDetails: test.codingChallenges.map(challenge => {
-          const challengeSubmission = currentSubmission.codingSubmission?.challenges?.find(
-            c => c.challengeId.toString() === challenge._id.toString()
-          );
-          const bestSubmission = challengeSubmission?.submissions?.reduce((best, current) => {
-            return (current.marks > (best?.marks || 0)) ? current : best;
-          }, null);
-          
-          return {
-            challengeId: challenge._id,
-            title: challenge.title,
-            description: challenge.description,
-            difficulty: challenge.difficulty,
-            category: challenge.category,
-            code: bestSubmission?.code || '',
-            language: bestSubmission?.language || '',
-            score: bestSubmission?.marks || 0,
-            maxScore: challenge.marks,
-            testCases: challenge.testCases.map((tc, idx) => ({
-              input: tc.input,
-              expectedOutput: tc.output,
-              actualOutput: bestSubmission?.testCaseResults?.[idx]?.output || '',
-              passed: bestSubmission?.testCaseResults?.[idx]?.passed || false,
-              error: bestSubmission?.testCaseResults?.[idx]?.error || ''
-            })),
-            sampleInput: challenge.sampleInput,
-            sampleOutput: challenge.sampleOutput,
-            constraints: challenge.constraints,
-            timeLimit: challenge.timeLimit,
-            memoryLimit: challenge.memoryLimit,
-            executionTime: bestSubmission?.executionTime || 0,
-            memory: bestSubmission?.memory || 0,
-            status: bestSubmission?.status || 'not_attempted'
-          };
-        }),
+        mcqDetails: mcqAnswers,
+        codingDetails: codingChallenges,
         behaviorMetrics: {
           tabSwitches: currentSubmission.behaviorMetrics?.tabSwitches || 0,
           focusLost: currentSubmission.behaviorMetrics?.focusLost || 0,
@@ -3902,7 +3914,7 @@ export const getCandidateTestDetails = async (req, res) => {
         },
         attempts: existingCandidate ? existingCandidate.attempts + 1 : 1,
         lastAttempt: currentSubmission.updatedAt,
-        result: currentSubmission.totalScore >= test.passingMarks ? 'PASS' : 'FAIL',
+        result: totalScore >= test.passingMarks ? 'PASS' : 'FAIL',
         startTime: currentSubmission.startTime,
         endTime: currentSubmission.endTime,
         duration: currentSubmission.duration
