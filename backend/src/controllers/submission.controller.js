@@ -484,10 +484,9 @@ export const getTestResults = async (req, res) => {
     const { testId } = req.query;
     
     if (testId) {
-      // Get submission with properly populated test data and coding submissions
-      const submission = await Submission.findOne({ 
-        test: testId,
-        user: req.user._id 
+      // Get all submissions for this test
+      const submissions = await Submission.find({ 
+        test: testId
       })
       .populate({
         path: 'test',
@@ -503,106 +502,61 @@ export const getTestResults = async (req, res) => {
           }
         ]
       })
+      .populate('user', 'name email') // Add user population
+      .populate('codingSubmission.submissions') // Add coding submission population
       .lean();
 
-      if (!submission) {
-        return res.status(404).json({ message: 'Test result not found' });
-      }
-
-      // Process MCQ submissions
-      const mcqAnswers = (submission.mcqSubmission?.answers || []).map(answer => {
-        const question = submission.test.mcqs.find(q => 
-          q._id.toString() === answer.questionId.toString()
-        );
-
-        const isCorrect = arraysEqual(
-          question?.correctOptions || [],
-          answer.selectedOptions || []
-        );
-
-        return {
-          questionId: answer.questionId,
-          selectedOptions: answer.selectedOptions || [],
-          marks: isCorrect ? (question?.marks || 0) : 0,
-          isCorrect,
-          question: question?.question,
-          options: question?.options,
-          correctOptions: question?.correctOptions,
-          maxMarks: question?.marks,
-          explanation: question?.explanation
-        };
-      });
-
-      // Process coding submissions with proper error handling
-      const codingChallenges = (submission.codingSubmission?.challenges || []).map(challenge => {
-        const challengeDetails = submission.test.codingChallenges.find(
-          c => c._id.toString() === challenge.challengeId.toString()
-        );
-
-        // Get the latest submission
-        const latestSubmission = challenge.submissions?.[challenge.submissions.length - 1];
-
-        return {
-          challengeId: challenge.challengeId,
-          title: challengeDetails?.title,
-          description: challengeDetails?.description,
-          submissions: challenge.submissions?.map(sub => ({
-            submittedAt: sub.submittedAt,
-            code: sub.code,
-            language: sub.language,
-            status: sub.status,
-            marks: sub.marks,
-            testCaseResults: sub.testCaseResults || [],
-            executionTime: sub.executionTime,
-            memory: sub.memory,
-            output: sub.output,
-            error: sub.error
-          })) || [],
-          bestScore: Math.max(...(challenge.submissions?.map(s => s.marks || 0) || [0])),
-          maxMarks: challengeDetails?.marks || 0,
-          latestSubmission: latestSubmission ? {
-            code: latestSubmission.code,
-            language: latestSubmission.language,
-            status: latestSubmission.status,
-            marks: latestSubmission.marks,
-            testCasesPassed: latestSubmission.testCaseResults?.filter(tc => tc.passed).length || 0,
-            totalTestCases: latestSubmission.testCaseResults?.length || 0
-          } : null
-        };
-      });
-
-      // Calculate total scores
-      const mcqScore = mcqAnswers.reduce((sum, answer) => sum + (answer.marks || 0), 0);
-      const codingScore = codingChallenges.reduce((sum, challenge) => sum + (challenge.bestScore || 0), 0);
-
-      const detailedResult = {
-        testId: submission.test._id,
-        title: submission.test.title,
-        startTime: submission.startTime,
-        endTime: submission.endTime,
-        status: submission.status,
-        summary: {
-          mcqScore,
-          codingScore,
-          totalScore: mcqScore + codingScore,
-          maxScore: submission.test.totalMarks,
-          passingScore: submission.test.passingMarks
-        },
-        mcq: {
-          answers: mcqAnswers,
-          totalQuestions: submission.test.mcqs?.length || 0,
-          correctAnswers: mcqAnswers.filter(a => a.isCorrect).length,
-          score: mcqScore
-        },
-        coding: {
-          challenges: codingChallenges,
-          totalChallenges: submission.test.codingChallenges?.length || 0,
-          completedChallenges: codingChallenges.filter(c => c.bestScore > 0).length,
-          score: codingScore
-        }
+      // Transform submissions to include both MCQ and coding data
+      const transformedSubmissions = {
+        mcq: [], 
+        coding: []
       };
 
-      return res.json(detailedResult);
+      submissions.forEach(sub => {
+        // Add MCQ submission if exists
+        if (sub.mcqSubmission) {
+          transformedSubmissions.mcq.push({
+            submissionId: sub._id,
+            userId: sub.user._id,
+            userName: sub.user.name,
+            userEmail: sub.user.email,
+            answers: sub.mcqSubmission.answers,
+            totalScore: sub.mcqSubmission.totalScore,
+            submittedAt: sub.mcqSubmission.submittedAt
+          });
+        }
+
+        // Add coding submission if exists
+        if (sub.codingSubmission && sub.codingSubmission.submissions) {
+          transformedSubmissions.coding.push({
+            submissionId: sub._id,
+            userId: sub.user._id,
+            userName: sub.user.name,
+            userEmail: sub.user.email,
+            submissions: sub.codingSubmission.submissions,
+            totalScore: sub.codingSubmission.totalScore,
+            submittedAt: sub.codingSubmission.submittedAt
+          });
+        }
+      });
+
+      // Calculate summary
+      const summary = {
+        totalSubmissions: submissions.length,
+        mcqSubmissions: transformedSubmissions.mcq.length,
+        codingSubmissions: transformedSubmissions.coding.length,
+        averageScore: submissions.length > 0 
+          ? Math.round(submissions.reduce((sum, sub) => 
+              sum + ((sub.mcqSubmission?.totalScore || 0) + 
+                    (sub.codingSubmission?.totalScore || 0)), 0) / submissions.length)
+          : 0
+      };
+
+      return res.json({
+        success: true,
+        data: transformedSubmissions,
+        summary
+      });
     }
 
     // ... rest of the code for getting all submissions ...

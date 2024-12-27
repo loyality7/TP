@@ -346,8 +346,8 @@ export const getTestResults = async (req, res) => {
       return res.json(detailedResult);
     }
 
-    // Modified query for all submissions with better error handling
-    const submissions = (await Submission.find({ 
+    // Modified query for all submissions with proper score calculations
+    const submissions = await Submission.find({ 
       user: req.user._id 
     })
     .populate({
@@ -358,54 +358,70 @@ export const getTestResults = async (req, res) => {
         select: 'name email'
       }
     })
+    .populate('codingSubmission')  // Add this to get coding submission data
     .sort({ 
       createdAt: -1,
       startTime: -1 
     })
-    .lean())
-    .filter(sub => sub.test && Object.keys(sub.test).length > 0); // Filter out submissions with empty test objects
+    .lean();
 
-    // Add logging to debug
-    console.log(`Found ${submissions.length} submissions for user ${req.user._id}`);
+    const validSubmissions = submissions
+      .filter(sub => sub.test && Object.keys(sub.test).length > 0)
+      .map(submission => {
+        // Calculate MCQ score
+        const mcqScore = submission.mcqSubmission?.answers?.reduce((total, answer) => {
+          const question = submission.test.mcqs?.find(q => 
+            q._id.toString() === answer.questionId.toString()
+          );
+          
+          const isCorrect = checkMCQAnswer(
+            question?.correctOptions || [],
+            answer.selectedOptions || []
+          );
 
-    // Filter out submissions where test is null (in case test was deleted)
-    const validSubmissions = submissions.filter(sub => sub.test);
+          return total + (isCorrect ? (question?.marks || 0) : 0);
+        }, 0) || 0;
 
-    if (validSubmissions.length === 0) {
-      return res.status(200).json({
-        message: "No test submissions found",
-        results: []
+        // Calculate coding score
+        const codingScore = submission.codingSubmission?.challenges?.reduce((total, challenge) => {
+          const maxMarks = submission.test.codingChallenges?.find(
+            c => c._id.toString() === challenge.challengeId.toString()
+          )?.marks || 0;
+          
+          const passedSubmission = challenge.submissions?.find(s => s.status === 'passed');
+          return total + (passedSubmission ? maxMarks : 0);
+        }, 0) || 0;
+
+        const totalScore = mcqScore + codingScore;
+
+        return {
+          testId: submission.test._id,
+          uuid: submission.test.uuid || null,
+          title: submission.test.title,
+          startTime: submission.startTime,
+          endTime: submission.endTime,
+          mcqScore,
+          codingScore,
+          totalScore,
+          maxScore: submission.test.totalMarks,
+          passingScore: submission.test.passingMarks,
+          status: submission.status || 
+            (totalScore >= submission.test.passingMarks ? 'passed' : 'failed'),
+          attemptedAt: submission.createdAt,
+          completionStatus: submission.completionStatus || 'completed'
+        };
       });
-    }
-
-    const summaryResults = validSubmissions.map(submission => ({
-      testId: submission.test._id,
-      uuid: submission.test.uuid || null,
-      title: submission.test.title,
-      startTime: submission.startTime,
-      endTime: submission.endTime,
-      mcqScore: submission.mcqSubmission?.totalScore || 0,
-      codingScore: submission.codingSubmission?.totalScore || 0,
-      totalScore: submission.totalScore,
-      maxScore: submission.test.totalMarks,
-      passingScore: submission.test.passingMarks,
-      status: submission.status || 
-        (submission.totalScore >= submission.test.passingMarks ? 'passed' : 'failed'),
-      attemptedAt: submission.createdAt,
-      completionStatus: submission.completionStatus || 'completed'
-    }));
 
     res.json({
-      count: summaryResults.length,
-      results: summaryResults
+      count: validSubmissions.length,
+      results: validSubmissions
     });
 
   } catch (error) {
     console.error('Error in getTestResults:', error);
     res.status(500).json({ 
       error: 'Failed to fetch test results',
-      details: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      details: error.message 
     });
   }
 };

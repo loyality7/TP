@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { 
   Home, FileText, Users2, LogOut, ChevronDown, 
   Code, BarChart2, Calendar, Database, Activity,
-  CreditCard
+  CreditCard, PieChart
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -32,7 +32,7 @@ const scrollbarStyles = `
   }
 `;
 
-const Sidebar = ({ isOpen, setIsOpen, onLogout }) => {
+const Sidebar = ({ isOpen, onLogout }) => {
   const [openMenus, setOpenMenus] = useState({});
   const location = useLocation();
 
@@ -46,12 +46,12 @@ const Sidebar = ({ isOpen, setIsOpen, onLogout }) => {
           label: "Overview",  
           path: "/vendor/dashboard", 
           icon: Activity
-        }
-        // { 
-        //   label: "Statistics", 
-        //   path: "/vendor/dashboard/statistics", 
-        //   icon: PieChart 
-        // },
+        },
+        { 
+          label: "Statistics", 
+          path: "/vendor/dashboard/statistics", 
+          icon: PieChart 
+        },
         // { 
         //   label: "Reports", 
         //   path: "/vendor/dashboard/reports", 
@@ -86,8 +86,8 @@ const Sidebar = ({ isOpen, setIsOpen, onLogout }) => {
       icon: BarChart2,
       children: [
         { label: "Test Analytics", path: "/vendor/analytics/tests" },
-        { label: "Candidate Analytics", path: "/vendor/analytics/candidates" }
-        // { label: "Performance Insights", path: "/vendor/analytics/insights" },
+        { label: "Candidate Analytics", path: "/vendor/analytics/candidates" },
+        { label: "Performance Insights", path: "/vendor/analytics/insights" }
         // { label: "Custom Reports", path: "/vendor/analytics/reports" }
       ]
     },

@@ -38,7 +38,8 @@ import {
   removeTestUserAccess,
   uploadUsersFromCSV,
   getVendorAllCandidates,
-  getCandidateMetrics
+  getCandidateMetrics,
+  getCandidateTestDetails
 } from "../controllers/vendor.controller.js";
 import { validateTestAccess } from '../middleware/validateTestAccess.js';
 import { addTestUsers, uploadTestUsers, removeTestUsers } from '../controllers/testAccess.controller.js';
@@ -811,22 +812,26 @@ router.get("/tests/:testId/candidates", auth, checkRole(["vendor"]), checkVendor
  * @swagger
  * /api/vendor/tests/{testId}/candidates/{userId}:
  *   get:
- *     summary: Get details of a specific candidate for a test
+ *     summary: Get detailed test information for a specific candidate
  *     tags: [Candidate Management]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: testId
  *         required: true
  *         schema:
  *           type: string
+ *         description: ID of the test
  *       - in: path
  *         name: userId
  *         required: true
  *         schema:
  *           type: string
+ *         description: ID of the candidate
  *     responses:
  *       200:
- *         description: Candidate details retrieved successfully
+ *         description: Candidate test details retrieved successfully
  *         content:
  *           application/json:
  *             schema:
@@ -835,57 +840,86 @@ router.get("/tests/:testId/candidates", auth, checkRole(["vendor"]), checkVendor
  *                 candidateInfo:
  *                   type: object
  *                   properties:
- *                     _id:
- *                       type: string
  *                     name:
  *                       type: string
+ *                       description: Candidate's full name
  *                     email:
  *                       type: string
- *                 testPerformance:
- *                   type: object
- *                   properties:
+ *                       description: Candidate's email address
  *                     status:
  *                       type: string
- *                     score:
- *                       type: number
- *                     completedAt:
- *                       type: string
- *                       format: date-time
- *                     duration:
- *                       type: number
- *                     attempts:
- *                       type: number
- *                 skillScores:
+ *                       enum: [not_started, in_progress, completed]
+ *                       description: Current test status for the candidate
+ *                 testDetails:
  *                   type: object
  *                   properties:
- *                     problemSolving:
+ *                     title:
+ *                       type: string
+ *                       description: Test title
+ *                     startTime:
+ *                       type: string
+ *                       format: date-time
+ *                       description: When the candidate started the test
+ *                     endTime:
+ *                       type: string
+ *                       format: date-time
+ *                       description: When the candidate completed the test
+ *                     duration:
  *                       type: number
- *                     codeQuality:
+ *                       description: Time spent on test in minutes
+ *                     score:
  *                       type: number
- *                     performance:
+ *                       description: Overall test score
+ *                 performance:
+ *                   type: object
+ *                   properties:
+ *                     mcqScore:
  *                       type: number
- *                     security:
+ *                       description: Score in MCQ section
+ *                     codingScore:
  *                       type: number
- *                     bestPractices:
+ *                       description: Score in coding section
+ *                     skillScores:
+ *                       type: object
+ *                       properties:
+ *                         problemSolving:
+ *                           type: number
+ *                         codeQuality:
+ *                           type: number
+ *                         efficiency:
+ *                           type: number
+ *                     completionRate:
  *                       type: number
- *                 submissionHistory:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       submissionId:
- *                         type: string
- *                       status:
- *                         type: string
- *                       score:
- *                         type: number
- *                       completedAt:
- *                         type: string
- *                         format: date-time
- *                       duration:
- *                         type: number
+ *                       description: Percentage of test completed
+ *                 behaviorMetrics:
+ *                   type: object
+ *                   properties:
+ *                     tabSwitches:
+ *                       type: number
+ *                       description: Number of times candidate switched tabs
+ *                     focusLost:
+ *                       type: number
+ *                       description: Number of times candidate lost focus
+ *                     warnings:
+ *                       type: number
+ *                       description: Number of warnings issued
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - User is not a vendor or lacks access to this test
+ *       404:
+ *         description: Test or candidate not found
+ *       500:
+ *         description: Internal server error
  */
-router.get("/tests/:testId/candidates/:userId", auth, checkRole(["vendor"]), checkVendorApproval, validateTestAccess, getCandidateDetails);
+router.get(
+  "/tests/:testId/candidates/:userId",
+  auth,
+  checkRole(["vendor"]),
+  checkVendorApproval,
+  validateTestAccess,
+  getCandidateTestDetails
+);
 
 /**
  * @swagger
@@ -2637,5 +2671,7 @@ router.get("/candidate-metrics", auth, checkRole(["vendor"]), checkVendorApprova
  *         description: Vendor not found
  */
 router.post('/wallet/debit-test-fee', debitTestFee);
+
+
 
 export default router; 

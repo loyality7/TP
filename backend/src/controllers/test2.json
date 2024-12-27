@@ -739,11 +739,11 @@
         "allowedLanguages": ["python", "java", "javascript", "cpp"],
         "languageImplementations": {
           "python": {
-            "visibleCode": "class UserMainCode:\n    @classmethod\n    def specialFibonacci(cls, input1):\n        # Read only region start\n        # Write code here\n        res = [0] * (input1+1)\n        res[1] = 1\n        for i in range(2, input1+1):\n            res[i] = res[i-1] + res[i-2] + (res[i-3] if i > 2 else 0)\n        return res[input1]",
+            "visibleCode": "# Write code here",
             "invisibleCode": "# No additional code needed"
           },
           "java": {
-            "visibleCode": "public class UserMainCode {\n    public static int specialFibonacci(int input1) {\n        // Write code here\n        int[] res = new int[input1 + 1];\n        res[1] = 1;\n        for(int i = 2; i <= input1; i++) {\n            res[i] = res[i-1] + res[i-2];\n            if(i > 2) res[i] += res[i-3];\n        }\n        return res[input1];\n    }",
+            "visibleCode": "// Write code here",
             "invisibleCode": "// No additional code needed"
           }
         },
@@ -781,11 +781,11 @@
         "allowedLanguages": ["python", "java", "javascript", "cpp"],
         "languageImplementations": {
           "python": {
-            "visibleCode": "class UserMainCode:\n    @classmethod\n    def sumOfDigits(cls, number):\n        # Write code here\n        total = 0\n        while number > 0:\n            total += number % 10\n            number //= 10\n        return total",
+            "visibleCode": "# Write code here",
             "invisibleCode": "# No additional code needed"
           },
           "java": {
-            "visibleCode": "public class UserMainCode {\n    public static int sumOfDigits(int number) {\n        // Write code here\n        int total = 0;\n        while (number > 0) {\n            total += number % 10;\n            number /= 10;\n        }\n        return total;\n    }",
+            "visibleCode": "// Write code here",
             "invisibleCode": "// No additional code needed"
           }
         },
@@ -828,11 +828,11 @@
         "allowedLanguages": ["python", "java", "javascript", "cpp"],
         "languageImplementations": {
           "python": {
-            "visibleCode": "class UserMainCode:\n    @classmethod\n    def reverseArray(cls, arr):\n        # Write code here\n        left = 0\n        right = len(arr) - 1\n        while left < right:\n            arr[left], arr[right] = arr[right], arr[left]\n            left += 1\n            right -= 1\n        return arr",
+            "visibleCode": "# Write code here",
             "invisibleCode": "# No additional code needed"
           },
           "java": {
-            "visibleCode": "public class UserMainCode {\n    public static int[] reverseArray(int[] arr) {\n        // Write code here\n        int left = 0;\n        int right = arr.length - 1;\n        while (left < right) {\n            int temp = arr[left];\n            arr[left] = arr[right];\n            arr[right] = temp;\n            left++;\n            right--;\n        }\n        return arr;\n    }",
+            "visibleCode": "// Write code here",
             "invisibleCode": "// No additional code needed"
           }
         },
@@ -875,11 +875,11 @@
         "allowedLanguages": ["python", "java", "javascript", "cpp"],
         "languageImplementations": {
           "python": {
-            "visibleCode": "class UserMainCode:\n    @classmethod\n    def countWords(cls, text):\n        # Write code here\n        if not text:\n            return 0\n        return len(text.split())",
+            "visibleCode": "# Write code here",
             "invisibleCode": "# No additional code needed"
           },
           "java": {
-            "visibleCode": "public class UserMainCode {\n    public static int countWords(String text) {\n        // Write code here\n        if (text == null || text.trim().isEmpty()) {\n            return 0;\n        }\n        return text.trim().split(\"\\\\s+\").length;\n    }",
+            "visibleCode": "// Write code here",
             "invisibleCode": "// No additional code needed"
           }
         },
@@ -922,7 +922,7 @@
         "allowedLanguages": ["python"],
         "languageImplementations": {
           "python": {
-            "visibleCode": "class UserMainCode:\n    @classmethod\n    def processList(cls, numbers):\n        # Write code here\n        unique_nums = list(set(numbers))\n        sorted_nums = sorted(unique_nums, reverse=True)\n        return sorted_nums[1] if len(sorted_nums) > 1 else sorted_nums[0]",
+            "visibleCode": "# Write code here",
             "invisibleCode": "# No additional code needed"
           }
         },
@@ -960,7 +960,7 @@
         "allowedLanguages": ["python"],
         "languageImplementations": {
           "python": {
-            "visibleCode": "class UserMainCode:\n    @classmethod\n    def charFrequency(cls, text):\n        # Write code here\n        freq = {}\n        for char in text:\n            freq[char] = freq.get(char, 0) + 1\n        max_char = max(freq.items(), key=lambda x: (x[1], -text.index(x[0])))[0]\n        return max_char",
+            "visibleCode": "# Write code here",
             "invisibleCode": "# No additional code needed"
           }
         },
@@ -998,7 +998,7 @@
         "allowedLanguages": ["python"],
         "languageImplementations": {
           "python": {
-            "visibleCode": "class UserMainCode:\n    @classmethod\n    def mapFilterSum(cls, numbers):\n        # Write code here\n        squared = map(lambda x: x*x, numbers)\n        evens = filter(lambda x: x % 2 == 0, squared)\n        return sum(evens)",
+            "visibleCode": "# Write code here",
             "invisibleCode": "# No additional code needed"
           }
         },
@@ -1036,7 +1036,7 @@
         "allowedLanguages": ["python"],
         "languageImplementations": {
           "python": {
-            "visibleCode": "class UserMainCode:\n    @classmethod\n    def processString(cls, text):\n        # Write code here\n        modified = text.upper().replace(' ', '-')\n        return sum(1 for c in modified if c in 'AEIOU')",
+            "visibleCode": "# Write code here",
             "invisibleCode": "# No additional code needed"
           }
         },
@@ -1074,7 +1074,7 @@
         "allowedLanguages": ["python"],
         "languageImplementations": {
           "python": {
-            "visibleCode": "class UserMainCode:\n    @classmethod\n    def isPalindrome(cls, s):\n        return s == s[::-1]\n    \n    @classmethod\n    def processStrings(cls, strings):\n        # Write code here\n        return sum(1 for s in strings if cls.isPalindrome(s))",
+            "visibleCode": "# Write code here",
             "invisibleCode": "# No additional code needed"
           }
         },
@@ -1112,11 +1112,11 @@
         "allowedLanguages": ["python", "java", "javascript", "cpp"],
         "languageImplementations": {
           "python": {
-            "visibleCode": "class UserMainCode:\n    @classmethod\n    def countEvenOdd(cls, numbers):\n        # Write code here\n        even = sum(1 for x in numbers if x % 2 == 0)\n        odd = len(numbers) - even\n        return f'Even: {even}, Odd: {odd}'",
+            "visibleCode": "# Write code here",
             "invisibleCode": "# No additional code needed"
           },
           "java": {
-            "visibleCode": "public class UserMainCode {\n    public static String countEvenOdd(int[] numbers) {\n        // Write code here\n        int even = 0;\n        for (int num : numbers) {\n            if (num % 2 == 0) {\n                even++;\n            }\n        }\n        int odd = numbers.length - even;\n        return \"Even: \" + even + \", Odd: \" + odd;\n    }",
+            "visibleCode": "// Write code here",
             "invisibleCode": "// No additional code needed"
           }
         },
@@ -1159,7 +1159,7 @@
         "allowedLanguages": ["python"],
         "languageImplementations": {
           "python": {
-            "visibleCode": "class UserMainCode:\n    @classmethod\n    def sliceReverse(cls, numbers):\n        # Write code here\n        result = []\n        for i in range(0, len(numbers), 3):\n            chunk = numbers[i:i+3]\n            result.extend(chunk[::-1] if len(chunk) == 3 else chunk)\n        return result",
+            "visibleCode": "# Write code here",
             "invisibleCode": "# No additional code needed"
           }
         },
@@ -1198,7 +1198,7 @@
         "allowedLanguages": ["python"],
         "languageImplementations": {
           "python": {
-            "visibleCode": "class UserMainCode:\n    @classmethod\n    def processNumbers(cls, n):\n        # Write code here\n        return [x*x for x in range(2, n+1, 2) if x % 3 == 0]",
+            "visibleCode": "# Write code here",
             "invisibleCode": "# No additional code needed"
           }
         },
@@ -1236,7 +1236,7 @@
         "allowedLanguages": ["python"],
         "languageImplementations": {
           "python": {
-            "visibleCode": "class UserMainCode:\n    @classmethod\n    def formatStrings(cls, name, age, score):\n        # Write code here\n        s1 = '{} is {} years old with score {:.1f}'.format(name, age, score)\n        s2 = f'{name} scored {score:.1f} at age {age}'\n        return s1 + '\\n' + s2",
+            "visibleCode": "# Write code here",
             "invisibleCode": "# No additional code needed"
           }
         },
@@ -1271,7 +1271,7 @@
         "allowedLanguages": ["python"],
         "languageImplementations": {
           "python": {
-            "visibleCode": "class UserMainCode:\n    @classmethod\n    def processString(cls, text):\n        # Write code here\n        words = text.strip().split()\n        return ' '.join(word.capitalize() for word in words)",
+            "visibleCode": "# Write code here",
             "invisibleCode": "# No additional code needed"
           }
         },
@@ -1304,7 +1304,7 @@
     "allowedLanguages": ["python"],
     "languageImplementations": {
       "python": {
-        "visibleCode": "class UserMainCode:\n    @classmethod\n    def countChars(cls, text):\n        # Write code here\n        letters = sum(1 for c in text if c.isalpha())\n        digits = sum(1 for c in text if c.isdigit())\n        return f'Letters: {letters}, Digits: {digits}'",
+        "visibleCode": "# Write code here",
         "invisibleCode": "# No additional code needed"
       }
     },
@@ -1337,7 +1337,7 @@
     "allowedLanguages": ["python"],
     "languageImplementations": {
       "python": {
-        "visibleCode": "class UserMainCode:\n    @classmethod\n    def evenIndexSum(cls, numbers):\n        # Write code here\n        return sum(numbers[::2])",
+        "visibleCode": "# Write code here",
         "invisibleCode": "# No additional code needed"
       }
     },
@@ -1370,7 +1370,7 @@
     "allowedLanguages": ["python"],
     "languageImplementations": {
       "python": {
-        "visibleCode": "class UserMainCode:\n    @classmethod\n    def createDict(cls, keys, values):\n        # Write code here\n        return dict(zip(keys, values))",
+        "visibleCode": "# Write code here",
         "invisibleCode": "# No additional code needed"
       }
     },
@@ -1403,7 +1403,7 @@
     "allowedLanguages": ["python"],
     "languageImplementations": {
       "python": {
-        "visibleCode": "class UserMainCode:\n    @classmethod\n    def reverseWords(cls, text):\n        # Write code here\n        words = text.split()\n        reversed_words = [word[::-1] for word in words]\n        return ' '.join(reversed_words)",
+        "visibleCode": "# Write code here",
         "invisibleCode": "# No additional code needed"
       }
     },
@@ -1436,7 +1436,7 @@
     "allowedLanguages": ["python"],
     "languageImplementations": {
       "python": {
-        "visibleCode": "class UserMainCode:\n    @classmethod\n    def getPositives(cls, numbers):\n        # Write code here\n        return sorted([x for x in numbers if x > 0])",
+        "visibleCode": "# Write code here",
         "invisibleCode": "# No additional code needed"
       }
     },
@@ -1469,7 +1469,7 @@
     "allowedLanguages": ["python"],
     "languageImplementations": {
       "python": {
-        "visibleCode": "class UserMainCode:\n    @classmethod\n    def calculate(cls, num1, operator, num2):\n        # Write code here\n        if operator == '/' and num2 == 0:\n            return 'Error'\n        ops = {'+': lambda x,y: x+y,\n               '-': lambda x,y: x-y,\n               '*': lambda x,y: x*y,\n               '/': lambda x,y: x/y}\n        return ops[operator](num1, num2)",
+        "visibleCode": "# Write code here",
         "invisibleCode": "# No additional code needed"
       }
     },
@@ -1502,7 +1502,7 @@
     "allowedLanguages": ["python"],
     "languageImplementations": {
       "python": {
-        "visibleCode": "class UserMainCode:\n    @classmethod\n    def findDuplicates(cls, items):\n        # Write code here\n        seen = set()\n        duplicates = set(x for x in items if x in seen or seen.add(x))\n        return sorted(list(duplicates))",
+        "visibleCode": "# Write code here",
         "invisibleCode": "# No additional code needed"
       }
     },
@@ -1535,7 +1535,7 @@
     "allowedLanguages": ["python"],
     "languageImplementations": {
       "python": {
-        "visibleCode": "class UserMainCode:\n    @classmethod\n    def countWords(cls, text):\n        # Write code here\n        words = text.lower().split()\n        return {word: words.count(word) for word in set(words)}",
+        "visibleCode": "# Write code here",
         "invisibleCode": "# No additional code needed"
       }
     },
@@ -1568,7 +1568,7 @@
     "allowedLanguages": ["python"],
     "languageImplementations": {
       "python": {
-        "visibleCode": "class UserMainCode:\n    @classmethod\n    def processList(cls, numbers):\n        # Write code here\n        numbers = [x + 5 for x in numbers]\n        return [x for x in numbers if x >= 10]",
+        "visibleCode": "# Write code here",
         "invisibleCode": "# No additional code needed"
       }
     },
@@ -1601,7 +1601,7 @@
     "allowedLanguages": ["python"],
     "languageImplementations": {
       "python": {
-        "visibleCode": "class UserMainCode:\n    @classmethod\n    def processString(cls, text):\n        # Write code here\n        text = text.replace(' ', '').lower()\n        if len(text) < 6:\n            return text\n        return text[:3] + text[-3:]",
+        "visibleCode": "# Write code here",
         "invisibleCode": "# No additional code needed"
       }
     },
@@ -1635,7 +1635,7 @@
         "allowedLanguages": ["python"],
         "languageImplementations": {
           "python": {
-            "visibleCode": "class UserMainCode:\n    @classmethod\n    def createDict(cls, text):\n        # Write code here\n        return {c: ord(c) for c in text if c.isalpha()}",
+            "visibleCode": "# Write code here",
             "invisibleCode": "# No additional code needed"
           }
         },
@@ -1668,7 +1668,7 @@
         "allowedLanguages": ["python"],
         "languageImplementations": {
           "python": {
-            "visibleCode": "class UserMainCode:\n    def __init__(self):\n        self.queue = []\n        \n    def enqueue(self, x):\n        self.queue.append(x)\n        return len(self.queue)\n        \n    def dequeue(self):\n        return self.queue.pop(0) if self.queue else None\n        \n    def peek(self):\n        return self.queue[0] if self.queue else None",
+            "visibleCode": "# Write code here",
             "invisibleCode": "# No additional code needed"
           }
         },
@@ -1701,7 +1701,7 @@
         "allowedLanguages": ["python"],
         "languageImplementations": {
           "python": {
-            "visibleCode": "class UserMainCode:\n    @classmethod\n    def calculate(cls, base, power=2, *args):\n        # Write code here\n        return base ** power + sum(args)",
+            "visibleCode": "# Write code here",
             "invisibleCode": "# No additional code needed"
           }
         },
@@ -1739,11 +1739,11 @@
         "allowedLanguages": ["python", "java", "javascript", "cpp"],
         "languageImplementations": {
           "python": {
-            "visibleCode": "class UserMainCode:\n    @classmethod\n    def findMax(cls, numbers):\n        # Write code here\n        if not numbers:\n            return None\n        max_num = numbers[0]\n        for num in numbers:\n            if num > max_num:\n                max_num = num\n        return max_num",
+            "visibleCode": "# Write code here",
             "invisibleCode": "# No additional code needed"
           },
           "java": {
-            "visibleCode": "public class UserMainCode {\n    public static int findMax(int[] numbers) {\n        // Write code here\n        if (numbers.length == 0) {\n            return Integer.MIN_VALUE;\n        }\n        int maxNum = numbers[0];\n        for (int num : numbers) {\n            if (num > maxNum) {\n                maxNum = num;\n            }\n        }\n        return maxNum;\n    }",
+            "visibleCode": "// Write code here",
             "invisibleCode": "// No additional code needed"
           }
         },
@@ -1786,11 +1786,11 @@
         "allowedLanguages": ["python", "java", "javascript", "cpp"],
         "languageImplementations": {
           "python": {
-            "visibleCode": "class UserMainCode:\n    @classmethod\n    def processNumbers(cls, numbers):\n        # Write code here\n        numbers = [x + 1 for x in numbers]\n        numbers = [x for x in numbers if x % 2 != 0]\n        return sum(numbers)",
+            "visibleCode": "# Write code here",
             "invisibleCode": "# No additional code needed"
           },
           "java": {
-            "visibleCode": "public class UserMainCode {\n    public static int processNumbers(int[] numbers) {\n        // Write code here\n        int sum = 0;\n        for(int i = 0; i < numbers.length; i++) {\n            numbers[i] += 1;\n            if(numbers[i] % 2 != 0) {\n                sum += numbers[i];\n            }\n        }\n        return sum;\n    }",
+            "visibleCode": "// Write code here",
             "invisibleCode": "// No additional code needed"
           }
         },
@@ -1828,11 +1828,11 @@
         "allowedLanguages": ["python", "java", "javascript", "cpp"],
         "languageImplementations": {
           "python": {
-            "visibleCode": "class UserMainCode:\n    @classmethod\n    def countLetters(cls, input_str):\n        # Write code here\n        vowels = 'aeiou'\n        v_count = sum(1 for c in input_str if c in vowels)\n        c_count = sum(1 for c in input_str if c.isalpha() and c not in vowels)\n        return f'Vowels: {v_count}, Consonants: {c_count}'",
+            "visibleCode": "# Write code here",
             "invisibleCode": "# No additional code needed"
           },
           "java": {
-            "visibleCode": "public class UserMainCode {\n    public static String countLetters(String str) {\n        // Write code here\n        int vowels = 0, consonants = 0;\n        String vowelList = \"aeiou\";\n        for(char c : str.toCharArray()) {\n            if(vowelList.indexOf(c) >= 0) vowels++;\n            else if(Character.isLetter(c)) consonants++;\n        }\n        return \"Vowels: \" + vowels + \", Consonants: \" + consonants;\n    }",
+            "visibleCode": "// Write code here",
             "invisibleCode": "// No additional code needed"
           }
         },
@@ -1870,11 +1870,11 @@
         "allowedLanguages": ["python", "java", "javascript", "cpp"],
         "languageImplementations": {
           "python": {
-            "visibleCode": "class UserMainCode:\n    @classmethod\n    def convertTemperature(cls, temp_str):\n        # Write code here\n        value = float(temp_str[:-1])\n        unit = temp_str[-1]\n        if unit == 'C':\n            result = (value * 9/5) + 32\n            return f'{result:.2f}F'\n        else:\n            result = (value - 32) * 5/9\n            return f'{result:.2f}C'",
+            "visibleCode": "# Write code here",
             "invisibleCode": "# No additional code needed"
           },
           "java": {
-            "visibleCode": "public class UserMainCode {\n    public static String convertTemperature(String temp) {\n        // Write code here\n        double value = Double.parseDouble(temp.substring(0, temp.length()-1));\n        char unit = temp.charAt(temp.length()-1);\n        if(unit == 'C') {\n            double result = (value * 9/5) + 32;\n            return String.format(\"%.2fF\", result);\n        } else {\n            double result = (value - 32) * 5/9;\n            return String.format(\"%.2fC\", result);\n        }\n    }",
+            "visibleCode": "// Write code here",
             "invisibleCode": "// No additional code needed"
           }
         },
@@ -1912,11 +1912,11 @@
         "allowedLanguages": ["python", "java", "javascript", "cpp"],
         "languageImplementations": {
           "python": {
-            "visibleCode": "class UserMainCode:\n    @classmethod\n    def generatePattern(cls, n):\n        # Write code here\n        result = []\n        for i in range(1, n+1):\n            row = ' '.join(str(j) for j in range(1, i+1))\n            result.append(row)\n        return '\\n'.join(result)",
+            "visibleCode": "# Write code here",
             "invisibleCode": "# No additional code needed"
           },
           "java": {
-            "visibleCode": "public class UserMainCode {\n    public static String generatePattern(int n) {\n        // Write code here\n        StringBuilder result = new StringBuilder();\n        for(int i = 1; i <= n; i++) {\n            for(int j = 1; j <= i; j++) {\n                result.append(j);\n                if(j < i) result.append(' ');\n            }\n            if(i < n) result.append('\\n');\n        }\n        return result.toString();\n    }",
+            "visibleCode": "// Write code here",
             "invisibleCode": "// No additional code needed"
           }
         },
