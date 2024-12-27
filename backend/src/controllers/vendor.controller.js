@@ -3734,8 +3734,16 @@ export const getCandidateTestDetails = async (req, res) => {
       });
     }
 
-    // Get all submissions for this test
-    const submissions = await Submission.find({ test: testId })
+    // Base query for submissions
+    const submissionQuery = { test: testId };
+    
+    // Add user filter only if userId is provided and not undefined
+    if (userId && userId !== '{userId}') {
+      submissionQuery.user = userId;
+    }
+
+    // Get submissions based on query
+    const submissions = await Submission.find(submissionQuery)
       .populate('user', 'name email')
       .populate({
         path: 'mcqSubmission',
@@ -3755,6 +3763,13 @@ export const getCandidateTestDetails = async (req, res) => {
         }
       })
       .sort('-updatedAt');
+
+    // If no submissions found at all
+    if (!submissions.length) {
+      return res.status(404).json({ 
+        error: "No submissions found for this test" 
+      });
+    }
 
     // Calculate test stats
     const stats = {
