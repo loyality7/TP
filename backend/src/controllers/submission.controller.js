@@ -1281,107 +1281,100 @@ export const generateTestReport = async (req, res) => {
   try {
     const { testId } = req.params;
 
-    // Get all submissions for this test with populated user and test details
-    const submissions = await Submission.find({ test: testId })
-      .populate('user', 'name email')
-      .populate({
-        path: 'test',
-        populate: [
-          { path: 'mcqs', select: 'question options correctOptions marks' },
-          { path: 'codingChallenges', select: 'title description testCases marks' }
-        ]
-      })
+    // Get test details first
+    const test = await Test.findById(testId)
+      .populate('mcqs')
+      .populate('codingChallenges')
       .lean();
 
-    if (!submissions.length) {
-      return res.status(404).json({ error: 'No submissions found for this test' });
+    if (!test) {
+      return res.status(404).json({ error: 'Test not found' });
     }
 
-    const workbook = new ExcelJS.Workbook();
-    const test = submissions[0].test; // Reference test details
+    // Get all submissions for this test
+    const submissions = await Submission.find({ test: testId })
+      .populate('user', 'name email')
+      .lean();
 
+    // Create workbook and worksheets
+    const workbook = new ExcelJS.Workbook();
+    
     // Sheet 1: Test Overview
     const overviewSheet = workbook.addWorksheet('Test Overview');
-    overviewSheet.columns = [
-      { header: 'Test Name', key: 'name', width: 30 },
-      { header: 'Description', key: 'description', width: 40 },
-      { header: 'Duration (mins)', key: 'duration', width: 15 },
-      { header: 'Maximum Marks', key: 'maxMarks', width: 15 },
-      { header: 'Total Students', key: 'totalStudents', width: 15 },
-      { header: 'Total Attempts', key: 'totalAttempts', width: 15 },
-      { header: 'Average Score', key: 'avgScore', width: 15 },
-    ];
+    
+    // Add title and styling
+    overviewSheet.mergeCells('A1:D1');
+    const titleCell = overviewSheet.getCell('A1');
+    titleCell.value = 'Test Report';
+    titleCell.font = { size: 16, bold: true };
+    titleCell.alignment = { horizontal: 'center' };
+    
+    // Add test details
+    overviewSheet.addRow(['Test Name:', test.title]);
+    overviewSheet.addRow(['Description:', test.description || 'N/A']);
+    overviewSheet.addRow(['Duration:', `${test.timeLimit || 'N/A'} minutes`]);
+    overviewSheet.addRow(['Maximum Marks:', test.totalMarks]);
+    overviewSheet.addRow(['Total Students:', submissions.length]);
+    overviewSheet.addRow(['Average Score:', 
+      Math.round(submissions.reduce((sum, s) => sum + (s.totalScore || 0), 0) / submissions.length)
+    ]);
 
-    // Add test overview data
-    const uniqueStudents = new Set(submissions.map(s => s.user._id.toString()));
-    overviewSheet.addRow({
-      name: test.title,
-      description: test.description || 'N/A',
-      duration: test.timeLimit || 'N/A',
-      maxMarks: test.totalMarks,
-      totalStudents: uniqueStudents.size,
-      totalAttempts: submissions.length,
-      avgScore: Math.round(submissions.reduce((sum, s) => sum + (s.totalScore || 0), 0) / submissions.length)
-    });
+    // Sheet 2: Student Scores
+    const scoresSheet = workbook.addWorksheet('Student Scores');
+    scoresSheet.addRow([
+      'Student Name',
+      'Email',
+      'MCQ Score',
+      'Coding Score',
+      'Total Score',
+      'Submission Date'
+    ]);
 
-    // Sheet 2: Score Summary (All students)
-    const scoreSheet = workbook.addWorksheet('Score Summary');
-    scoreSheet.columns = [
-      { header: 'Student Name', key: 'name', width: 30 },
-      { header: 'Email', key: 'email', width: 40 },
-      { header: 'MCQ Score', key: 'mcqScore', width: 15 },
-      { header: 'Coding Score', key: 'codingScore', width: 15 },
-      { header: 'Total Score', key: 'totalScore', width: 15 },
-      { header: 'Submission Date', key: 'submittedAt', width: 20 }
-    ];
-
-    // Add each student's score
     submissions.forEach(sub => {
-      scoreSheet.addRow({
-        name: sub.user.name,
-        email: sub.user.email,
-        mcqScore: sub.mcqSubmission?.totalScore || 0,
-        codingScore: sub.codingSubmission?.totalScore || 0,
-        totalScore: sub.totalScore || 0,
-        submittedAt: sub.endTime ? new Date(sub.endTime).toLocaleString() : 'In Progress'
-      });
+      scoresSheet.addRow([
+        sub.user.name,
+        sub.user.email,
+        sub.mcqSubmission?.totalScore || 0,
+        sub.codingSubmission?.totalScore || 0,
+        sub.totalScore || 0,
+        sub.endTime ? new Date(sub.endTime).toLocaleString() : 'In Progress'
+      ]);
     });
 
     // Sheet 3: MCQ Details
     const mcqSheet = workbook.addWorksheet('MCQ Details');
-    mcqSheet.columns = [
-      { header: 'Student', key: 'student', width: 30 },
-      { header: 'Question', key: 'question', width: 20 },
-      { header: 'Result', key: 'result', width: 10 }
-    ];
+    mcqSheet.addRow(['Student Name', 'Question', 'Status']);
 
-    // Add MCQ results for each student
     submissions.forEach(sub => {
       if (sub.mcqSubmission?.answers) {
         sub.mcqSubmission.answers.forEach(answer => {
-          const question = test.mcqs.find(q => q._id.toString() === answer.questionId.toString());
-          const isCorrect = arraysEqual(question?.correctOptions || [], answer.selectedOptions || []);
+          const question = test.mcqs.find(q => 
+            q._id.toString() === answer.questionId.toString()
+          );
+          const isCorrect = arraysEqual(
+            question?.correctOptions || [], 
+            answer.selectedOptions || []
+          );
           
-          mcqSheet.addRow({
-            student: `${sub.user.name} (${sub.user.email})`,
-            question: truncateString(question?.question || 'Unknown', 16),
-            result: isCorrect ? '✅' : '❌'
-          });
+          mcqSheet.addRow([
+            sub.user.name,
+            question?.question?.substring(0, 16) || 'Unknown',
+            isCorrect ? '✓' : '✗'
+          ]);
         });
       }
     });
 
     // Sheet 4: Coding Details
     const codingSheet = workbook.addWorksheet('Coding Details');
-    codingSheet.columns = [
-      { header: 'Student', key: 'student', width: 30 },
-      { header: 'Challenge', key: 'challenge', width: 20 },
-      { header: 'Result', key: 'result', width: 10 },
-      { header: 'Score', key: 'score', width: 10 },
-      { header: 'Language', key: 'language', width: 15 }
-    ];
+    codingSheet.addRow([
+      'Student Name',
+      'Challenge',
+      'Status',
+      'Score',
+      'Language'
+    ]);
 
-    // Add coding results for each student
     submissions.forEach(sub => {
       if (sub.codingSubmission?.challenges) {
         sub.codingSubmission.challenges.forEach(challenge => {
@@ -1389,28 +1382,39 @@ export const generateTestReport = async (req, res) => {
             c => c._id.toString() === challenge.challengeId.toString()
           );
           
-          // Get the best submission for this challenge
           const bestSubmission = challenge.submissions.reduce(
             (best, curr) => curr.marks > (best?.marks || 0) ? curr : best,
             null
           );
 
           if (bestSubmission) {
-            codingSheet.addRow({
-              student: `${sub.user.name} (${sub.user.email})`,
-              challenge: truncateString(challengeDetails?.title || 'Unknown', 16),
-              result: bestSubmission.status === 'passed' ? '✅' : '❌',
-              score: `${bestSubmission.marks || 0}/${challengeDetails?.marks || 0}`,
-              language: bestSubmission.language || 'N/A'
-            });
+            codingSheet.addRow([
+              sub.user.name,
+              challengeDetails?.title?.substring(0, 16) || 'Unknown',
+              bestSubmission.status === 'passed' ? '✓' : '✗',
+              `${bestSubmission.marks || 0}/${challengeDetails?.marks || 0}`,
+              bestSubmission.language || 'N/A'
+            ]);
           }
         });
       }
     });
 
-    // Style all sheets
-    [overviewSheet, scoreSheet, mcqSheet, codingSheet].forEach(sheet => {
-      styleSheet(sheet);
+    // Add some basic styling to all sheets
+    [overviewSheet, scoresSheet, mcqSheet, codingSheet].forEach(sheet => {
+      // Style header row
+      const headerRow = sheet.getRow(1);
+      headerRow.font = { bold: true };
+      headerRow.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFD3D3D3' }
+      };
+
+      // Auto-fit columns
+      sheet.columns.forEach(column => {
+        column.width = 15;
+      });
     });
 
     // Set response headers
@@ -1420,10 +1424,13 @@ export const generateTestReport = async (req, res) => {
     );
     res.setHeader(
       'Content-Disposition',
-      `attachment; filename=test-report-${test.title}.xlsx`
+      `attachment; filename=test-report-${test.title.replace(/[^a-z0-9]/gi, '_')}.xlsx`
     );
 
+    // Write to response
+    console.log('Writing workbook to response...');
     await workbook.xlsx.write(res);
+    console.log('Workbook written successfully');
 
   } catch (error) {
     console.error('Error generating report:', error);
