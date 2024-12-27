@@ -3734,146 +3734,108 @@ export const getCandidateTestDetails = async (req, res) => {
       });
     }
 
-    // Get all submissions for this candidate
-    const submissions = await Submission.find({
-      test: testId,
-      user: userId
-    })
-    .populate('user', 'name email')
-    .populate({
-      path: 'mcqSubmission',
-      populate: {
-        path: 'answers',
-        model: 'MCQAnswer'
-      }
-    })
-    .populate({
-      path: 'codingSubmission',
-      populate: {
-        path: 'answers',
+    // Get all submissions for this test
+    const submissions = await Submission.find({ test: testId })
+      .populate('user', 'name email')
+      .populate({
+        path: 'mcqSubmission',
         populate: {
-          path: 'testCases',
-          model: 'TestCase'
+          path: 'answers',
+          model: 'MCQAnswer'
         }
-      }
-    })
-    .sort('-submittedAt');
-
-    if (!submissions.length) {
-      return res.status(404).json({ error: "No submissions found for this candidate" });
-    }
-
-    const latestSubmission = submissions[0];
-    const analytics = await TestAnalytics.find({
-      test: testId,
-      user: userId
-    });
-
-    const response = {
-      candidateInfo: {
-        _id: latestSubmission.user._id,
-        name: latestSubmission.user.name,
-        email: latestSubmission.user.email,
-        status: latestSubmission.status,
-        attempts: submissions.length,
-        lastAttempt: latestSubmission.submittedAt
-      },
-      testInfo: {
-        testId: test._id,
-        testTitle: test.title,
-        totalMarks: test.totalMarks,
-        passingMarks: test.passingMarks,
-        duration: test.duration
-      },
-      submissionHistory: submissions.map(sub => ({
-        submissionId: sub._id,
-        startedAt: sub.startTime,
-        submittedAt: sub.submittedAt,
-        duration: sub.duration,
-        totalScore: sub.totalScore,
-        result: sub.totalScore >= test.passingMarks ? 'PASS' : 'FAIL',
-        mcqScore: sub.mcqSubmission?.totalScore || 0,
-        codingScore: sub.codingSubmission?.totalScore || 0
-      })),
-      latestAttempt: {
-        scores: {
-          mcq: {
-            score: latestSubmission.mcqSubmission?.totalScore || 0,
-            maxScore: test.mcqs.reduce((sum, q) => sum + (q.marks || 0), 0),
-            percentage: Math.round(
-              ((latestSubmission.mcqSubmission?.totalScore || 0) / 
-              test.mcqs.reduce((sum, q) => sum + (q.marks || 0), 0)) * 100
-            )
-          },
-          coding: {
-            score: latestSubmission.codingSubmission?.totalScore || 0,
-            maxScore: test.codingChallenges.reduce((sum, c) => sum + (c.marks || 0), 0),
-            percentage: Math.round(
-              ((latestSubmission.codingSubmission?.totalScore || 0) / 
-              test.codingChallenges.reduce((sum, c) => sum + (c.marks || 0), 0)) * 100
-            )
-          },
-          total: {
-            score: latestSubmission.totalScore || 0,
-            maxScore: test.totalMarks,
-            percentage: Math.round(((latestSubmission.totalScore || 0) / test.totalMarks) * 100)
+      })
+      .populate({
+        path: 'codingSubmission',
+        populate: {
+          path: 'answers',
+          populate: {
+            path: 'testCases',
+            model: 'TestCase'
           }
+        }
+      })
+      .sort('-updatedAt');
+
+    // Calculate test stats
+    const stats = {
+      totalCandidates: new Set(submissions.map(s => s.user?._id.toString())).size,
+      averageScores: {
+        mcq: calculateAverage(submissions, 'mcqSubmission.totalScore'),
+        coding: calculateAverage(submissions, 'codingSubmission.totalScore'),
+        total: calculateAverage(submissions, 'totalScore')
+      },
+      highestScores: {
+        mcq: Math.max(...submissions.map(s => s.mcqSubmission?.totalScore || 0)),
+        coding: Math.max(...submissions.map(s => s.codingSubmission?.totalScore || 0)),
+        total: Math.max(...submissions.map(s => s.totalScore || 0))
+      },
+      maxPossibleScores: {
+        mcq: test.mcqs.reduce((sum, mcq) => sum + mcq.marks, 0),
+        coding: test.codingChallenges.reduce((sum, challenge) => sum + challenge.marks, 0),
+        total: test.totalMarks
+      }
+    };
+
+    // If userId is provided, return detailed information for that candidate
+    if (userId) {
+      const userSubmissions = submissions.filter(s => s.user?._id.toString() === userId);
+      if (!userSubmissions.length) {
+        return res.status(404).json({ error: "No submissions found for this candidate" });
+      }
+
+      const latestSubmission = userSubmissions[0];
+      const analytics = await TestAnalytics.find({ test: testId, user: userId });
+
+      return res.json({
+        candidateInfo: {
+          _id: latestSubmission.user._id,
+          name: latestSubmission.user.name,
+          email: latestSubmission.user.email,
+          status: latestSubmission.status,
+          attempts: userSubmissions.length,
+          lastAttempt: latestSubmission.updatedAt
         },
-        mcqSection: {
-          totalQuestions: test.mcqs.length,
-          attemptedQuestions: latestSubmission.mcqSubmission?.answers?.length || 0,
-          correctAnswers: latestSubmission.mcqSubmission?.answers?.filter(a => a.isCorrect).length || 0,
-          detailedAnswers: test.mcqs.map(question => {
-            const answer = latestSubmission.mcqSubmission?.answers?.find(
-              a => a.questionId.toString() === question._id.toString()
-            );
-            return {
-              questionId: question._id,
-              question: question.question,
-              options: question.options,
-              selectedOptions: answer?.selectedOptions || [],
-              correctOptions: question.correctOptions,
-              explanation: question.explanation,
-              isCorrect: answer?.isCorrect || false,
-              marks: answer?.marks || 0,
-              maxMarks: question.marks,
-              timeTaken: answer?.timeTaken || 0
-            };
-          })
+        testInfo: {
+          testId: test._id,
+          testTitle: test.title,
+          totalMarks: test.totalMarks,
+          passingMarks: test.passingMarks,
+          duration: test.duration
         },
-        codingSection: {
-          totalChallenges: test.codingChallenges.length,
-          attemptedChallenges: latestSubmission.codingSubmission?.answers?.length || 0,
-          detailedAnswers: test.codingChallenges.map(challenge => {
-            const answer = latestSubmission.codingSubmission?.answers?.find(
-              a => a.challengeId.toString() === challenge._id.toString()
-            );
-            return {
-              challengeId: challenge._id,
-              title: challenge.title,
-              description: challenge.description,
-              difficulty: challenge.difficulty,
-              code: answer?.code || '',
-              language: answer?.language || '',
-              score: answer?.score || 0,
-              maxScore: challenge.marks,
-              testCases: answer?.testCases?.map(tc => ({
-                input: tc.input,
-                expectedOutput: tc.expectedOutput,
-                actualOutput: tc.actualOutput,
-                passed: tc.passed,
-                error: tc.error,
-                executionTime: tc.executionTime,
-                memory: tc.memory
-              })) || [],
+        submissions: userSubmissions.map(submission => ({
+          mcqSection: {
+            score: submission.mcqSubmission?.totalScore || 0,
+            maxScore: stats.maxPossibleScores.mcq,
+            percentage: calculatePercentage(submission.mcqSubmission?.totalScore, stats.maxPossibleScores.mcq),
+            questions: submission.mcqSubmission?.answers?.map(answer => ({
+              questionId: answer.questionId,
+              question: test.mcqs.find(q => q._id.toString() === answer.questionId.toString())?.question,
+              selectedOption: answer.selectedOption,
+              correctOption: test.mcqs.find(q => q._id.toString() === answer.questionId.toString())?.correctOption,
+              isCorrect: answer.isCorrect,
+              marks: answer.marks
+            })) || []
+          },
+          codingSection: {
+            score: submission.codingSubmission?.totalScore || 0,
+            maxScore: stats.maxPossibleScores.coding,
+            percentage: calculatePercentage(submission.codingSubmission?.totalScore, stats.maxPossibleScores.coding),
+            challenges: submission.codingSubmission?.answers?.map(answer => ({
+              challengeId: answer.challengeId,
+              title: test.codingChallenges.find(c => c._id.toString() === answer.challengeId.toString())?.title,
+              code: answer.code,
+              language: answer.language,
+              score: answer.score,
+              maxScore: test.codingChallenges.find(c => c._id.toString() === answer.challengeId.toString())?.marks,
+              testCases: answer.testCases,
               executionMetrics: {
-                time: answer?.executionTime || 0,
-                memory: answer?.memory || 0,
-                status: answer?.status || 'not_attempted'
+                time: answer.executionTime,
+                memory: answer.memory,
+                status: answer.status
               }
-            };
-          })
-        },
+            })) || []
+          }
+        })),
         behaviorMetrics: {
           tabSwitches: analytics.reduce((sum, a) => sum + (a.behavior?.tabSwitches || 0), 0),
           focusLost: analytics.reduce((sum, a) => sum + (a.behavior?.focusLostCount || 0), 0),
@@ -3884,13 +3846,80 @@ export const getCandidateTestDetails = async (req, res) => {
           startTime: latestSubmission.startTime,
           endTime: latestSubmission.endTime,
           duration: latestSubmission.duration,
-          timePerQuestion: calculateTimePerQuestion(latestSubmission.mcqSubmission?.answers || []),
-          timePerChallenge: calculateTimePerChallenge(latestSubmission.codingSubmission?.answers || [])
+          timePerQuestion: calculateTimePerQuestion(userSubmissions),
+          timePerChallenge: calculateTimePerChallenge(userSubmissions)
+        }
+      });
+    }
+
+    // If no userId, return all candidates with basic info
+    const candidates = submissions.reduce((acc, submission) => {
+      if (!submission.user) return acc;
+      
+      const userId = submission.user._id.toString();
+      const existingCandidate = acc.find(c => c._id.toString() === userId);
+      
+      if (!existingCandidate) {
+        acc.push({
+          _id: submission.user._id,
+          name: submission.user.name,
+          email: submission.user.email,
+          status: submission.status,
+          scores: {
+            mcq: {
+              score: submission.mcqSubmission?.totalScore || 0,
+              maxScore: stats.maxPossibleScores.mcq,
+              percentage: calculatePercentage(submission.mcqSubmission?.totalScore, stats.maxPossibleScores.mcq)
+            },
+            coding: {
+              score: submission.codingSubmission?.totalScore || 0,
+              maxScore: stats.maxPossibleScores.coding,
+              percentage: calculatePercentage(submission.codingSubmission?.totalScore, stats.maxPossibleScores.coding)
+            },
+            total: {
+              score: submission.totalScore || 0,
+              maxScore: stats.maxPossibleScores.total,
+              percentage: calculatePercentage(submission.totalScore, stats.maxPossibleScores.total)
+            }
+          },
+          attempts: 1,
+          lastAttempt: submission.updatedAt,
+          result: submission.totalScore >= test.passingMarks ? 'PASS' : 'FAIL'
+        });
+      } else {
+        existingCandidate.attempts++;
+        if (new Date(submission.updatedAt) > new Date(existingCandidate.lastAttempt)) {
+          existingCandidate.lastAttempt = submission.updatedAt;
+          existingCandidate.status = submission.status;
+          existingCandidate.scores = {
+            mcq: {
+              score: submission.mcqSubmission?.totalScore || 0,
+              maxScore: stats.maxPossibleScores.mcq,
+              percentage: calculatePercentage(submission.mcqSubmission?.totalScore, stats.maxPossibleScores.mcq)
+            },
+            coding: {
+              score: submission.codingSubmission?.totalScore || 0,
+              maxScore: stats.maxPossibleScores.coding,
+              percentage: calculatePercentage(submission.codingSubmission?.totalScore, stats.maxPossibleScores.coding)
+            },
+            total: {
+              score: submission.totalScore || 0,
+              maxScore: stats.maxPossibleScores.total,
+              percentage: calculatePercentage(submission.totalScore, stats.maxPossibleScores.total)
+            }
+          };
+          existingCandidate.result = submission.totalScore >= test.passingMarks ? 'PASS' : 'FAIL';
         }
       }
-    };
+      return acc;
+    }, []);
 
-    res.json(response);
+    return res.json({
+      testId: test._id,
+      testTitle: test.title,
+      stats,
+      candidates
+    });
 
   } catch (error) {
     console.error('Error in getCandidateTestDetails:', error);
@@ -3902,16 +3931,34 @@ export const getCandidateTestDetails = async (req, res) => {
 };
 
 // Helper functions
-const calculateTimePerQuestion = (answers) => {
-  return answers.reduce((acc, answer) => {
-    acc[answer.questionId] = answer.timeTaken || 0;
-    return acc;
-  }, {});
+const calculateAverage = (submissions, field) => {
+  if (!submissions.length) return 0;
+  return Math.round(
+    submissions.reduce((sum, s) => sum + (get(s, field) || 0), 0) / submissions.length
+  );
 };
 
-const calculateTimePerChallenge = (answers) => {
-  return answers.reduce((acc, answer) => {
-    acc[answer.challengeId] = answer.executionTime || 0;
-    return acc;
-  }, {});
+const calculatePercentage = (value, total) => {
+  if (!total) return 0;
+  return Math.round((value || 0) / total * 100);
+};
+
+const calculateTimePerQuestion = (submissions) => {
+  const timeMap = {};
+  submissions.forEach(submission => {
+    submission.mcqSubmission?.answers?.forEach(answer => {
+      timeMap[answer.questionId] = answer.timeTaken || 0;
+    });
+  });
+  return timeMap;
+};
+
+const calculateTimePerChallenge = (submissions) => {
+  const timeMap = {};
+  submissions.forEach(submission => {
+    submission.codingSubmission?.answers?.forEach(answer => {
+      timeMap[answer.challengeId] = answer.executionTime || 0;
+    });
+  });
+  return timeMap;
 };
