@@ -788,88 +788,112 @@ export default function CodingSection({
 
   // Add reset button to use handleResetCode
   const renderEditorControls = () => {
+    // Calculate pagination
+    const questionsPerPage = 10;
+    const totalPages = Math.ceil(challenges.length / questionsPerPage);
+    const currentPage = Math.floor(currentChallenge / questionsPerPage);
+    const startIndex = currentPage * questionsPerPage;
+    const endIndex = Math.min(startIndex + questionsPerPage, challenges.length);
+
     return (
-      <div className="flex items-center gap-2">
-        <button
-          onClick={() => setCurrentChallenge(prev => Math.max(0, prev - 1))}
-          disabled={currentChallenge === 0}
-          className="p-1.5 rounded hover:bg-[#3c3c3c] text-gray-300 disabled:opacity-50"
-        >
-          <ChevronLeft className="w-4 h-4" />
-        </button>
-        
-        <div className="flex items-center gap-1">
-          {challenges.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setCurrentChallenge(idx)}
-              className={`w-7 h-7 rounded-full flex items-center justify-center text-xs
-                ${currentChallenge === idx 
-                  ? 'bg-blue-600 text-white' 
-                  : 'bg-[#3c3c3c] text-gray-300 hover:bg-[#4c4c4c]'}
-                ${submissionStatus[challenges[idx]._id] === 'submitted' && 'bg-green-600'}`}
-            >
-              {idx + 1}
-            </button>
-          ))}
+      <div className="flex items-center justify-between gap-2">
+        {/* Left side controls */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setCurrentChallenge(prev => Math.max(0, prev - 1))}
+            disabled={currentChallenge === 0}
+            className="p-1.5 rounded hover:bg-[#3c3c3c] text-gray-300 disabled:opacity-50"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+
+          {/* Show only current page questions */}
+          <div className="flex items-center gap-1 max-w-[400px] overflow-x-auto">
+            {challenges.slice(startIndex, endIndex).map((_, idx) => {
+              const actualIdx = startIndex + idx;
+              return (
+                <button
+                  key={actualIdx}
+                  onClick={() => setCurrentChallenge(actualIdx)}
+                  className={`w-7 h-7 rounded-full flex items-center justify-center text-xs
+                    ${currentChallenge === actualIdx 
+                      ? 'bg-blue-600 text-white' 
+                      : 'bg-[#3c3c3c] text-gray-300 hover:bg-[#4c4c4c]'}
+                    ${submissionStatus[challenges[actualIdx]._id] === 'submitted' && 'bg-green-600'}`}
+                >
+                  {actualIdx + 1}
+                </button>
+              );
+            })}
+          </div>
+
+          <button
+            onClick={() => setCurrentChallenge(prev => Math.min(challenges.length - 1, prev + 1))}
+            disabled={currentChallenge === challenges.length - 1}
+            className="p-1.5 rounded hover:bg-[#3c3c3c] text-gray-300 disabled:opacity-50"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+
+          {/* Page indicator */}
+          {totalPages > 1 && (
+            <span className="text-gray-400 text-sm ml-2">
+              Page {currentPage + 1} of {totalPages}
+            </span>
+          )}
         </div>
 
-        <button
-          onClick={() => setCurrentChallenge(prev => Math.min(challenges.length - 1, prev + 1))}
-          disabled={currentChallenge === challenges.length - 1}
-          className="p-1.5 rounded hover:bg-[#3c3c3c] text-gray-300 disabled:opacity-50"
-        >
-          <ChevronRight className="w-4 h-4" />
-        </button>
+        {/* Right side controls */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleResetCode}
+            className="p-1.5 rounded hover:bg-[#3c3c3c] text-gray-300"
+            title="Reset Code"
+          >
+            <RotateCcw className="w-4 h-4" />
+          </button>
 
-        <button
-          onClick={handleResetCode}
-          className="p-1.5 rounded hover:bg-[#3c3c3c] text-gray-300"
-          title="Reset Code"
-        >
-          <RotateCcw className="w-4 h-4" />
-        </button>
-
-        {/* Add editor settings controls */}
-        <div className="flex items-center gap-2 ml-4 border-l border-[#3c3c3c] pl-4">
-          <button
-            onClick={() => setFontSize(prev => Math.min(prev + 2, 24))}
-            className="p-1.5 rounded hover:bg-[#3c3c3c] text-gray-300 text-sm"
-            title="Increase Font Size"
-          >
-            A+
-          </button>
-          <button
-            onClick={() => setFontSize(prev => Math.max(prev - 2, 10))}
-            className="p-1.5 rounded hover:bg-[#3c3c3c] text-gray-300 text-sm"
-            title="Decrease Font Size"
-          >
-            A-
-          </button>
-          
-          <button
-            onClick={() => setShowLineNumbers(prev => !prev)}
-            className={`p-1.5 rounded hover:bg-[#3c3c3c] text-gray-300 ${!showLineNumbers && 'opacity-50'}`}
-            title="Toggle Line Numbers"
-          >
-            #
-          </button>
-          
-          <button
-            onClick={() => setWordWrap(prev => !prev)}
-            className={`p-1.5 rounded hover:bg-[#3c3c3c] text-gray-300 ${!wordWrap && 'opacity-50'}`}
-            title="Toggle Word Wrap"
-          >
-            ↵
-          </button>
-          
-          <button
-            onClick={() => setAutoComplete(prev => !prev)}
-            className={`p-1.5 rounded hover:bg-[#3c3c3c] text-gray-300 ${!autoComplete && 'opacity-50'}`}
-            title="Toggle Auto Complete"
-          >
-            <>⌨</>
-          </button>
+          {/* Editor settings controls */}
+          <div className="flex items-center gap-2 border-l border-[#3c3c3c] pl-4">
+            <button
+              onClick={() => setFontSize(prev => Math.min(prev + 2, 24))}
+              className="p-1.5 rounded hover:bg-[#3c3c3c] text-gray-300 text-sm"
+              title="Increase Font Size"
+            >
+              A+
+            </button>
+            <button
+              onClick={() => setFontSize(prev => Math.max(prev - 2, 10))}
+              className="p-1.5 rounded hover:bg-[#3c3c3c] text-gray-300 text-sm"
+              title="Decrease Font Size"
+            >
+              A-
+            </button>
+            
+            <button
+              onClick={() => setShowLineNumbers(prev => !prev)}
+              className={`p-1.5 rounded hover:bg-[#3c3c3c] text-gray-300 ${!showLineNumbers && 'opacity-50'}`}
+              title="Toggle Line Numbers"
+            >
+              #
+            </button>
+            
+            <button
+              onClick={() => setWordWrap(prev => !prev)}
+              className={`p-1.5 rounded hover:bg-[#3c3c3c] text-gray-300 ${!wordWrap && 'opacity-50'}`}
+              title="Toggle Word Wrap"
+            >
+              ↵
+            </button>
+            
+            <button
+              onClick={() => setAutoComplete(prev => !prev)}
+              className={`p-1.5 rounded hover:bg-[#3c3c3c] text-gray-300 ${!autoComplete && 'opacity-50'}`}
+              title="Toggle Auto Complete"
+            >
+              <>⌨</>
+            </button>
+          </div>
         </div>
       </div>
     );
