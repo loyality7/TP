@@ -1596,4 +1596,109 @@ function calculatePerformanceTrends(submissions, test) {
       (s.mcqSubmission?.totalScore || 0) + (s.codingSubmission?.totalScore || 0) >= test.passingMarks
     ).length / submissions.length) * 100)}%`
   };
+}
+
+function styleMCQRow(row, accuracy) {
+  // Color code based on accuracy
+  let color;
+  if (accuracy >= 80) color = '92D050';      // Green
+  else if (accuracy >= 60) color = 'FFEB84';  // Light Yellow
+  else if (accuracy >= 40) color = 'FFC000';  // Orange
+  else color = 'FF9999';                      // Light Red
+
+  row.eachCell(cell => {
+    cell.fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: color }
+    };
+  });
+}
+
+function styleCodingRow(row, successRate) {
+  // Color code based on success rate
+  let color;
+  if (successRate >= 80) color = '92D050';      // Green
+  else if (successRate >= 60) color = 'FFEB84';  // Light Yellow
+  else if (successRate >= 40) color = 'FFC000';  // Orange
+  else color = 'FF9999';                         // Light Red
+
+  row.eachCell(cell => {
+    cell.fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: color }
+    };
+  });
+}
+
+function styleChartData(row, isHeader = false) {
+  if (isHeader) {
+    row.font = { bold: true, color: { argb: 'FFFFFF' } };
+    row.fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: '4472C4' }
+    };
+  } else {
+    row.font = { bold: false };
+    row.fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'F2F2F2' }
+    };
+  }
+}
+
+function addBorder(sheet, startRow, endRow, startCol, endCol) {
+  for (let i = startRow; i <= endRow; i++) {
+    for (let j = startCol; j <= endCol; j++) {
+      const cell = sheet.getCell(i, j);
+      cell.border = {
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' }
+      };
+    }
+  }
+}
+
+function formatPercentageCell(cell, value) {
+  cell.value = value;
+  cell.numFmt = '0.00%';
+}
+
+function formatDateCell(cell, value) {
+  cell.value = value;
+  cell.numFmt = 'dd/mm/yyyy hh:mm:ss';
+}
+
+function addGradientDataBar(worksheet, col, startRow, endRow) {
+  const cfRule = {
+    type: 'dataBar',
+    priority: 1,
+    dataBar: {
+      minLength: 0,
+      maxLength: 100,
+      showValue: true,
+      gradient: true,
+      border: true,
+      negativeBarColorSameAsPositive: true,
+      negativeBarBorderColorSameAsPositive: true,
+      axisPosition: 'middle',
+      direction: 'leftToRight',
+      cfvo: [
+        { type: 'min' },
+        { type: 'max' }
+      ],
+      color: { argb: 'FF638EC6' },
+      borderColor: { argb: 'FF638EC6' }
+    }
+  };
+
+  worksheet.addConditionalFormatting({
+    ref: `${col}${startRow}:${col}${endRow}`,
+    rules: [cfRule]
+  });
 } 
