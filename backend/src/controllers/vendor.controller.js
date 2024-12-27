@@ -222,10 +222,10 @@ export const getTestResults = async (req, res) => {
     };
 
     // Process candidate results
-    const candidateResults = submissions.map(submission => {
+    const candidateResults = submissions.map(currentSubmission => {
       // Calculate MCQ details
       const mcqDetails = test.mcqs.map(mcq => {
-        const answer = submission.mcqSubmission?.answers?.find(
+        const answer = currentSubmission.mcqSubmission?.answers?.find(
           a => a.questionId.toString() === mcq._id.toString()
         );
         return {
@@ -238,16 +238,16 @@ export const getTestResults = async (req, res) => {
 
       // Calculate Coding details
       const codingDetails = test.codingChallenges.map(challenge => {
-        const submission = submission.codingSubmission?.challenges?.find(
+        const challengeSubmission = currentSubmission.codingSubmission?.challenges?.find(
           c => c.challengeId.toString() === challenge._id.toString()
         );
-        const bestSubmission = submission?.submissions?.reduce((best, current) => 
+        const bestSubmission = challengeSubmission?.submissions?.reduce((best, current) => 
           (current.marks > best.marks) ? current : best, { marks: 0, testCaseResults: [] }
         );
 
         return {
           challengeName: challenge.title,
-          timeTaken: submission?.totalTime || 0,
+          timeTaken: challengeSubmission?.totalTime || 0,
           score: (bestSubmission?.marks * challenge.marks) / 100,
           maxMarks: challenge.marks,
           testCasesPassed: bestSubmission?.testCaseResults?.filter(tc => tc.passed).length || 0,
@@ -259,12 +259,12 @@ export const getTestResults = async (req, res) => {
       const mcqScore = mcqDetails.reduce((sum, q) => sum + q.score, 0);
       const codingScore = codingDetails.reduce((sum, c) => sum + c.score, 0);
       const totalScore = mcqScore + codingScore;
-      const timeTaken = submission.duration || 0;
+      const timeTaken = currentSubmission.duration || 0;
 
       return {
-        candidateId: submission.user._id,
-        name: submission.user.name,
-        email: submission.user.email,
+        candidateId: currentSubmission.user._id,
+        name: currentSubmission.user.name,
+        email: currentSubmission.user.email,
         scores: {
           total: totalScore,
           mcq: mcqScore,
@@ -294,6 +294,13 @@ export const getTestResults = async (req, res) => {
       message: error.message 
     });
   }
+};
+
+// Helper function for calculating pass rate
+const calculatePassRate = (submissions, passingMarks) => {
+  if (!submissions || submissions.length === 0) return 0;
+  const passedCount = submissions.filter(s => (s.totalScore || 0) >= passingMarks).length;
+  return Math.round((passedCount / submissions.length) * 100);
 };
 
 export const getTestCandidates = async (req, res) => {
@@ -1331,11 +1338,7 @@ const calculateArrayAverage = (array) => {
   return array.reduce((sum, value) => sum + value, 0) / array.length;
 };
 
-const calculatePassRate = (submissions, passingMarks) => {
-  if (!submissions || submissions.length === 0) return 0;
-  const passed = submissions.filter(s => (s.totalScore || 0) >= (passingMarks || 70)).length;
-  return Math.round((passed / submissions.length) * 100);
-};
+
 
 // Get all MCQ submissions for a user's test
 export const getUserMCQSubmissions = async (req, res) => {
