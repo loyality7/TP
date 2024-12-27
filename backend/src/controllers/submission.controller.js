@@ -632,9 +632,10 @@ export const getTestSubmissions = async (req, res) => {
       });
     }
 
-    // Get test details with correct answers
+    // Get test details with populated fields
     const test = await Test.findById(testId)
-      .select('mcqs codingChallenges')
+      .populate('mcqs')
+      .populate('codingChallenges')
       .lean();
     
     if (!test) {
@@ -645,114 +646,156 @@ export const getTestSubmissions = async (req, res) => {
     }
 
     // Get all submissions for this test with proper population
-    const submissions = await Submission.find({ 
-      test: testId,
-      status: { $in: ['completed', 'mcq_completed', 'coding_completed'] }
-    })
-    .populate('user', 'name email')
-    .lean();
+    const submissions = await Submission.find({ test: testId })
+      .populate('user', 'name email')
+      .populate({
+        path: 'test',
+        select: 'title type category difficulty totalMarks passingMarks mcqs codingChallenges timeLimit',
+        populate: [
+          { 
+            path: 'codingChallenges', 
+            select: 'title description testCases marks difficulty'
+          },
+          {
+            path: 'mcqs',
+            select: 'question options correctOptions marks'
+          }
+        ]
+      })
+      .lean();
 
-    // Process MCQ submissions with null checks
-    const mcqSubmissions = submissions
-      .filter(sub => sub?.mcqSubmission?.completed)
-      .map(sub => {
-        if (!sub?.user?._id) return null; // Skip if user data is missing
-
-        // Calculate answers and their correctness
-        const answers = (sub.mcqSubmission?.answers || []).map(answer => {
-          const question = test.mcqs?.find(q => 
-            q?._id?.toString() === answer?.questionId?.toString()
-          );
-          
-          if (!question) return null;
-
-          const correctOptions = question.correctOptions || [];
-          const selectedOptions = answer.selectedOptions || [];
-          
-          const isCorrect = Array.isArray(correctOptions) && 
-            Array.isArray(selectedOptions) &&
-            correctOptions.length === selectedOptions.length &&
-            [...correctOptions].sort().every((opt, idx) => 
-              opt === [...selectedOptions].sort()[idx]
+    const transformedSubmissions = {
+      coding: submissions
+        .filter(sub => sub.codingSubmission?.challenges?.length > 0)
+        .map(sub => ({
+          submissionId: sub._id,
+          userId: sub.user._id,
+          userName: sub.user.name,
+          userEmail: sub.user.email,
+          testId: sub.test._id,
+          testTitle: sub.test.title,
+          type: sub.test.type,
+          category: sub.test.category,
+          difficulty: sub.test.difficulty,
+          score: sub.codingSubmission?.totalScore || 0,
+          totalMarks: sub.test?.totalMarks,
+          passingMarks: sub.test?.passingMarks,
+          status: sub.status,
+          startTime: sub.startTime,
+          endTime: sub.endTime,
+          duration: sub.endTime ? Math.round((sub.endTime - sub.startTime) / 1000) : null,
+          challenges: (sub.codingSubmission?.challenges || []).map(challenge => {
+            const challengeDetails = sub.test.codingChallenges.find(
+              c => c._id.toString() === challenge.challengeId.toString()
+            );
+            
+            return {
+              challengeId: challenge.challengeId,
+              challengeTitle: challengeDetails?.title || 'Unknown Challenge',
+              difficulty: challengeDetails?.difficulty,
+              maxMarks: challengeDetails?.marks || 0,
+              submissions: (challenge.submissions || []).map(submission => ({
+                submittedAt: submission.submittedAt,
+                language: submission.language,
+                status: submission.status,
+                marks: submission.marks,
+                code: submission.code,
+                executionTime: submission.executionTime,
+                memory: submission.memory,
+                output: submission.output,
+                error: submission.error,
+                testCaseResults: submission.testCaseResults?.map(tc => ({
+                  passed: tc.passed,
+                  input: tc.input,
+                  expectedOutput: tc.expectedOutput,
+                  actualOutput: tc.actualOutput,
+                  error: tc.error
+                })),
+                testCasesPassed: submission.testCaseResults?.filter(tc => tc.passed).length || 0,
+                totalTestCases: submission.testCaseResults?.length || 0
+              })),
+              bestScore: Math.max(...(challenge.submissions || []).map(s => s.marks || 0), 0),
+              totalAttempts: challenge.submissions?.length || 0
+            };
+          })
+        })),
+      mcq: submissions
+        .filter(sub => sub.mcqSubmission?.answers?.length > 0)
+        .map(sub => ({
+          submissionId: sub._id,
+          userId: sub.user._id,
+          userName: sub.user.name,
+          userEmail: sub.user.email,
+          answers: (sub.mcqSubmission?.answers || []).map(answer => {
+            const question = test.mcqs.find(
+              q => q._id.toString() === answer.questionId.toString()
+            );
+            
+            const isCorrect = arraysEqual(
+              question?.correctOptions || [],
+              answer.selectedOptions || []
             );
 
-          return {
-            questionId: answer.questionId,
-            selectedOptions: selectedOptions,
-            isCorrect: isCorrect,
-            marks: isCorrect ? (question.marks || 0) : 0
-          };
-        }).filter(Boolean); // Remove null answers
+            return {
+              questionId: answer.questionId,
+              question: question?.question,
+              selectedOptions: answer.selectedOptions || [],
+              correctOptions: question?.correctOptions || [],
+              options: question?.options || [],
+              explanation: question?.explanation,
+              isCorrect,
+              marks: isCorrect ? (question?.marks || 0) : 0,
+              maxMarks: question?.marks || 0
+            };
+          }),
+          totalScore: sub.mcqSubmission?.totalScore || 0,
+          submittedAt: sub.mcqSubmission?.submittedAt,
+          summary: {
+            totalQuestions: test.mcqs?.length || 0,
+            attemptedQuestions: sub.mcqSubmission?.answers?.length || 0,
+            correctAnswers: (sub.mcqSubmission?.answers || []).filter(answer => {
+              const question = test.mcqs.find(q => q._id.toString() === answer.questionId.toString());
+              return arraysEqual(question?.correctOptions || [], answer.selectedOptions || []);
+            }).length,
+            incorrectAnswers: (sub.mcqSubmission?.answers || []).filter(answer => {
+              const question = test.mcqs.find(q => q._id.toString() === answer.questionId.toString());
+              return !arraysEqual(question?.correctOptions || [], answer.selectedOptions || []);
+            }).length,
+            accuracy: Math.round(((sub.mcqSubmission?.answers || []).filter(answer => {
+              const question = test.mcqs.find(q => q._id.toString() === answer.questionId.toString());
+              return arraysEqual(question?.correctOptions || [], answer.selectedOptions || []);
+            }).length / (sub.mcqSubmission?.answers?.length || 1)) * 100)
+          }
+        }))
+    };
 
-        // Calculate total score
-        const totalScore = answers.reduce((sum, answer) => sum + (answer.marks || 0), 0);
-
-        return {
-          submissionId: sub._id,
-          userId: sub.user._id,
-          userName: sub.user.name || 'Unknown User',
-          userEmail: sub.user.email || 'No Email',
-          answers,
-          totalScore,
-          submittedAt: sub.mcqSubmission.submittedAt
-        };
-      }).filter(Boolean); // Remove null submissions
-
-    // Process coding submissions with null checks
-    const codingSubmissions = submissions
-      .filter(sub => sub?.codingSubmission?.completed)
-      .map(sub => {
-        if (!sub?.user?._id) return null;
-
-        const challenges = (sub.codingSubmission?.challenges || []).map(challenge => ({
-          challengeId: challenge.challengeId,
-          submissions: challenge.submissions?.map(submission => ({
-            code: submission.code || '',
-            language: submission.language || 'unknown',
-            status: submission.status || 'unknown',
-            marks: submission.marks || 0,
-            testCaseResults: submission.testCaseResults || [],
-            executionTime: submission.executionTime || 0,
-            memory: submission.memory || 0
-          })) || [],
-          bestScore: Math.max(...(challenge.submissions || []).map(s => s.marks || 0), 0)
-        }));
-
-        return {
-          submissionId: sub._id,
-          userId: sub.user._id,
-          userName: sub.user.name || 'Unknown User',
-          userEmail: sub.user.email || 'No Email',
-          challenges,
-          totalScore: challenges.reduce((sum, c) => sum + c.bestScore, 0),
-          submittedAt: sub.codingSubmission.submittedAt
-        };
-      }).filter(Boolean);
+    // Calculate summary statistics
+    const summary = {
+      totalSubmissions: submissions.length,
+      mcqSubmissions: transformedSubmissions.mcq.length,
+      codingSubmissions: transformedSubmissions.coding.length,
+      averageScore: submissions.length > 0 
+        ? Math.round(submissions.reduce((sum, sub) => 
+            sum + ((sub.mcqSubmission?.totalScore || 0) + 
+                  (sub.codingSubmission?.totalScore || 0)), 0) / submissions.length)
+        : 0,
+      testsPassed: submissions.filter(sub => 
+        (sub.totalScore || 0) >= (test.passingMarks || 0)
+      ).length
+    };
 
     res.json({
       success: true,
-      data: {
-        mcq: mcqSubmissions,
-        coding: codingSubmissions,
-        summary: {
-          totalSubmissions: submissions.length,
-          mcqSubmissions: mcqSubmissions.length,
-          codingSubmissions: codingSubmissions.length,
-          averageScore: submissions.length > 0 
-            ? Math.round(submissions.reduce((sum, sub) => 
-                sum + ((sub.mcqSubmission?.totalScore || 0) + 
-                      (sub.codingSubmission?.totalScore || 0)), 0) / submissions.length) 
-            : 0
-        }
-      }
+      data: transformedSubmissions,
+      summary
     });
 
   } catch (error) {
     console.error('Error in getTestSubmissions:', error);
     res.status(500).json({ 
       success: false,
-      error: 'Failed to retrieve submissions',
-      details: error.message 
+      error: 'Failed to fetch test submissions',
+      message: error.message 
     });
   }
 };
