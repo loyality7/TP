@@ -46,6 +46,22 @@ const calculatePassRate = (submissions, passingMarks) => {
   return Math.round((passedCount / submissions.length) * 100);
 };
 
+const calculateAverage = (submissions, field) => {
+  if (!submissions.length) return 0;
+  return Math.round(
+    submissions.reduce((sum, s) => {
+      const value = field.split('.').reduce((obj, key) => obj?.[key], s);
+      return sum + (value || 0);
+    }, 0) / submissions.length
+  );
+};
+
+const calculatePercentage = (value, total) => {
+  if (!total) return 0;
+  return Math.round((value || 0) / total * 100);
+};
+
+
 const calculateTestAverage = (scores) => {
   if (!scores || scores.length === 0) return 0;
   return Math.round(scores.reduce((a, b) => a + (b || 0), 0) / scores.length);
@@ -3928,38 +3944,3 @@ export const getCandidateTestDetails = async (req, res) => {
   }
 };
 
-// Helper functions
-const calculateAverage = (submissions, field) => {
-  if (!submissions.length) return 0;
-  return Math.round(
-    submissions.reduce((sum, s) => {
-      const value = field.split('.').reduce((obj, key) => obj?.[key], s);
-      return sum + (value || 0);
-    }, 0) / submissions.length
-  );
-};
-
-const calculatePercentage = (value, total) => {
-  if (!total) return 0;
-  return Math.round((value || 0) / total * 100);
-};
-
-const calculateTimePerQuestion = (submissions) => {
-  const timeMap = {};
-  submissions.forEach(submission => {
-    submission.mcqSubmission?.answers?.forEach(answer => {
-      timeMap[answer.questionId] = answer.timeTaken || 0;
-    });
-  });
-  return timeMap;
-};
-
-const calculateTimePerChallenge = (submissions) => {
-  const timeMap = {};
-  submissions.forEach(submission => {
-    submission.codingSubmission?.challenges?.forEach(challenge => {
-      timeMap[challenge.challengeId] = challenge.executionTime || 0;
-    });
-  });
-  return timeMap;
-};
