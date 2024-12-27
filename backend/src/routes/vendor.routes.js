@@ -2887,4 +2887,214 @@ router.get(
   getTestResults
 );
 
+/**
+ * @swagger
+ * /api/vendor/tests/{testId}/candidates/{userId}:
+ *   get:
+ *     summary: Get detailed test information for candidates
+ *     description: Get detailed test information for all candidates or a specific candidate if userId is provided
+ *     tags: [Candidate Management]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: testId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the test
+ *       - in: path
+ *         name: userId
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Optional - ID of specific candidate. If not provided, returns all candidates
+ *     responses:
+ *       200:
+ *         description: Test results retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 testId:
+ *                   type: string
+ *                 testTitle:
+ *                   type: string
+ *                 stats:
+ *                   type: object
+ *                   properties:
+ *                     totalCandidates:
+ *                       type: number
+ *                     averageScores:
+ *                       type: object
+ *                       properties:
+ *                         mcq:
+ *                           type: number
+ *                         coding:
+ *                           type: number
+ *                         total:
+ *                           type: number
+ *                     highestScores:
+ *                       type: object
+ *                       properties:
+ *                         mcq:
+ *                           type: number
+ *                         coding:
+ *                           type: number
+ *                         total:
+ *                           type: number
+ *                     maxPossibleScores:
+ *                       type: object
+ *                       properties:
+ *                         mcq:
+ *                           type: number
+ *                         coding:
+ *                           type: number
+ *                         total:
+ *                           type: number
+ *                 candidates:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                       name:
+ *                         type: string
+ *                       email:
+ *                         type: string
+ *                       status:
+ *                         type: string
+ *                         enum: [not_started, in_progress, completed]
+ *                       scores:
+ *                         type: object
+ *                         properties:
+ *                           mcq:
+ *                             type: object
+ *                             properties:
+ *                               score:
+ *                                 type: number
+ *                               maxScore:
+ *                                 type: number
+ *                               percentage:
+ *                                 type: number
+ *                           coding:
+ *                             type: object
+ *                             properties:
+ *                               score:
+ *                                 type: number
+ *                               maxScore:
+ *                                 type: number
+ *                               percentage:
+ *                                 type: number
+ *                           total:
+ *                             type: object
+ *                             properties:
+ *                               score:
+ *                                 type: number
+ *                               maxScore:
+ *                                 type: number
+ *                               percentage:
+ *                                 type: number
+ *                       attempts:
+ *                         type: number
+ *                       lastAttempt:
+ *                         type: string
+ *                         format: date-time
+ *                       result:
+ *                         type: string
+ *                         enum: [PASS, FAIL]
+ *                       mcqDetails:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             questionId:
+ *                               type: string
+ *                             question:
+ *                               type: string
+ *                             selectedOptions:
+ *                               type: array
+ *                               items:
+ *                                 type: string
+ *                             correctOptions:
+ *                               type: array
+ *                               items:
+ *                                 type: string
+ *                             isCorrect:
+ *                               type: boolean
+ *                             marks:
+ *                               type: number
+ *                             maxMarks:
+ *                               type: number
+ *                             timeTaken:
+ *                               type: number
+ *                       codingDetails:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             challengeId:
+ *                               type: string
+ *                             title:
+ *                               type: string
+ *                             code:
+ *                               type: string
+ *                             language:
+ *                               type: string
+ *                             score:
+ *                               type: number
+ *                             maxScore:
+ *                               type: number
+ *                             testCases:
+ *                               type: array
+ *                               items:
+ *                                 type: object
+ *                                 properties:
+ *                                   input:
+ *                                     type: string
+ *                                   expectedOutput:
+ *                                     type: string
+ *                                   actualOutput:
+ *                                     type: string
+ *                                   passed:
+ *                                     type: boolean
+ *                                   error:
+ *                                     type: string
+ *                             executionTime:
+ *                               type: number
+ *                             memory:
+ *                               type: number
+ *                             status:
+ *                               type: string
+ *                       behaviorMetrics:
+ *                         type: object
+ *                         properties:
+ *                           tabSwitches:
+ *                             type: number
+ *                           focusLost:
+ *                             type: number
+ *                           warnings:
+ *                             type: number
+ *                           copyPaste:
+ *                             type: number
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - User is not a vendor or lacks access
+ *       404:
+ *         description: Test not found
+ *       500:
+ *         description: Internal server error
+ */
+router.get(
+  "/tests/:testId/candidates/:userId?",
+  auth,
+  checkRole(["vendor"]),
+  checkVendorApproval,
+  validateTestAccess,
+  getCandidateTestDetails
+);
+
 export default router; 
