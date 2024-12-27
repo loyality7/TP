@@ -4,6 +4,7 @@ import { MCQSubmission } from '../models/mcqSubmission.model.js';
 import Submission from '../models/submission.model.js';
 import TestRegistration from '../models/testRegistration.model.js';
 import mongoose from 'mongoose';
+import ExcelJS from 'exceljs';
 
 // Add this helper function at the top
 const getTestWithAnswers = async (testId) => {
@@ -1270,6 +1271,248 @@ export const getComprehensiveSubmission = async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Failed to fetch submission details',
+      message: error.message
+    });
+  }
+};
+
+// Generate detailed Excel report for test submissions
+export const generateTestReport = async (req, res) => {
+  try {
+    const { testId } = req.params;
+
+    // Validate testId
+    if (!testId || !mongoose.Types.ObjectId.isValid(testId)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid test ID'
+      });
+    }
+
+    // Get test details with populated fields
+    const test = await Test.findById(testId)
+      .populate('mcqs')
+      .populate('codingChallenges')
+      .lean();
+
+    if (!test) {
+      return res.status(404).json({
+        success: false,
+        error: 'Test not found'
+      });
+    }
+
+    // Get all submissions
+    const submissions = await Submission.find({ test: testId })
+      .populate('user', 'name email')
+      .populate({
+        path: 'test',
+        select: 'title type category difficulty totalMarks passingMarks mcqs codingChallenges timeLimit'
+      })
+      .lean();
+
+    // Create workbook and add worksheets
+    const workbook = new ExcelJS.Workbook();
+    workbook.creator = 'Test Platform';
+    workbook.lastModifiedBy = 'Test Platform';
+    workbook.created = new Date();
+    workbook.modified = new Date();
+
+    // Summary Sheet
+    const summarySheet = workbook.addWorksheet('Summary');
+    summarySheet.properties.tabColor = { argb: '0077CC' };
+
+    // Add test information
+    summarySheet.addRow(['Test Report']);
+    summarySheet.addRow(['']);
+    summarySheet.addRow(['Test Details']);
+    summarySheet.addRow(['Title', test.title]);
+    summarySheet.addRow(['Category', test.category]);
+    summarySheet.addRow(['Difficulty', test.difficulty]);
+    summarySheet.addRow(['Total Marks', test.totalMarks]);
+    summarySheet.addRow(['Passing Marks', test.passingMarks]);
+    summarySheet.addRow(['']);
+
+    // Add summary statistics
+    const totalSubmissions = submissions.length;
+    const mcqSubmissions = submissions.filter(s => s.mcqSubmission?.answers?.length > 0).length;
+    const codingSubmissions = submissions.filter(s => s.codingSubmission?.challenges?.length > 0).length;
+    const averageScore = totalSubmissions > 0
+      ? Math.round(submissions.reduce((sum, sub) =>
+          sum + ((sub.mcqSubmission?.totalScore || 0) +
+                (sub.codingSubmission?.totalScore || 0)), 0) / totalSubmissions)
+      : 0;
+    const passedCount = submissions.filter(sub =>
+      (sub.totalScore || 0) >= test.passingMarks
+    ).length;
+
+    summarySheet.addRow(['Statistics']);
+    summarySheet.addRow(['Total Submissions', totalSubmissions]);
+    summarySheet.addRow(['MCQ Submissions', mcqSubmissions]);
+    summarySheet.addRow(['Coding Submissions', codingSubmissions]);
+    summarySheet.addRow(['Average Score', averageScore]);
+    summarySheet.addRow(['Passed Count', passedCount]);
+    summarySheet.addRow(['Pass Rate', `${Math.round((passedCount / totalSubmissions) * 100)}%`]);
+
+    // Format summary sheet
+    summarySheet.getColumn(1).width = 20;
+    summarySheet.getColumn(2).width = 30;
+    summarySheet.getRow(1).font = { bold: true, size: 16 };
+    summarySheet.getRow(3).font = { bold: true };
+    summarySheet.getRow(10).font = { bold: true };
+
+    // MCQ Submissions Sheet
+    const mcqSheet = workbook.addWorksheet('MCQ Submissions');
+    mcqSheet.properties.tabColor = { argb: '00FF00' };
+
+    // Add MCQ headers
+    mcqSheet.addRow([
+      'User Name',
+      'Email',
+      'Total Score',
+      'Attempted Questions',
+      'Correct Answers',
+      'Accuracy',
+      'Submission Time'
+    ]);
+
+    // Add MCQ data
+    submissions
+      .filter(sub => sub.mcqSubmission?.answers?.length > 0)
+      .forEach(sub => {
+        const correctAnswers = sub.mcqSubmission.answers.filter(ans => ans.isCorrect).length;
+        const accuracy = Math.round((correctAnswers / sub.mcqSubmission.answers.length) * 100);
+
+        mcqSheet.addRow([
+          sub.user.name,
+          sub.user.email,
+          sub.mcqSubmission.totalScore,
+          sub.mcqSubmission.answers.length,
+          correctAnswers,
+          `${accuracy}%`,
+          new Date(sub.mcqSubmission.submittedAt).toLocaleString()
+        ]);
+      });
+
+    // Format MCQ sheet
+    mcqSheet.getRow(1).font = { bold: true };
+    mcqSheet.columns.forEach(column => {
+      column.width = 20;
+    });
+
+    // Coding Submissions Sheet
+    const codingSheet = workbook.addWorksheet('Coding Submissions');
+    codingSheet.properties.tabColor = { argb: 'FF0000' };
+
+    // Add coding headers
+    codingSheet.addRow([
+      'User Name',
+      'Email',
+      'Challenge',
+      'Language',
+      'Status',
+      'Score',
+      'Execution Time',
+      'Memory Used',
+      'Submission Time'
+    ]);
+
+    // Add coding data
+    submissions
+      .filter(sub => sub.codingSubmission?.challenges?.length > 0)
+      .forEach(sub => {
+        sub.codingSubmission.challenges.forEach(challenge => {
+          challenge.submissions.forEach(submission => {
+            codingSheet.addRow([
+              sub.user.name,
+              sub.user.email,
+              challenge.challengeTitle,
+              submission.language,
+              submission.status,
+              submission.marks,
+              `${submission.executionTime}ms`,
+              `${submission.memory}KB`,
+              new Date(submission.submittedAt).toLocaleString()
+            ]);
+          });
+        });
+      });
+
+    // Format coding sheet
+    codingSheet.getRow(1).font = { bold: true };
+    codingSheet.columns.forEach(column => {
+      column.width = 20;
+    });
+
+    // Performance Analysis Sheet
+    const analysisSheet = workbook.addWorksheet('Performance Analysis');
+    analysisSheet.properties.tabColor = { argb: 'FFA500' };
+
+    // Add score distribution chart
+    const scoreRanges = {
+      '0-20': 0,
+      '21-40': 0,
+      '41-60': 0,
+      '61-80': 0,
+      '81-100': 0
+    };
+
+    submissions.forEach(sub => {
+      const totalScore = (sub.mcqSubmission?.totalScore || 0) + (sub.codingSubmission?.totalScore || 0);
+      const percentage = Math.round((totalScore / test.totalMarks) * 100);
+
+      if (percentage <= 20) scoreRanges['0-20']++;
+      else if (percentage <= 40) scoreRanges['21-40']++;
+      else if (percentage <= 60) scoreRanges['41-60']++;
+      else if (percentage <= 80) scoreRanges['61-80']++;
+      else scoreRanges['81-100']++;
+    });
+
+    analysisSheet.addRow(['Score Distribution']);
+    analysisSheet.addRow(['Range', 'Count']);
+    Object.entries(scoreRanges).forEach(([range, count]) => {
+      analysisSheet.addRow([range, count]);
+    });
+
+    // Add chart
+    const chart = workbook.addChart('column', {
+      title: { name: 'Score Distribution' },
+      legend: { position: 'right' },
+      plotArea: {
+        dataTable: {
+          showHorizontalBorder: true,
+          showVerticalBorder: true,
+          showOutlineBorder: true
+        }
+      }
+    });
+
+    chart.addSeries({
+      name: 'Score Ranges',
+      categories: Object.keys(scoreRanges),
+      values: Object.values(scoreRanges)
+    });
+
+    analysisSheet.addChart(chart);
+
+    // Set response headers
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    );
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename=test-report-${test.title.replace(/\s+/g, '-')}.xlsx`
+    );
+
+    // Write to response
+    await workbook.xlsx.write(res);
+
+  } catch (error) {
+    console.error('Error generating Excel report:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to generate Excel report',
       message: error.message
     });
   }

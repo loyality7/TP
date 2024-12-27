@@ -15,7 +15,8 @@ import {
   getSubmissionAttempts, 
   getSubmissionDetails, 
   updateSubmissionStatus, 
-  getComprehensiveSubmission 
+  getComprehensiveSubmission, 
+  generateTestReport 
 } from '../controllers/submission.controller.js';
 import { validateSubmission } from '../middleware/validateSubmission.js';
 import { validateTestAccess } from '../middleware/validateTestAccess.js';
@@ -819,5 +820,116 @@ router.post('/update-status', auth, updateSubmissionStatus);
  *         description: Server error while fetching submission details
  */
 router.get('/comprehensive/:testId/:userId', auth, getComprehensiveSubmission);
+
+/**
+ * @swagger
+ * /api/submissions/test/{testId}/report:
+ *   get:
+ *     summary: Generate and download detailed Excel report for test submissions
+ *     description: |
+ *       Generates a comprehensive Excel report containing multiple sheets with detailed analysis:
+ *       - Summary Sheet: Test details and overall statistics
+ *       - MCQ Submissions: Detailed MCQ performance metrics
+ *       - Coding Submissions: Complete coding submission analysis
+ *       - Performance Analysis: Charts and statistical distributions
+ *     tags: [Submissions]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: testId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the test to generate report for
+ *     responses:
+ *       200:
+ *         description: Excel report generated successfully
+ *         content:
+ *           application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *             examples:
+ *               testReport:
+ *                 summary: Excel file containing test report
+ *                 value: <binary>
+ *         headers:
+ *           Content-Disposition:
+ *             schema:
+ *               type: string
+ *               example: attachment; filename=test-report-Test-Title.xlsx
+ *           Content-Type:
+ *             schema:
+ *               type: string
+ *               example: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+ *       400:
+ *         description: Invalid test ID format
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Invalid test ID
+ *       404:
+ *         description: Test not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Test not found
+ *       500:
+ *         description: Server error while generating report
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Failed to generate Excel report
+ *                 message:
+ *                   type: string
+ *                   example: Internal server error details
+ *     x-codeSamples:
+ *       - lang: JavaScript
+ *         label: Axios
+ *         source: |
+ *           const axios = require('axios');
+ *           const fs = require('fs');
+ *           
+ *           async function downloadReport(testId) {
+ *             try {
+ *               const response = await axios({
+ *                 method: 'get',
+ *                 url: `/api/submissions/test/${testId}/report`,
+ *                 responseType: 'arraybuffer',
+ *                 headers: {
+ *                   'Authorization': 'Bearer YOUR_TOKEN'
+ *                 }
+ *               });
+ *           
+ *               fs.writeFileSync('test-report.xlsx', response.data);
+ *               console.log('Report downloaded successfully');
+ *             } catch (error) {
+ *               console.error('Error downloading report:', error);
+ *             }
+ *           }
+ */
+router.get('/test/:testId/report', generateTestReport);
 
 export default router; 
