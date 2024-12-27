@@ -3856,6 +3856,18 @@ export const getCandidateTestDetails = async (req, res) => {
           return (current.marks > (best?.marks || 0)) ? current : best;
         }, null);
 
+        // Get test case results with actual outputs
+        const testCases = challenge.testCases.map((tc, idx) => {
+          const testCaseResult = bestSubmission?.testCaseResults?.[idx] || {};
+          return {
+            input: tc.input,
+            expectedOutput: tc.output,
+            actualOutput: testCaseResult.output || '',
+            passed: testCaseResult.passed || false,
+            error: testCaseResult.error || ''
+          };
+        });
+
         return {
           challengeId: challenge._id,
           title: challenge.title,
@@ -3864,16 +3876,11 @@ export const getCandidateTestDetails = async (req, res) => {
           language: bestSubmission?.language || '',
           score: bestSubmission?.marks || 0,
           maxScore: challenge.marks,
-          testCases: challenge.testCases.map((tc, idx) => ({
-            input: tc.input,
-            expectedOutput: tc.output,
-            actualOutput: bestSubmission?.testCaseResults?.[idx]?.output || '',
-            passed: bestSubmission?.testCaseResults?.[idx]?.passed || false,
-            error: bestSubmission?.testCaseResults?.[idx]?.error || ''
-          })),
+          testCases,
           status: bestSubmission?.status || 'not_attempted',
           executionTime: bestSubmission?.executionTime || 0,
-          memory: bestSubmission?.memory || 0
+          memory: bestSubmission?.memory || 0,
+          submittedAt: bestSubmission?.submittedAt || null
         };
       });
 
