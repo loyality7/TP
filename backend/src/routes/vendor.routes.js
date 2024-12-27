@@ -39,7 +39,8 @@ import {
   uploadUsersFromCSV,
   getVendorAllCandidates,
   getCandidateMetrics,
-  getCandidateTestDetails
+  getCandidateTestDetails,
+  getTestResults
 } from "../controllers/vendor.controller.js";
 import { validateTestAccess } from '../middleware/validateTestAccess.js';
 import { addTestUsers, uploadTestUsers, removeTestUsers } from '../controllers/testAccess.controller.js';
@@ -2672,6 +2673,145 @@ router.get("/candidate-metrics", auth, checkRole(["vendor"]), checkVendorApprova
  */
 router.post('/wallet/debit-test-fee', debitTestFee);
 
-
+/**
+ * @swagger
+ * /api/vendor/tests/{testId}/results:
+ *   get:
+ *     summary: Get comprehensive test results including candidate performance
+ *     tags: [Vendor Tests]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: testId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the test
+ *     responses:
+ *       200:
+ *         description: Test results retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 overview:
+ *                   type: object
+ *                   properties:
+ *                     testName:
+ *                       type: string
+ *                       description: Name of the test
+ *                     totalMarks:
+ *                       type: number
+ *                       description: Maximum possible marks
+ *                     duration:
+ *                       type: number
+ *                       description: Test duration in minutes
+ *                     totalCandidates:
+ *                       type: number
+ *                       description: Total number of candidates
+ *                     averageScore:
+ *                       type: number
+ *                       description: Average score across all candidates
+ *                     passRate:
+ *                       type: number
+ *                       description: Percentage of candidates who passed
+ *                     mcqQuestions:
+ *                       type: number
+ *                       description: Number of MCQ questions
+ *                     codingChallenges:
+ *                       type: number
+ *                       description: Number of coding challenges
+ *                 candidates:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       candidateId:
+ *                         type: string
+ *                         description: Unique identifier for the candidate
+ *                       name:
+ *                         type: string
+ *                         description: Candidate's name
+ *                       email:
+ *                         type: string
+ *                         description: Candidate's email
+ *                       scores:
+ *                         type: object
+ *                         properties:
+ *                           total:
+ *                             type: number
+ *                             description: Total score achieved
+ *                           mcq:
+ *                             type: number
+ *                             description: Score in MCQ section
+ *                           coding:
+ *                             type: number
+ *                             description: Score in coding section
+ *                           percentage:
+ *                             type: number
+ *                             description: Overall percentage scored
+ *                       status:
+ *                         type: string
+ *                         enum: [PASSED, FAILED]
+ *                         description: Final test status
+ *                       timeTaken:
+ *                         type: object
+ *                         properties:
+ *                           minutes:
+ *                             type: number
+ *                           seconds:
+ *                             type: number
+ *                       mcqPerformance:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             questionName:
+ *                               type: string
+ *                             timeTaken:
+ *                               type: number
+ *                             score:
+ *                               type: number
+ *                             maxMarks:
+ *                               type: number
+ *                       codingPerformance:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             challengeName:
+ *                               type: string
+ *                             timeTaken:
+ *                               type: number
+ *                             score:
+ *                               type: number
+ *                             maxMarks:
+ *                               type: number
+ *                             testCasesPassed:
+ *                               type: number
+ *                             totalTestCases:
+ *                               type: number
+ *                       overallPerformance:
+ *                         type: number
+ *                         description: Overall performance score out of 100
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - User is not a vendor or vendor not approved
+ *       404:
+ *         description: Test not found or you don't have permission to view it
+ *       500:
+ *         description: Internal server error
+ */
+router.get(
+  "/tests/:testId/results",
+  auth,
+  checkRole(["vendor"]),
+  checkVendorApproval,
+  validateTestAccess,
+  getTestResults
+);
 
 export default router; 

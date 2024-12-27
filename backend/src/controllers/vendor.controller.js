@@ -186,12 +186,15 @@ export const getTestAnalytics = async (req, res) => {
 export const getTestResults = async (req, res) => {
   try {
     const { testId } = req.params;
+    const vendorId = req.user._id;
 
     // Verify test belongs to vendor
     const test = await Test.findOne({
       _id: testId,
-      vendor: req.user._id
-    });
+      vendor: vendorId
+    })
+    .populate('mcqs', 'question marks')
+    .populate('codingChallenges', 'title description marks');
 
     if (!test) {
       return res.status(404).json({ 
@@ -199,67 +202,96 @@ export const getTestResults = async (req, res) => {
       });
     }
 
-    // Get all submissions for this test with populated user data
-    const submissions = await Submission.find({
-      test: testId
-    })
-    .populate('user', 'name email')
-    .populate('mcqSubmission')
-    .populate('codingSubmission')
-    .sort({ submittedAt: -1 });
+    // Get all submissions for this test
+    const submissions = await Submission.find({ test: testId })
+      .populate('user', 'name email')
+      .populate('mcqSubmission')
+      .populate('codingSubmission')
+      .sort('-createdAt');
 
-    // Calculate and format results
-    const results = await Promise.all(submissions.map(async (submission) => {
-      // Calculate MCQ score
-      const mcqScore = submission.mcqSubmission?.answers?.reduce((total, answer) => {
-        if (answer.isCorrect) {
-          const mcq = test.mcqs.find(q => q._id.toString() === answer.questionId.toString());
-          return total + (mcq?.marks || 0);
-        }
-        return total;
-      }, 0) || 0;
+    // Calculate test overview
+    const overview = {
+      testName: test.title,
+      totalMarks: test.totalMarks,
+      duration: test.duration,
+      totalCandidates: submissions.length,
+      averageScore: calculateTestAverage(submissions.map(s => s.totalScore || 0)),
+      passRate: calculatePassRate(submissions, test.passingMarks),
+      mcqQuestions: test.mcqs.length,
+      codingChallenges: test.codingChallenges.length
+    };
 
-      // Calculate coding score
-      const codingScore = submission.codingSubmission?.answers?.reduce((total, answer) => {
-        const challenge = test.codingChallenges.find(
-          c => c._id.toString() === answer.challengeId.toString()
+    // Process candidate results
+    const candidateResults = submissions.map(submission => {
+      // Calculate MCQ details
+      const mcqDetails = test.mcqs.map(mcq => {
+        const answer = submission.mcqSubmission?.answers?.find(
+          a => a.questionId.toString() === mcq._id.toString()
         );
-        const maxMarks = challenge?.marks || 0;
-        return total + (answer.score * maxMarks / 100); // Convert percentage to actual marks
-      }, 0) || 0;
+        return {
+          questionName: mcq.question.substring(0, 50) + "...", // Truncate long questions
+          timeTaken: answer?.timeTaken || 0,
+          score: answer?.isCorrect ? mcq.marks : 0,
+          maxMarks: mcq.marks
+        };
+      });
 
-      // Calculate total score
+      // Calculate Coding details
+      const codingDetails = test.codingChallenges.map(challenge => {
+        const submission = submission.codingSubmission?.challenges?.find(
+          c => c.challengeId.toString() === challenge._id.toString()
+        );
+        const bestSubmission = submission?.submissions?.reduce((best, current) => 
+          (current.marks > best.marks) ? current : best, { marks: 0, testCaseResults: [] }
+        );
+
+        return {
+          challengeName: challenge.title,
+          timeTaken: submission?.totalTime || 0,
+          score: (bestSubmission?.marks * challenge.marks) / 100,
+          maxMarks: challenge.marks,
+          testCasesPassed: bestSubmission?.testCaseResults?.filter(tc => tc.passed).length || 0,
+          totalTestCases: bestSubmission?.testCaseResults?.length || 0
+        };
+      });
+
+      // Calculate total scores
+      const mcqScore = mcqDetails.reduce((sum, q) => sum + q.score, 0);
+      const codingScore = codingDetails.reduce((sum, c) => sum + c.score, 0);
       const totalScore = mcqScore + codingScore;
+      const timeTaken = submission.duration || 0;
 
       return {
         candidateId: submission.user._id,
-        candidateName: submission.user.name,
+        name: submission.user.name,
         email: submission.user.email,
-        score: Math.round(totalScore), // Round to nearest integer
-        mcqScore: Math.round(mcqScore),
-        codingScore: Math.round(codingScore),
-        submittedAt: submission.submittedAt,
-        status: submission.status,
-        completionTime: submission.duration,
-        details: {
-          mcqAnswers: submission.mcqSubmission?.answers?.length || 0,
-          codingChallenges: submission.codingSubmission?.answers?.length || 0,
-          totalMcqQuestions: test.mcqs.length,
-          totalCodingChallenges: test.codingChallenges.length,
-          passingScore: test.passingMarks,
-          result: totalScore >= test.passingMarks ? 'PASS' : 'FAIL'
+        scores: {
+          total: totalScore,
+          mcq: mcqScore,
+          coding: codingScore,
+          percentage: (totalScore / test.totalMarks) * 100
         },
-        lastActivity: submission.updatedAt
+        status: totalScore >= test.passingMarks ? 'PASSED' : 'FAILED',
+        timeTaken: {
+          minutes: Math.floor(timeTaken / 60),
+          seconds: timeTaken % 60
+        },
+        mcqPerformance: mcqDetails,
+        codingPerformance: codingDetails,
+        overallPerformance: Math.round((totalScore / test.totalMarks) * 100)
       };
-    }));
+    });
 
-    res.json(results);
+    res.json({
+      overview,
+      candidates: candidateResults
+    });
 
   } catch (error) {
     console.error('Error in getTestResults:', error);
     res.status(500).json({ 
-      error: "Failed to fetch test results",
-      details: error.message 
+      error: 'Failed to fetch test results',
+      message: error.message 
     });
   }
 };
