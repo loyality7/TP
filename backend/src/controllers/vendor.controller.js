@@ -193,8 +193,8 @@ export const getTestResults = async (req, res) => {
       _id: testId,
       vendor: vendorId
     })
-    .populate('mcqs', 'question marks')
-    .populate('codingChallenges', 'title description marks');
+    .populate('mcqs', 'question options correctOptions marks explanation')
+    .populate('codingChallenges', 'title description testCases marks');
 
     if (!test) {
       return res.status(404).json({ 
@@ -202,12 +202,13 @@ export const getTestResults = async (req, res) => {
       });
     }
 
-    // Get all submissions for this test
+    // Get all submissions for this test with proper population
     const submissions = await Submission.find({ test: testId })
       .populate('user', 'name email')
       .populate('mcqSubmission')
       .populate('codingSubmission')
-      .sort('-createdAt');
+      .sort('-createdAt')
+      .lean();
 
     // Calculate test overview
     const overview = {
@@ -221,43 +222,58 @@ export const getTestResults = async (req, res) => {
       codingChallenges: test.codingChallenges.length
     };
 
-    // Process candidate results
+    // Process candidate results using same logic as user controller
     const candidateResults = submissions.map(currentSubmission => {
-      // Calculate MCQ details
-      const mcqDetails = test.mcqs.map(mcq => {
-        const answer = currentSubmission.mcqSubmission?.answers?.find(
-          a => a.questionId.toString() === mcq._id.toString()
+      // Calculate MCQ scores using the same logic as user controller
+      const mcqAnswers = (currentSubmission.mcqSubmission?.answers || []).map(answer => {
+        const question = test.mcqs.find(q => 
+          q._id.toString() === answer.questionId.toString()
         );
+
+        const isCorrect = checkMCQAnswer(
+          question?.correctOptions || [],
+          answer.selectedOptions || []
+        );
+
+        const marks = isCorrect ? (question?.marks || 0) : 0;
+
         return {
-          questionName: mcq.question.substring(0, 50) + "...", // Truncate long questions
-          timeTaken: answer?.timeTaken || 0,
-          score: answer?.isCorrect ? mcq.marks : 0,
-          maxMarks: mcq.marks
+          questionName: question?.question.substring(0, 50) + "...",
+          timeTaken: answer.timeTaken || 0,
+          score: marks,
+          maxMarks: question?.marks || 0,
+          isCorrect
         };
       });
 
-      // Calculate Coding details
+      // Calculate MCQ total score
+      const mcqScore = mcqAnswers.reduce((total, answer) => total + answer.score, 0);
+
+      // Calculate coding scores using the same logic as user controller
       const codingDetails = test.codingChallenges.map(challenge => {
-        const challengeSubmission = currentSubmission.codingSubmission?.challenges?.find(
+        const submittedChallenge = currentSubmission.codingSubmission?.challenges?.find(
           c => c.challengeId.toString() === challenge._id.toString()
         );
-        const bestSubmission = challengeSubmission?.submissions?.reduce((best, current) => 
-          (current.marks > best.marks) ? current : best, { marks: 0, testCaseResults: [] }
-        );
+
+        // Get the latest submission that passed
+        const passedSubmission = submittedChallenge?.submissions?.find(s => s.status === 'passed');
+        const score = passedSubmission ? challenge.marks : 0;
 
         return {
           challengeName: challenge.title,
-          timeTaken: challengeSubmission?.totalTime || 0,
-          score: (bestSubmission?.marks * challenge.marks) / 100,
+          timeTaken: submittedChallenge?.totalTime || 0,
+          score: score,
           maxMarks: challenge.marks,
-          testCasesPassed: bestSubmission?.testCaseResults?.filter(tc => tc.passed).length || 0,
-          totalTestCases: bestSubmission?.testCaseResults?.length || 0
+          testCasesPassed: passedSubmission?.testCaseResults?.filter(tc => tc.passed).length || 0,
+          totalTestCases: challenge.testCases?.length || 0,
+          status: passedSubmission ? 'passed' : (submittedChallenge ? 'attempted' : 'not attempted')
         };
       });
 
-      // Calculate total scores
-      const mcqScore = mcqDetails.reduce((sum, q) => sum + q.score, 0);
-      const codingScore = codingDetails.reduce((sum, c) => sum + c.score, 0);
+      // Calculate total coding score
+      const codingScore = codingDetails.reduce((total, challenge) => total + challenge.score, 0);
+
+      // Calculate total score and time taken
       const totalScore = mcqScore + codingScore;
       const timeTaken = currentSubmission.duration || 0;
 
@@ -269,16 +285,19 @@ export const getTestResults = async (req, res) => {
           total: totalScore,
           mcq: mcqScore,
           coding: codingScore,
-          percentage: (totalScore / test.totalMarks) * 100
+          percentage: Math.round((totalScore / test.totalMarks) * 100)
         },
         status: totalScore >= test.passingMarks ? 'PASSED' : 'FAILED',
         timeTaken: {
           minutes: Math.floor(timeTaken / 60),
           seconds: timeTaken % 60
         },
-        mcqPerformance: mcqDetails,
+        mcqPerformance: mcqAnswers,
         codingPerformance: codingDetails,
-        overallPerformance: Math.round((totalScore / test.totalMarks) * 100)
+        overallPerformance: Math.round((totalScore / test.totalMarks) * 100),
+        startTime: currentSubmission.startTime,
+        endTime: currentSubmission.endTime,
+        completionStatus: currentSubmission.completionStatus || 'completed'
       };
     });
 
@@ -296,10 +315,34 @@ export const getTestResults = async (req, res) => {
   }
 };
 
+// Helper function for checking MCQ answers (same as in user controller)
+const checkMCQAnswer = (correctOptions, selectedOptions) => {
+  if (!correctOptions || !selectedOptions) return false;
+  if (correctOptions.length !== selectedOptions.length) return false;
+  return correctOptions.every(opt => selectedOptions.includes(opt));
+};
+
 // Helper function for calculating pass rate
 const calculatePassRate = (submissions, passingMarks) => {
   if (!submissions || submissions.length === 0) return 0;
-  const passedCount = submissions.filter(s => (s.totalScore || 0) >= passingMarks).length;
+  const passedCount = submissions.filter(s => {
+    const mcqScore = s.mcqSubmission?.answers?.reduce((total, answer) => {
+      const isCorrect = checkMCQAnswer(
+        answer.correctOptions || [],
+        answer.selectedOptions || []
+      );
+      return total + (isCorrect ? (answer.marks || 0) : 0);
+    }, 0) || 0;
+
+    const codingScore = s.codingSubmission?.challenges?.reduce((total, challenge) => {
+      const passedSubmission = challenge.submissions?.find(sub => sub.status === 'passed');
+      return total + (passedSubmission ? challenge.marks : 0);
+    }, 0) || 0;
+
+    const totalScore = mcqScore + codingScore;
+    return totalScore >= passingMarks;
+  }).length;
+  
   return Math.round((passedCount / submissions.length) * 100);
 };
 
