@@ -633,6 +633,28 @@ export const getTestSubmissions = async (req, res) => {
       });
     }
 
+    // Authorization check - only admin and vendor can access test submissions
+    const isAdmin = req.user.role === 'admin';
+    const isVendor = req.user.role === 'vendor';
+
+    if (!isAdmin && !isVendor) {
+      return res.status(403).json({
+        success: false,
+        error: 'Not authorized to access test submissions'
+      });
+    }
+
+    // If vendor, ensure they own the test
+    if (isVendor) {
+      const test = await Test.findById(testId);
+      if (!test || test.vendor.toString() !== req.user._id.toString()) {
+        return res.status(403).json({
+          success: false,
+          error: 'Not authorized to access this test\'s submissions'
+        });
+      }
+    }
+
     // Get all submissions with populated user data
     const submissions = await Submission.find({ test: testId })
       .populate('user', 'name email')
@@ -689,12 +711,14 @@ export const getTestSubmissions = async (req, res) => {
     const summary = {
       totalSubmissions: submissions.length,
       completedSubmissions: submissions.filter(s => s.status === 'completed').length,
-      averageScore: Math.round(submissions.reduce((sum, s) => sum + (s.totalScore || 0), 0) / submissions.length),
-      highestScore: Math.max(...submissions.map(s => s.totalScore || 0)),
-      lowestScore: Math.min(...submissions.map(s => s.totalScore || 0)),
-      passRate: Math.round((submissions.filter(s => 
-        (s.totalScore || 0) >= (s.test?.passingMarks || 0)
-      ).length / submissions.length) * 100)
+      averageScore: submissions.length > 0 ? 
+        Math.round(submissions.reduce((sum, s) => sum + (s.totalScore || 0), 0) / submissions.length) : 0,
+      highestScore: Math.max(...submissions.map(s => s.totalScore || 0), 0),
+      lowestScore: Math.min(...submissions.map(s => s.totalScore || 0), Infinity),
+      passRate: submissions.length > 0 ? 
+        Math.round((submissions.filter(s => 
+          (s.totalScore || 0) >= (s.test?.passingMarks || 0)
+        ).length / submissions.length) * 100) : 0
     };
 
     res.json({
