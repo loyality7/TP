@@ -1,14 +1,13 @@
-import sys
-import json
 import pandas as pd
+import json
+from openpyxl import Workbook
+from openpyxl.styles import PatternFill, Font
+from openpyxl.utils import get_column_letter
+import sys
 
-def format_test_data(json_file_path, output_file_path):
-    # Read JSON data
-    with open(json_file_path, 'r') as f:
-        json_data = json.load(f)
-    
+def format_test_data(json_data, output_file_path):
     # Create Excel writer object
-    writer = pd.ExcelWriter(output_file_path, engine='openpyxl')
+    writer = pd.ExcelWriter(output_file_file_path, engine='openpyxl')
     
     # Sheet 1: Test Overview
     test_data = json_data['data']['coding'][0]
@@ -84,10 +83,16 @@ def format_test_data(json_file_path, output_file_path):
     return output_file_path 
 
 if __name__ == '__main__':
-    if len(sys.argv) != 3:
-        print("Usage: python formater.py <input_json_path> <output_excel_path>")
+    if len(sys.argv) != 2:  # Changed from 3 to 2 since we only need output path
+        print("Usage: python formater.py <output_excel_path>")
         sys.exit(1)
         
-    json_file_path = sys.argv[1]
-    output_file_path = sys.argv[2]
-    format_test_data(json_file_path, output_file_path) 
+    # Remove json_file_path parameter
+    output_file_path = sys.argv[1]
+    
+    # Add test JSON data directly (you'll need to pass your JSON data here)
+    json_data = {
+        # Your JSON data structure here
+    }
+    
+    format_test_data(json_data, output_file_path) 

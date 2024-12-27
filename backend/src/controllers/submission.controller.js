@@ -5,9 +5,6 @@ import Submission from '../models/submission.model.js';
 import TestRegistration from '../models/testRegistration.model.js';
 import mongoose from 'mongoose';
 import ExcelJS from 'exceljs';
-import { spawn } from 'child_process';
-import path from 'path';
-import fs from 'fs';
 
 // Add this helper function at the top
 const getTestWithAnswers = async (testId) => {
@@ -629,27 +626,14 @@ export const getTestSubmissions = async (req, res) => {
     const { testId } = req.params;
     
     // Validate testId
-    if (!testId || !mongoose.Types.ObjectId.isValid(testId)) {
-      return res.status(400).json({ 
+    if (!mongoose.Types.ObjectId.isValid(testId)) {
+      return res.status(400).json({
         success: false,
-        error: 'Invalid test ID' 
+        error: 'Invalid test ID format'
       });
     }
 
-    // Get test details with populated fields
-    const test = await Test.findById(testId)
-      .populate('mcqs')
-      .populate('codingChallenges')
-      .lean();
-    
-    if (!test) {
-      return res.status(404).json({ 
-        success: false,
-        error: 'Test not found' 
-      });
-    }
-
-    // Get all submissions for this test with proper population
+    // Get all submissions with populated user data
     const submissions = await Submission.find({ test: testId })
       .populate('user', 'name email')
       .populate({
@@ -668,124 +652,49 @@ export const getTestSubmissions = async (req, res) => {
       })
       .lean();
 
-    const transformedSubmissions = {
-      coding: submissions
-        .filter(sub => sub.codingSubmission?.challenges?.length > 0)
-        .map(sub => ({
-          submissionId: sub._id,
-          userId: sub.user._id,
-          userName: sub.user.name,
-          userEmail: sub.user.email,
-          testId: sub.test._id,
-          testTitle: sub.test.title,
-          type: sub.test.type,
-          category: sub.test.category,
-          difficulty: sub.test.difficulty,
-          score: sub.codingSubmission?.totalScore || 0,
-          totalMarks: sub.test?.totalMarks,
-          passingMarks: sub.test?.passingMarks,
-          status: sub.status,
-          startTime: sub.startTime,
-          endTime: sub.endTime,
-          duration: sub.endTime ? Math.round((sub.endTime - sub.startTime) / 1000) : null,
-          challenges: (sub.codingSubmission?.challenges || []).map(challenge => {
-            const challengeDetails = sub.test.codingChallenges.find(
-              c => c._id.toString() === challenge.challengeId.toString()
-            );
-            
-            return {
-              challengeId: challenge.challengeId,
-              challengeTitle: challengeDetails?.title || 'Unknown Challenge',
-              difficulty: challengeDetails?.difficulty,
-              maxMarks: challengeDetails?.marks || 0,
-              submissions: (challenge.submissions || []).map(submission => ({
-                submittedAt: submission.submittedAt,
-                language: submission.language,
-                status: submission.status,
-                marks: submission.marks,
-                code: submission.code,
-                executionTime: submission.executionTime,
-                memory: submission.memory,
-                output: submission.output,
-                error: submission.error,
-                testCaseResults: submission.testCaseResults?.map(tc => ({
-                  passed: tc.passed,
-                  input: tc.input,
-                  expectedOutput: tc.expectedOutput,
-                  actualOutput: tc.actualOutput,
-                  error: tc.error
-                })),
-                testCasesPassed: submission.testCaseResults?.filter(tc => tc.passed).length || 0,
-                totalTestCases: submission.testCaseResults?.length || 0
-              })),
-              bestScore: Math.max(...(challenge.submissions || []).map(s => s.marks || 0), 0),
-              totalAttempts: challenge.submissions?.length || 0
-            };
-          })
-        })),
-      mcq: submissions
-        .filter(sub => sub.mcqSubmission?.answers?.length > 0)
-        .map(sub => ({
-          submissionId: sub._id,
-          userId: sub.user._id,
-          userName: sub.user.name,
-          userEmail: sub.user.email,
-          answers: (sub.mcqSubmission?.answers || []).map(answer => {
-            const question = test.mcqs.find(
-              q => q._id.toString() === answer.questionId.toString()
-            );
-            
-            const isCorrect = arraysEqual(
-              question?.correctOptions || [],
-              answer.selectedOptions || []
-            );
-
-            return {
-              questionId: answer.questionId,
-              question: question?.question,
-              selectedOptions: answer.selectedOptions || [],
-              correctOptions: question?.correctOptions || [],
-              options: question?.options || [],
-              explanation: question?.explanation,
-              isCorrect,
-              marks: isCorrect ? (question?.marks || 0) : 0,
-              maxMarks: question?.marks || 0
-            };
-          }),
-          totalScore: sub.mcqSubmission?.totalScore || 0,
-          submittedAt: sub.mcqSubmission?.submittedAt,
-          summary: {
-            totalQuestions: test.mcqs?.length || 0,
-            attemptedQuestions: sub.mcqSubmission?.answers?.length || 0,
-            correctAnswers: (sub.mcqSubmission?.answers || []).filter(answer => {
-              const question = test.mcqs.find(q => q._id.toString() === answer.questionId.toString());
-              return arraysEqual(question?.correctOptions || [], answer.selectedOptions || []);
-            }).length,
-            incorrectAnswers: (sub.mcqSubmission?.answers || []).filter(answer => {
-              const question = test.mcqs.find(q => q._id.toString() === answer.questionId.toString());
-              return !arraysEqual(question?.correctOptions || [], answer.selectedOptions || []);
-            }).length,
-            accuracy: Math.round(((sub.mcqSubmission?.answers || []).filter(answer => {
-              const question = test.mcqs.find(q => q._id.toString() === answer.questionId.toString());
-              return arraysEqual(question?.correctOptions || [], answer.selectedOptions || []);
-            }).length / (sub.mcqSubmission?.answers?.length || 1)) * 100)
-          }
-        }))
-    };
+    // Transform submissions into a more structured format
+    const transformedSubmissions = submissions.map(sub => ({
+      submissionId: sub._id,
+      user: {
+        id: sub.user._id,
+        name: sub.user.name,
+        email: sub.user.email
+      },
+      status: sub.status,
+      startTime: sub.startTime,
+      endTime: sub.endTime,
+      duration: sub.endTime ? Math.round((sub.endTime - sub.startTime) / 1000) : null,
+      scores: {
+        total: sub.totalScore || 0,
+        mcq: sub.mcqSubmission?.totalScore || 0,
+        coding: sub.codingSubmission?.totalScore || 0,
+        percentage: Math.round(((sub.totalScore || 0) / (sub.test?.totalMarks || 1)) * 100),
+        passed: (sub.totalScore || 0) >= (sub.test?.passingMarks || 0)
+      },
+      mcqSubmission: sub.mcqSubmission ? {
+        completed: sub.mcqSubmission.completed,
+        submittedAt: sub.mcqSubmission.submittedAt,
+        questionsAttempted: sub.mcqSubmission.answers?.length || 0,
+        totalQuestions: sub.test.mcqs?.length || 0
+      } : null,
+      codingSubmission: sub.codingSubmission ? {
+        completed: sub.codingSubmission.completed,
+        submittedAt: sub.codingSubmission.submittedAt,
+        challengesAttempted: sub.codingSubmission.challenges?.length || 0,
+        totalChallenges: sub.test.codingChallenges?.length || 0
+      } : null
+    }));
 
     // Calculate summary statistics
     const summary = {
       totalSubmissions: submissions.length,
-      mcqSubmissions: transformedSubmissions.mcq.length,
-      codingSubmissions: transformedSubmissions.coding.length,
-      averageScore: submissions.length > 0 
-        ? Math.round(submissions.reduce((sum, sub) => 
-            sum + ((sub.mcqSubmission?.totalScore || 0) + 
-                  (sub.codingSubmission?.totalScore || 0)), 0) / submissions.length)
-        : 0,
-      testsPassed: submissions.filter(sub => 
-        (sub.totalScore || 0) >= (test.passingMarks || 0)
-      ).length
+      completedSubmissions: submissions.filter(s => s.status === 'completed').length,
+      averageScore: Math.round(submissions.reduce((sum, s) => sum + (s.totalScore || 0), 0) / submissions.length),
+      highestScore: Math.max(...submissions.map(s => s.totalScore || 0)),
+      lowestScore: Math.min(...submissions.map(s => s.totalScore || 0)),
+      passRate: Math.round((submissions.filter(s => 
+        (s.totalScore || 0) >= (s.test?.passingMarks || 0)
+      ).length / submissions.length) * 100)
     };
 
     res.json({
@@ -796,10 +705,10 @@ export const getTestSubmissions = async (req, res) => {
 
   } catch (error) {
     console.error('Error in getTestSubmissions:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       error: 'Failed to fetch test submissions',
-      message: error.message 
+      message: error.message
     });
   }
 };
@@ -1284,36 +1193,52 @@ export const generateTestReport = async (req, res) => {
   try {
     const { testId } = req.params;
 
-    const test = await Test.findById(testId)
-      .populate('mcqs')
-      .populate('codingChallenges')
-      .lean();
-
-    if (!test) {
-      return res.status(404).json({ error: 'Test not found' });
-    }
-
+    // Get all submissions for this test with populated user and test details
     const submissions = await Submission.find({ test: testId })
       .populate('user', 'name email')
+      .populate({
+        path: 'test',
+        populate: [
+          { path: 'mcqs', select: 'question options correctOptions marks' },
+          { path: 'codingChallenges', select: 'title description testCases marks' }
+        ]
+      })
       .lean();
 
+    if (!submissions.length) {
+      return res.status(404).json({ error: 'No submissions found for this test' });
+    }
+
     const workbook = new ExcelJS.Workbook();
-    
+    const test = submissions[0].test; // Reference test details
+
     // Sheet 1: Test Overview
     const overviewSheet = workbook.addWorksheet('Test Overview');
-    overviewSheet.addRow(['Test Details']);
-    overviewSheet.addRow(['Test Name:', test.title]);
-    overviewSheet.addRow(['Description:', test.description || 'N/A']);
-    overviewSheet.addRow(['Duration:', `${test.timeLimit || 'N/A'} minutes`]);
-    overviewSheet.addRow(['Total Students:', submissions.length]);
-    
-    const avgScore = submissions.length > 0 ? 
-      Math.round(submissions.reduce((sum, s) => sum + (s.totalScore || 0), 0) / submissions.length) : 0;
-    overviewSheet.addRow(['Average Score:', avgScore]);
+    overviewSheet.columns = [
+      { header: 'Test Name', key: 'name', width: 30 },
+      { header: 'Description', key: 'description', width: 40 },
+      { header: 'Duration (mins)', key: 'duration', width: 15 },
+      { header: 'Maximum Marks', key: 'maxMarks', width: 15 },
+      { header: 'Total Students', key: 'totalStudents', width: 15 },
+      { header: 'Total Attempts', key: 'totalAttempts', width: 15 },
+      { header: 'Average Score', key: 'avgScore', width: 15 },
+    ];
 
-    // Sheet 2: Student Scores
-    const scoresSheet = workbook.addWorksheet('Student Scores');
-    scoresSheet.columns = [
+    // Add test overview data
+    const uniqueStudents = new Set(submissions.map(s => s.user._id.toString()));
+    overviewSheet.addRow({
+      name: test.title,
+      description: test.description || 'N/A',
+      duration: test.timeLimit || 'N/A',
+      maxMarks: test.totalMarks,
+      totalStudents: uniqueStudents.size,
+      totalAttempts: submissions.length,
+      avgScore: Math.round(submissions.reduce((sum, s) => sum + (s.totalScore || 0), 0) / submissions.length)
+    });
+
+    // Sheet 2: Score Summary (All students)
+    const scoreSheet = workbook.addWorksheet('Score Summary');
+    scoreSheet.columns = [
       { header: 'Student Name', key: 'name', width: 30 },
       { header: 'Email', key: 'email', width: 40 },
       { header: 'MCQ Score', key: 'mcqScore', width: 15 },
@@ -1322,16 +1247,14 @@ export const generateTestReport = async (req, res) => {
       { header: 'Submission Date', key: 'submittedAt', width: 20 }
     ];
 
+    // Add each student's score
     submissions.forEach(sub => {
-      const mcqScore = sub.mcqSubmission?.totalScore || 0;
-      const codingScore = sub.codingSubmission?.totalScore || 0;
-      
-      scoresSheet.addRow({
+      scoreSheet.addRow({
         name: sub.user.name,
         email: sub.user.email,
-        mcqScore,
-        codingScore,
-        totalScore: mcqScore + codingScore,
+        mcqScore: sub.mcqSubmission?.totalScore || 0,
+        codingScore: sub.codingSubmission?.totalScore || 0,
+        totalScore: sub.totalScore || 0,
         submittedAt: sub.endTime ? new Date(sub.endTime).toLocaleString() : 'In Progress'
       });
     });
@@ -1339,28 +1262,22 @@ export const generateTestReport = async (req, res) => {
     // Sheet 3: MCQ Details
     const mcqSheet = workbook.addWorksheet('MCQ Details');
     mcqSheet.columns = [
-      { header: 'Student Name', key: 'name', width: 30 },
-      { header: 'Question', key: 'question', width: 40 },
-      { header: 'Status', key: 'status', width: 10 },
-      { header: 'Score', key: 'score', width: 10 }
+      { header: 'Student', key: 'student', width: 30 },
+      { header: 'Question', key: 'question', width: 20 },
+      { header: 'Result', key: 'result', width: 10 }
     ];
 
+    // Add MCQ results for each student
     submissions.forEach(sub => {
       if (sub.mcqSubmission?.answers) {
         sub.mcqSubmission.answers.forEach(answer => {
-          const question = test.mcqs.find(q => 
-            q._id.toString() === answer.questionId.toString()
-          );
-          const isCorrect = arraysEqual(
-            question?.correctOptions || [], 
-            answer.selectedOptions || []
-          );
+          const question = test.mcqs.find(q => q._id.toString() === answer.questionId.toString());
+          const isCorrect = arraysEqual(question?.correctOptions || [], answer.selectedOptions || []);
           
           mcqSheet.addRow({
-            name: sub.user.name,
-            question: truncateString(question?.question || 'Unknown', 40),
-            status: isCorrect ? '✓' : '✗',
-            score: isCorrect ? question?.marks || 0 : 0
+            student: `${sub.user.name} (${sub.user.email})`,
+            question: truncateString(question?.question || 'Unknown', 16),
+            result: isCorrect ? '✅' : '❌'
           });
         });
       }
@@ -1369,13 +1286,14 @@ export const generateTestReport = async (req, res) => {
     // Sheet 4: Coding Details
     const codingSheet = workbook.addWorksheet('Coding Details');
     codingSheet.columns = [
-      { header: 'Student Name', key: 'name', width: 30 },
-      { header: 'Challenge', key: 'challenge', width: 40 },
-      { header: 'Status', key: 'status', width: 10 },
+      { header: 'Student', key: 'student', width: 30 },
+      { header: 'Challenge', key: 'challenge', width: 20 },
+      { header: 'Result', key: 'result', width: 10 },
       { header: 'Score', key: 'score', width: 10 },
       { header: 'Language', key: 'language', width: 15 }
     ];
 
+    // Add coding results for each student
     submissions.forEach(sub => {
       if (sub.codingSubmission?.challenges) {
         sub.codingSubmission.challenges.forEach(challenge => {
@@ -1383,7 +1301,7 @@ export const generateTestReport = async (req, res) => {
             c => c._id.toString() === challenge.challengeId.toString()
           );
           
-          // Get best submission for this challenge
+          // Get the best submission for this challenge
           const bestSubmission = challenge.submissions.reduce(
             (best, curr) => curr.marks > (best?.marks || 0) ? curr : best,
             null
@@ -1391,10 +1309,10 @@ export const generateTestReport = async (req, res) => {
 
           if (bestSubmission) {
             codingSheet.addRow({
-              name: sub.user.name,
-              challenge: truncateString(challengeDetails?.title || 'Unknown', 40),
-              status: bestSubmission.status === 'passed' ? '✓' : '✗',
-              score: bestSubmission.marks || 0,
+              student: `${sub.user.name} (${sub.user.email})`,
+              challenge: truncateString(challengeDetails?.title || 'Unknown', 16),
+              result: bestSubmission.status === 'passed' ? '✅' : '❌',
+              score: `${bestSubmission.marks || 0}/${challengeDetails?.marks || 0}`,
               language: bestSubmission.language || 'N/A'
             });
           }
@@ -1403,20 +1321,8 @@ export const generateTestReport = async (req, res) => {
     });
 
     // Style all sheets
-    [overviewSheet, scoresSheet, mcqSheet, codingSheet].forEach(sheet => {
-      // Style header row
-      const headerRow = sheet.getRow(1);
-      headerRow.font = { bold: true };
-      headerRow.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FFD3D3D3' }
-      };
-
-      // Auto-fit columns
-      sheet.columns.forEach(column => {
-        if (column.width < 12) column.width = 12;
-      });
+    [overviewSheet, scoreSheet, mcqSheet, codingSheet].forEach(sheet => {
+      styleSheet(sheet);
     });
 
     // Set response headers
@@ -1426,7 +1332,7 @@ export const generateTestReport = async (req, res) => {
     );
     res.setHeader(
       'Content-Disposition',
-      `attachment; filename=test-report-${test.title.replace(/[^a-z0-9]/gi, '_')}.xlsx`
+      `attachment; filename=test-report-${test.title}.xlsx`
     );
 
     await workbook.xlsx.write(res);
@@ -1463,98 +1369,4 @@ function styleSheet(sheet) {
         .map(v => v?.toString().length || 10)
     ) + 2, 50);
   });
-}
-
-// Add this new controller function
-export const downloadTestReport = async (req, res) => {
-  try {
-    const { testId } = req.params;
-    
-    // Get all submissions data
-    const submissions = await getComprehensiveTestData(testId);
-    
-    // Create a temporary JSON file
-    const tempJsonPath = path.join(process.cwd(), 'temp', `${testId}.json`);
-    const tempExcelPath = path.join(process.cwd(), 'temp', `${testId}.xlsx`);
-    
-    // Ensure temp directory exists
-    if (!fs.existsSync(path.join(process.cwd(), 'temp'))) {
-      fs.mkdirSync(path.join(process.cwd(), 'temp'));
-    }
-
-    // Write data to temporary JSON file
-    fs.writeFileSync(tempJsonPath, JSON.stringify({
-      success: true,
-      data: submissions,
-      summary: {
-        totalSubmissions: submissions.length,
-        mcqSubmissions: submissions.filter(s => s.mcqSubmission).length,
-        codingSubmissions: submissions.filter(s => s.codingSubmission).length,
-        averageScore: calculateAverageScore(submissions),
-        testsPassed: submissions.filter(s => s.status === 'completed').length
-      }
-    }));
-
-    // Spawn Python process
-    const pythonProcess = spawn('python3', [
-      path.join(process.cwd(), 'src', 'controllers', 'formater.py'),
-      tempJsonPath,
-      tempExcelPath
-    ]);
-
-    pythonProcess.on('close', (code) => {
-      if (code !== 0) {
-        throw new Error('Python process failed');
-      }
-
-      // Send the Excel file
-      res.download(tempExcelPath, `test_report_${testId}.xlsx`, (err) => {
-        // Cleanup temp files
-        fs.unlinkSync(tempJsonPath);
-        fs.unlinkSync(tempExcelPath);
-        
-        if (err) {
-          console.error('Error sending file:', err);
-        }
-      });
-    });
-
-    pythonProcess.stderr.on('data', (data) => {
-      console.error(`Python Error: ${data}`);
-    });
-
-  } catch (error) {
-    console.error('Error in downloadTestReport:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to generate test report',
-      message: error.message
-    });
-  }
-};
-
-// Helper function to calculate average score
-const calculateAverageScore = (submissions) => {
-  if (!submissions.length) return 0;
-  
-  const totalScore = submissions.reduce((sum, sub) => {
-    const mcqScore = sub.mcqSubmission?.score || 0;
-    const codingScore = calculateCodingScore(sub.codingSubmission);
-    return sum + mcqScore + codingScore;
-  }, 0);
-  
-  return Math.round(totalScore / submissions.length);
-};
-
-// Helper function to calculate coding score
-const calculateCodingScore = (codingSubmission) => {
-  if (!codingSubmission?.challenges) return 0;
-  
-  return codingSubmission.challenges.reduce((sum, challenge) => {
-    const bestScore = challenge.submissions.reduce(
-      (best, sub) => Math.max(best, sub.marks || 0),
-      0
-    );
-    return sum + bestScore;
-  }, 0);
-}; 
+} 
