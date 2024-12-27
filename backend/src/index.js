@@ -52,6 +52,12 @@ const swaggerOptions = {
     }],
   },
   apis: ["./src/routes/*.js"],
+  swaggerOptions: {
+    docExpansion: 'none',
+    deepLinking: false,
+    defaultModelsExpandDepth: 1,
+    defaultModelExpandDepth: 1,
+  },
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
@@ -92,7 +98,14 @@ app.use("/api/code", codeRoutes);
 app.use("/api/analytics", analyticsRoutes);
 
 // Swagger UI route last
-app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
+app.use("/api-docs", 
+  swaggerUI.serve, 
+  swaggerUI.setup(swaggerDocs, {
+    explorer: true,
+    customCss: '.swagger-ui .topbar { display: none }',
+    customSiteTitle: "CodeQuest API Documentation"
+  })
+);
 
 mongoose.connect(process.env.MONGODB_URI)
   .then(async () => {
