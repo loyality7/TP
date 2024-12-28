@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// const API_URL = 'https://testapi.nexterchat.com/api';
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'https://testapi.nexterchat.com/api';
+// const API_URL = 'http://localhost:5000/api';
 
 
 // Create axios instance with default config
