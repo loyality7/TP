@@ -447,7 +447,7 @@ export default function CodingSection({
     }
   };
 
-  // Update handleExecuteCode to return results
+  // Update handleExecuteCode to handle hidden test cases differently
   const handleExecuteCode = async (isSubmission = false) => {
     try {
       if (!language) {
@@ -472,8 +472,8 @@ export default function CodingSection({
 
       // Get test cases based on whether this is a submission or not
       const testCases = isSubmission 
-        ? challenge.testCases 
-        : challenge.testCases?.filter(test => !test.isHidden);
+        ? challenge.testCases // For submission, run ALL test cases
+        : challenge.testCases?.filter(test => !test.isHidden); // For normal execution, only visible tests
 
       if (!testCases?.length) {
         toast.error('No test cases available');
@@ -481,7 +481,9 @@ export default function CodingSection({
       }
 
       const results = [];
-      const loadingToast = toast.loading('Running test cases...');
+      const loadingToast = toast.loading(
+        isSubmission ? 'Running all test cases...' : 'Running visible test cases...'
+      );
 
       for (const testCase of testCases) {
         setExecutingTests(prev => new Set(prev).add(testCase.id));
@@ -545,10 +547,11 @@ export default function CodingSection({
           status: visibleResults.every(r => r.passed) ? 'Passed' : 'Failed',
           executionTime: visibleResults.reduce((sum, r) => sum + r.executionTime, 0),
           memory: Math.max(...visibleResults.map(r => r.memory)),
-          testCaseResults: visibleResults
+          testCaseResults: visibleResults // Only show visible results in UI
         }
       }));
 
+      // Return all results (including hidden) for submission
       return results;
 
     } catch (error) {

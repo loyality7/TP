@@ -57,6 +57,10 @@ const swaggerOptions = {
     deepLinking: false,
     defaultModelsExpandDepth: 1,
     defaultModelExpandDepth: 1,
+    maxDisplayedTags: 20,
+    displayRequestDuration: false,
+    filter: true,
+    showExtensions: false
   },
 };
 
@@ -73,8 +77,8 @@ app.use(cors({
 }));
 
 // Update JSON and URL-encoded payload limits
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ limit: '50mb', extended: true }));
+app.use(express.json({ limit: '100mb' }));
+app.use(express.urlencoded({ limit: '100mb', extended: true }));
 
 // First apply the authentication middleware
 app.use('/api', authenticateToken); // Move this BEFORE the routes
@@ -103,7 +107,13 @@ app.use("/api-docs",
   swaggerUI.setup(swaggerDocs, {
     explorer: true,
     customCss: '.swagger-ui .topbar { display: none }',
-    customSiteTitle: "CodeQuest API Documentation"
+    customSiteTitle: "CodeQuest API Documentation",
+    maxDisplayedTags: 20,
+    displayRequestDuration: false,
+    filter: true,
+    showExtensions: false,
+    tryItOutEnabled: false, // Disable Try it out feature by default
+    supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'], // Limit available methods
   })
 );
 

@@ -8,6 +8,8 @@ frontend/dist/
 frontend/build/
 backend/dist/
 backend/build/
+docker-compose.yml
+
 
 # Environment files
 .env

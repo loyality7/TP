@@ -1,1950 +1,2033 @@
 {
-    "title": "Aptitude and Programming Test 6 ",
-    "description": "A comprehensive test for MITS students covering Quantitative Aptitude (R.S. Agarwal), Basic Programming, and Problem Solving skills.",
-    "duration": 120,
-    "proctoring": true,
-    "type": "coding_challenge",
-    "category": "Aptitude and Programming",
-    "difficulty": "beginner",
-    "instructions": "1. Complete all sections: Aptitude MCQs and Programming Questions\n2. Each coding solution must handle basic test cases\n3. Time management is crucial - attempt all questions\n4. Read each question carefully before answering",
-    "mcqs": [
-      {
-        "question": "In pseudocode, what does the 'MOD' operator represent?",
-        "options": [
-          "Multiplication",
-          "Division",
-          "Modulus (remainder)",
-          "Exponentiation"
-        ],
-        "correctOptions": [2],
-        "answerType": "single",
-        "marks": 1,
-        "section": "Sec-3",
-        "difficulty": "easy",
-        "explanation": "'MOD' returns the remainder after division."
-      },
-      {
-        "question": "What is the purpose of the 'BEGIN' keyword in pseudocode?",
-        "options": [
-          "To start the pseudocode",
-          "To define a loop",
-          "To declare a variable",
-          "To end the pseudocode"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 1,
-        "section": "Sec-3",
-        "difficulty": "easy",
-        "explanation": "'BEGIN' signifies the start of the pseudocode."
-      },
-      {
-        "question": "What does the 'ELSE' keyword do in an IF statement in pseudocode?",
-        "options": [
-          "Begins a new IF condition",
-          "Specifies an alternative block if the IF condition is false",
-          "Ends the IF statement",
-          "Repeats the IF condition"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 1,
-        "section": "Sec-3",
-        "difficulty": "medium",
-        "explanation": "'ELSE' provides an alternative block of code if the IF condition is false."
-      },
-      {
-        "question": "How would you represent an infinite loop in pseudocode?",
-        "options": [
-          "FOR i FROM 1 TO INFINITY",
-          "WHILE TRUE DO",
-          "REPEAT UNTIL FALSE",
-          "All of the above"
-        ],
-        "correctOptions": [3],
-        "answerType": "single",
-        "marks": 1,
-        "section": "Sec-3",
-        "difficulty": "hard",
-        "explanation": "All listed options can be used to create infinite loops in pseudocode."
-      },
-      {
-        "question": "What is the final value of 'sum' after executing the following pseudocode?\n\n```\nBEGIN\n  SET sum TO 0\n  FOR i FROM 1 TO 4\n    SET sum TO sum + i\n  END_FOR\nEND\n```",
-        "options": [
-          "6",
-          "10",
-          "15",
-          "5"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 1,
-        "section": "Sec-3",
-        "difficulty": "easy",
-        "explanation": "sum =1+2+3+4=10"
-      },
-      {
-        "question": "Which keyword signifies the end of a function in pseudocode?",
-        "options": [
-          "END_FUNCTION",
-          "FINISH",
-          "CLOSE",
-          "END"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 1,
-        "section": "Sec-3",
-        "difficulty": "easy",
-        "explanation": "'END_FUNCTION' denotes the termination of a function block."
-      },
-      {
-        "question": "If MOUSE is written as PRUQC, then how will SHIFT be written in that code?",
-        "options": [
-          "UJKHV",
-          "QFGDV",
-          "UJKDV",
-          "QJKDV"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 1,
-        "section": "Sec-1",
-        "difficulty": "medium",
-        "explanation": "Each letter is replaced by the letter 2 positions before it in the alphabet. Therefore, SHIFT becomes QFGDV"
-      },
-      {
-        "question": "In a certain code language, if TERMINAL = 1234567890, then MINERAL = ?",
-        "options": [
-          "45632789",
-          "46532789",
-          "45623789",
-          "46523789"
-        ],
-        "correctOptions": [2],
-        "answerType": "single",
-        "marks": 1,
-        "section": "Sec-1",
-        "difficulty": "medium",
-        "explanation": "Using the same position values from TERMINAL, MINERAL would be 45623789"
-      },
-      {
-        "question": "If 'P' means '×', 'Q' means '÷', 'R' means '+' and 'S' means '-', then what will be the value of 8 P 6 Q 2 R 4 S 2?",
-        "options": [
-          "26",
-          "24",
-          "28",
-          "22"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 1,
-        "section": "Sec-1",
-        "difficulty": "hard",
-        "explanation": "8 × 6 ÷ 2 + 4 - 2 = 48 ÷ 2 + 4 - 2 = 24 + 4 - 2 = 26"
-      },
-      {
-        "question": "Which one will replace the question mark? 2, 6, 12, 20, 30, 42, ?",
-        "options": [
-          "56",
-          "54",
-          "58",
-          "60"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 1,
-        "section": "Sec-1",
-        "difficulty": "medium",
-        "explanation": "The pattern is +4, +6, +8, +10, +12, +14. So next number is 42+14=56"
-      },
-      {
-        "question": "If FRIEND is coded as HUMJTK, how is CANDLE coded?",
-        "options": [
-          "EDRJQG",
-          "DCQIKG",
-          "ECPFNG",
-          "ECOFNG"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 1,
-        "section": "Sec-1",
-        "difficulty": "medium",
-        "explanation": "Each letter is moved 2 positions forward in the alphabet. Therefore, CANDLE becomes DCQIKG"
-      },
-      {
-        "question": "What is the output of the following pseudocode snippet?\n\n```\nBEGIN\n  SET sum TO 0\n  FOR i FROM 1 TO 5\n    SET sum TO sum + i\n  END_FOR\n  PRINT sum\nEND\n```",
-        "options": [
-          "5",
-          "10",
-          "15",
-          "20"
-        ],
-        "correctOptions": [2],
-        "answerType": "single",
-        "marks": 1,
-        "section": "Sec-3",
-        "difficulty": "easy",
-        "explanation": "It calculates the sum 1+2+3+4+5 = 15 and prints the result."
-      },
-      {
-        "question": "In pseudocode, which of the following represents a loop that repeats until a condition is false?",
-        "options": [
-          "IF...THEN...ELSE",
-          "FOR...TO...STEP",
-          "WHILE...DO",
-          "FUNCTION...END_FUNCTION"
-        ],
-        "correctOptions": [2],
-        "answerType": "single",
-        "marks": 1,
-        "section": "Sec-3",
-        "difficulty": "medium",
-        "explanation": "'WHILE...DO' loop continues to repeat as long as the condition is true."
-      },
-      {
-        "question": "What is the output of this pseudocode?\n\n```\nBEGIN\n  SET a TO 10\n  SET b TO 20\n  IF a > b THEN\n    PRINT \"A is greater\"\n  ELSE\n    PRINT \"B is greater\"\n  END_IF\nEND\n```",
-        "options": [
-          "A is greater",
-          "B is greater",
-          "A and B are equal",
-          "No output"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 1,
-        "section": "Sec-3",
-        "difficulty": "easy",
-        "explanation": "Since 10 < 20, it prints 'B is greater'."
-      },
-      {
-        "question": "What is missing in the following pseudocode to correctly compute the factorial of a number?\n\n```\nBEGIN\n  SET n TO 5\n  SET factorial TO 1\n  FOR i FROM 1 TO n\n    SET factorial TO factorial * i\n  // Missing end\n  PRINT factorial\nEND\n```",
-        "options": [
-          "END_FOR",
-          "END_IF",
-          "END_LOOP",
-          "Nothing, it is correct"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 1,
-        "section": "Sec-3",
-        "difficulty": "hard",
-        "explanation": "Proper closure of the FOR loop is needed with 'END_FOR'."
-      },
-      {
-        "question": "In pseudocode, what keyword is used to stop the execution of a loop prematurely?",
-        "options": [
-          "EXIT",
-          "BREAK",
-          "STOP",
-          "Both A and B"
-        ],
-        "correctOptions": [3],
-        "answerType": "single",
-        "marks": 1,
-        "section": "Sec-3",
-        "difficulty": "medium",
-        "explanation": "Both 'EXIT' and 'BREAK' can be used to terminate loops early."
-      },
-      {
-        "question": "What is the value of 'x' after executing the following pseudocode?\n\n```\nBEGIN\n  SET x TO 0\n  FOR i FROM 1 TO 4\n    SET x TO x + i\n  END_FOR\nEND\n```",
-        "options": [
-          "4",
-          "6",
-          "10",
-          "15"
-        ],
-        "correctOptions": [2],
-        "answerType": "single",
-        "marks": 1,
-        "section": "Sec-3",
-        "difficulty": "easy",
-        "explanation": "x = 1+2+3+4 = 10"
-      },
-      {
-        "question": "What does the 'READ' command do in pseudocode?",
-        "options": [
-          "Outputs data to the screen.",
-          "Takes input from the user.",
-          "Executes a function.",
-          "Initializes variables."
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 1,
-        "section": "Sec-3",
-        "difficulty": "easy",
-        "explanation": "'READ' is used to take input from the user."
-      },
-      
-      {
-        "question": "What is stored in array A?\nA = [1,2,3,4,5]\nFOR i = 1 TO LENGTH(A)-1\n  A[i] = A[i-1] + A[i+1]\nENDFOR\nPRINT A",
-        "options": [
-          "[1,5,7,9,5]",
-          "[1,4,6,8,5]",
-          "[1,6,6,8,5]",
-          "[1,3,5,7,5]"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 2,
-        "difficulty": "medium",
-        "explanation": "Each element becomes sum of its neighbors (processed left to right)"
-      },
-      {
-        "question": "What will this function return?\nFUNCTION Calculate(str)\n  stack = []\n  FOR EACH c IN str\n    IF c IN '0123456789' THEN\n      PUSH c TO stack\n    ELSE\n      b = POP FROM stack\n      a = POP FROM stack\n      IF c = '+' THEN PUSH (a + b) TO stack\n      IF c = '*' THEN PUSH (a * b) TO stack\n    ENDIF\n  ENDFOR\n  RETURN POP FROM stack\nENDFUNCTION\nPRINT Calculate('23+')",
-        "options": [
-          "5",
-          "6",
-          "8",
-          "10"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 3,
-        "difficulty": "hard",
-        "explanation": "Evaluates postfix expression: 2 3 + = 5"
-      },
-      {
-        "question": "What is the output?\nFUNCTION Transform(arr)\n  result = []\n  FOR i = 0 TO LENGTH(arr)-1\n    count = 0\n    FOR j = 0 TO LENGTH(arr)-1\n      IF arr[j] < arr[i] THEN count = count + 1\n    ENDFOR\n    APPEND count TO result\n  ENDFOR\n  RETURN result\nENDFUNCTION\nPRINT Transform([5,2,6,1])",
-        "options": [
-          "[2,1,3,0]",
-          "[3,1,2,0]",
-          "[1,2,3,0]",
-          "[2,3,1,0]"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 2,
-        "difficulty": "medium",
-        "explanation": "Counts smaller elements for each position"
-      },
-      {
-        "question": "What will be returned?\nFUNCTION Process(str)\n  IF LENGTH(str) <= 1 THEN RETURN str\n  IF str[0] = str[LENGTH(str)-1] THEN\n    RETURN str[0] + Process(str[1:LENGTH(str)-1]) + str[LENGTH(str)-1]\n  ENDIF\n  RETURN Process(str[1:LENGTH(str)-1])\nENDFUNCTION\nPRINT Process('radar')",
-        "options": [
-          "radar",
-          "rdr",
-          "aa",
-          "r"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 3,
-        "difficulty": "hard",
-        "explanation": "Returns palindrome part of string"
-      },
-      {
-        "question": "What is the output?\nFUNCTION Generate(n)\n  IF n = 0 THEN RETURN ['0']\n  IF n = 1 THEN RETURN ['0','1']\n  prev = Generate(n-1)\n  result = []\n  FOR EACH x IN prev\n    APPEND '0'+x TO result\n  ENDFOR\n  FOR EACH x IN REVERSE(prev)\n    APPEND '1'+x TO result\n  ENDFOR\n  RETURN result\nENDFUNCTION\nPRINT LENGTH(Generate(2))",
-        "options": [
-          "2",
-          "4",
-          "6",
-          "8"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 3,
-        "difficulty": "hard",
-        "explanation": "Generates Gray code sequences of length n"
-      },
-      {
-        "question": "What will this code output?\nA = [1,2,3,4,5]\nB = []\nFOR i = 0 TO LENGTH(A)-1\n  product = 1\n  FOR j = 0 TO LENGTH(A)-1\n    IF i != j THEN product = product * A[j]\n  ENDFOR\n  APPEND product TO B\nENDFOR\nPRINT B[2]",
-        "options": [
-          "40",
-          "30",
-          "20",
-          "10"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 2,
-        "difficulty": "medium",
-        "explanation": "Creates array where each element is product of all other elements"
-      },
-      {
-        "question": "What is the result?\nFUNCTION Process(n)\n  binary = ''\n  WHILE n > 0\n    binary = (n MOD 2) + binary\n    n = n DIV 2\n  ENDWHILE\n  count = 0\n  FOR EACH bit IN binary\n    IF bit = '1' THEN count = count + 1\n  ENDFOR\n  RETURN count\nENDFUNCTION\nPRINT Process(14)",
-        "options": [
-          "2",
-          "3",
-          "4",
-          "5"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 2,
-        "difficulty": "medium",
-        "explanation": "Counts 1s in binary representation of number (14 = 1110)"
-      },
-      {
-        "question": "What will be returned?\nFUNCTION Mystery(arr, k)\n  IF k = 0 THEN RETURN 0\n  max_sum = 0\n  current_sum = 0\n  FOR i = 0 TO LENGTH(arr)-1\n    current_sum = current_sum + arr[i]\n    IF i >= k THEN\n      current_sum = current_sum - arr[i-k]\n    ENDIF\n    IF i >= k-1 AND current_sum > max_sum THEN\n      max_sum = current_sum\n    ENDIF\n  ENDFOR\n  RETURN max_sum\nENDFUNCTION\nPRINT Mystery([1,4,2,10,2,3,1,0,20], 4)",
-        "options": [
-          "24",
-          "28",
-          "18",
-          "20"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 3,
-        "difficulty": "hard",
-        "explanation": "Finds maximum sum of k consecutive elements"
-      },
-      {
-        "question": "What is the output?\nFUNCTION Calculate(n)\n  IF n = 0 THEN RETURN 1\n  ways = 0\n  IF n >= 1 THEN ways = ways + Calculate(n-1)\n  IF n >= 2 THEN ways = ways + Calculate(n-2)\n  RETURN ways\nENDFUNCTION\nPRINT Calculate(4)",
-        "options": [
-          "3",
-          "5",
-          "8",
-          "13"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 2,
-        "difficulty": "medium",
-        "explanation": "Calculates number of ways to climb n stairs (1 or 2 steps at a time)"
-      },
-      {
-        "question": "What will this function return?\nFUNCTION Process(arr)\n  stack = []\n  result = 0\n  FOR EACH x IN arr\n    WHILE NOT EMPTY(stack) AND TOP(stack) > x\n      result = MAX(result, TOP(stack) - x)\n      POP FROM stack\n    ENDWHILE\n    PUSH x TO stack\n  ENDFOR\n  RETURN result\nENDFUNCTION\nPRINT Process([5,3,6,2,4])",
-        "options": [
-          "2",
-          "3",
-          "4",
-          "5"
-        ],
-        "correctOptions": [2],
-        "answerType": "single",
-        "marks": 3,
-        "difficulty": "hard",
-        "explanation": "Finds maximum difference between elements where larger comes before smaller"
-      },
-      {
-        "question": "What is stored in result?\nA = [1,2,3,4,5]\nresult = 0\nFOR i = 0 TO LENGTH(A)-1\n  FOR j = i TO LENGTH(A)-1\n    FOR k = i TO j\n      result = result + A[k]\n    ENDFOR\n  ENDFOR\nENDFOR\nPRINT result",
-        "options": [
-          "35",
-          "45",
-          "55",
-          "65"
-        ],
-        "correctOptions": [2],
-        "answerType": "single",
-        "marks": 3,
-        "difficulty": "hard",
-        "explanation": "Calculates sum of all possible subarrays"
-      },
-      {
-        "question": "What will be output?\nFUNCTION Process(str)\n  count = {}\n  max_char = ''\n  max_freq = 0\n  FOR EACH c IN str\n    IF c NOT IN count THEN count[c] = 0\n    count[c] = count[c] + 1\n    IF count[c] > max_freq THEN\n      max_freq = count[c]\n      max_char = c\n    ENDIF\n  ENDFOR\n  RETURN max_char\nENDFUNCTION\nPRINT Process('programming')",
-        "options": [
-          "p",
-          "r",
-          "g",
-          "m"
-        ],
-        "correctOptions": [2],
-        "answerType": "single",
-        "marks": 2,
-        "difficulty": "medium",
-        "explanation": "Finds most frequent character in string"
-      },
-      {
-        "question": "What is the output?\nFUNCTION Generate(n)\n  IF n = 1 THEN RETURN [[1]]\n  prev = Generate(n-1)\n  result = []\n  FOR EACH arr IN prev\n    FOR i = 0 TO n\n      new_arr = COPY(arr)\n      INSERT n AT POSITION i IN new_arr\n      APPEND new_arr TO result\n    ENDFOR\n  ENDFOR\n  RETURN result\nENDFUNCTION\nPRINT LENGTH(Generate(3))",
-        "options": [
-          "3",
-          "6",
-          "9",
-          "12"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 3,
-        "difficulty": "hard",
-        "explanation": "Generates all permutations of numbers 1 to n"
-      },
-      
-      {
-        "question": "What is the output?\nFUNCTION LCS(str1, str2)\n  IF LENGTH(str1) = 0 OR LENGTH(str2) = 0 THEN RETURN 0\n  IF str1[0] = str2[0] THEN\n    RETURN 1 + LCS(str1[1:], str2[1:])\n  ENDIF\n  RETURN MAX(LCS(str1[1:], str2), LCS(str1, str2[1:]))\nENDFUNCTION\nPRINT LCS('ABCD', 'ACBD')",
-        "options": [
-          "2",
-          "3",
-          "4",
-          "1"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 3,
-        "difficulty": "hard",
-        "explanation": "Finds length of Longest Common Subsequence: 'ABD' or 'ACD'"
-      },
-      {
-        "question": "What will be returned?\nFUNCTION KnapSack(W, wt, val, n)\n  IF n = 0 OR W = 0 THEN RETURN 0\n  IF wt[n-1] > W THEN\n    RETURN KnapSack(W, wt, val, n-1)\n  ENDIF\n  RETURN MAX(val[n-1] + KnapSack(W-wt[n-1], wt, val, n-1),\n             KnapSack(W, wt, val, n-1))\nENDFUNCTION\nPRINT KnapSack(4, [2,3,1], [3,4,5], 3)",
-        "options": [
-          "7",
-          "8",
-          "9",
-          "10"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 3,
-        "difficulty": "hard",
-        "explanation": "0-1 Knapsack problem: Maximum value possible is 8 (items with values 3 and 5)"
-      },
-      {
-        "question": "What is the output?\nFUNCTION EditDistance(str1, str2)\n  IF LENGTH(str1) = 0 THEN RETURN LENGTH(str2)\n  IF LENGTH(str2) = 0 THEN RETURN LENGTH(str1)\n  IF str1[0] = str2[0] THEN\n    RETURN EditDistance(str1[1:], str2[1:])\n  ENDIF\n  RETURN 1 + MIN(EditDistance(str1[1:], str2),\n                 EditDistance(str1, str2[1:]),\n                 EditDistance(str1[1:], str2[1:]))\nENDFUNCTION\nPRINT EditDistance('CAT', 'CUT')",
-        "options": [
-          "1",
-          "2",
-          "3",
-          "4"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 3,
-        "difficulty": "hard",
-        "explanation": "Minimum edits needed: Replace 'A' with 'U'"
-      },
-      {
-        "question": "What will this function return?\nFUNCTION CountPaths(grid, m, n)\n  IF m = 1 OR n = 1 THEN RETURN 1\n  RETURN CountPaths(grid, m-1, n) + CountPaths(grid, m, n-1)\nENDFUNCTION\nPRINT CountPaths(grid, 3, 3)",
-        "options": [
-          "4",
-          "6",
-          "8",
-          "9"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 2,
-        "difficulty": "medium",
-        "explanation": "Counts paths from top-left to bottom-right moving only right and down"
-      },
-      {
-        "question": "What is the output?\nFUNCTION Partition(arr, low, high)\n  pivot = arr[high]\n  i = low - 1\n  FOR j = low TO high-1\n    IF arr[j] <= pivot THEN\n      i = i + 1\n      SWAP arr[i], arr[j]\n    ENDIF\n  ENDFOR\n  SWAP arr[i+1], arr[high]\n  RETURN i+1\nENDFUNCTION\nA = [4,1,3,2,6,5]\nPartition(A, 0, 5)\nPRINT A[2]",
-        "options": [
-          "2",
-          "3",
-          "4",
-          "5"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 3,
-        "difficulty": "hard",
-        "explanation": "QuickSort partition around pivot 5: [4,1,3,2,5,6], A[2]=3"
-      },
-      {
-        "question": "What will be returned?\nFUNCTION MaxProfit(prices)\n  profit = 0\n  FOR i = 1 TO LENGTH(prices)-1\n    IF prices[i] > prices[i-1] THEN\n      profit = profit + (prices[i] - prices[i-1])\n    ENDIF\n  ENDFOR\n  RETURN profit\nENDFUNCTION\nPRINT MaxProfit([7,1,5,3,6,4])",
-        "options": [
-          "5",
-          "7",
-          "8",
-          "9"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 2,
-        "difficulty": "medium",
-        "explanation": "Stock profit: Buy at 1, sell at 5 (profit 4), buy at 3, sell at 6 (profit 3), total 7"
-      },
-      {
-        "question": "What is the output?\nFUNCTION Decode(str)\n  IF LENGTH(str) = 0 OR str[0] = '0' THEN RETURN 0\n  IF LENGTH(str) = 1 THEN RETURN 1\n  ways = Decode(str[1:])\n  IF INT(str[0:2]) <= 26 THEN\n    ways = ways + Decode(str[2:])\n  ENDIF\n  RETURN ways\nENDFUNCTION\nPRINT Decode('123')",
-        "options": [
-          "2",
-          "3",
-          "4",
-          "5"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 3,
-        "difficulty": "hard",
-        "explanation": "Ways to decode: '1,2,3', '12,3', '1,23' = 3 ways"
-      },
-      {
-        "question": "What will this code output?\nFUNCTION IsBalanced(str)\n  stack = []\n  FOR EACH c IN str\n    IF c IN '({[' THEN\n      PUSH c TO stack\n    ELSE\n      IF EMPTY(stack) THEN RETURN false\n      top = POP FROM stack\n      IF (c = ')' AND top != '(') OR\n         (c = '}' AND top != '{') OR\n         (c = ']' AND top != '[') THEN\n        RETURN false\n      ENDIF\n    ENDIF\n  ENDFOR\n  RETURN EMPTY(stack)\nENDFUNCTION\nPRINT IsBalanced('({[]})')",
-        "options": [
-          "true",
-          "false",
-          "error",
-          "undefined"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 2,
-        "difficulty": "medium",
-        "explanation": "Checks for balanced parentheses using stack"
-      },
-      {
-        "question": "What is stored in result?\nFUNCTION LongestPalindrome(str)\n  n = LENGTH(str)\n  start = 0\n  maxLength = 1\n  FOR i = 0 TO n-1\n    left = i - 1\n    right = i + 1\n    WHILE right < n AND str[i] = str[right]\n      right = right + 1\n    ENDWHILE\n    WHILE left >= 0 AND right < n AND str[left] = str[right]\n      left = left - 1\n      right = right + 1\n    ENDWHILE\n    length = right - left - 1\n    IF length > maxLength THEN\n      start = left + 1\n      maxLength = length\n    ENDIF\n  ENDFOR\n  RETURN str[start:start+maxLength]\nENDFUNCTION\nPRINT LongestPalindrome('babad')",
-        "options": [
-          "bab",
-          "aba",
-          "bad",
-          "dab"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 3,
-        "difficulty": "hard",
-        "explanation": "Finds longest palindromic substring"
-      },
-      {
-        "question": "What will be returned?\nFUNCTION Jump(arr)\n  n = LENGTH(arr)\n  IF n <= 1 THEN RETURN 0\n  jumps = 1\n  maxReach = arr[0]\n  steps = arr[0]\n  FOR i = 1 TO n-1\n    IF i = n-1 THEN RETURN jumps\n    maxReach = MAX(maxReach, i + arr[i])\n    steps = steps - 1\n    IF steps = 0 THEN\n      jumps = jumps + 1\n      steps = maxReach - i\n    ENDIF\n  ENDFOR\nENDFUNCTION\nPRINT Jump([2,3,1,1,4])",
-        "options": [
-          "1",
-          "2",
-          "3",
-          "4"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 3,
-        "difficulty": "hard",
-        "explanation": "Minimum jumps needed: index 0→1→4"
-      },
-      {
-        "question": "What is the output?\nFUNCTION Rotate(matrix)\n  n = LENGTH(matrix)\n  FOR i = 0 TO n/2-1\n    FOR j = i TO n-i-2\n      temp = matrix[i][j]\n      matrix[i][j] = matrix[n-1-j][i]\n      matrix[n-1-j][i] = matrix[n-1-i][n-1-j]\n      matrix[n-1-i][n-1-j] = matrix[j][n-1-i]\n      matrix[j][n-1-i] = temp\n    ENDFOR\n  ENDFOR\nENDFUNCTION\nmatrix = [[1,2],[3,4]]\nRotate(matrix)\nPRINT matrix[0][0]",
-        "options": [
-          "1",
-          "2",
-          "3",
-          "4"
-        ],
-        "correctOptions": [2],
-        "answerType": "single",
-        "marks": 3,
-        "difficulty": "hard",
-        "explanation": "Rotates matrix 90 degrees clockwise"
-      },
-      {
-        "question": "What will this function return?\nFUNCTION MaxArea(height)\n  maxarea = 0\n  left = 0\n  right = LENGTH(height) - 1\n  WHILE left < right\n    width = right - left\n    maxarea = MAX(maxarea, width * MIN(height[left], height[right]))\n    IF height[left] < height[right] THEN\n      left = left + 1\n    ELSE\n      right = right - 1\n    ENDIF\n  ENDWHILE\n  RETURN maxarea\nENDFUNCTION\nPRINT MaxArea([1,8,6,2,5,4,8,3,7])",
-        "options": [
-          "36",
-          "42",
-          "49",
-          "56"
-        ],
-        "correctOptions": [2],
-        "answerType": "single",
-        "marks": 3,
-        "difficulty": "hard",
-        "explanation": "Container with most water: height=7, width=7, area=49"
-      },
-      {
-        "question": "What is stored in result?\nFUNCTION Subsets(nums)\n  result = [[]]\n  FOR EACH num IN nums\n    n = LENGTH(result)\n    FOR i = 0 TO n-1\n      subset = COPY(result[i])\n      APPEND num TO subset\n      APPEND subset TO result\n    ENDFOR\n  ENDFOR\n  RETURN result\nENDFUNCTION\nPRINT LENGTH(Subsets([1,2,3]))",
-        "options": [
-          "6",
-          "8",
-          "9",
-          "12"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 2,
-        "difficulty": "medium",
-        "explanation": "Generates all possible subsets: [], [1], [2], [3], [1,2], [1,3], [2,3], [1,2,3]"
-      },
-      
-      {
-        "question": "What is the output?\nFUNCTION UniquePaths(m, n, memo={})\n  IF m = 1 OR n = 1 THEN RETURN 1\n  key = m + ',' + n\n  IF key IN memo THEN RETURN memo[key]\n  memo[key] = UniquePaths(m-1, n, memo) + UniquePaths(m, n-1, memo)\n  RETURN memo[key]\nENDFUNCTION\nPRINT UniquePaths(3, 3)",
-        "options": [
-          "4",
-          "6",
-          "8",
-          "9"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 2,
-        "difficulty": "medium",
-        "explanation": "Counts unique paths with memoization"
-      },
-      {
-        "question": "What will this function return?\nFUNCTION WordBreak(s, wordDict)\n  n = LENGTH(s)\n  dp = ARRAY(n+1, false)\n  dp[0] = true\n  FOR i = 1 TO n\n    FOR j = 0 TO i-1\n      IF dp[j] AND s[j:i] IN wordDict THEN\n        dp[i] = true\n        BREAK\n      ENDIF\n    ENDFOR\n  ENDFOR\n  RETURN dp[n]\nENDFUNCTION\nPRINT WordBreak('leetcode', ['leet','code'])",
-        "options": [
-          "true",
-          "false",
-          "error",
-          "undefined"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 3,
-        "difficulty": "hard",
-        "explanation": "Dynamic programming to check if string can be segmented into dictionary words"
-      },
-      {
-        "question": "What is stored in result?\nFUNCTION CoinChange(coins, amount)\n  dp = ARRAY(amount+1, amount+1)\n  dp[0] = 0\n  FOR i = 1 TO amount\n    FOR EACH coin IN coins\n      IF coin <= i THEN\n        dp[i] = MIN(dp[i], dp[i-coin] + 1)\n      ENDIF\n    ENDFOR\n  ENDFOR\n  RETURN dp[amount] > amount ? -1 : dp[amount]\nENDFUNCTION\nPRINT CoinChange([1,2,5], 11)",
-        "options": [
-          "3",
-          "4",
-          "5",
-          "6"
-        ],
-        "correctOptions": [0],
-        "answerType": "single",
-        "marks": 3,
-        "difficulty": "hard",
-        "explanation": "Minimum coins needed: 5+5+1=11 (3 coins)"
-      },
-      {
-        "question": "What will be returned?\nFUNCTION Rob(nums)\n  IF LENGTH(nums) = 0 THEN RETURN 0\n  IF LENGTH(nums) = 1 THEN RETURN nums[0]\n  dp = ARRAY(LENGTH(nums))\n  dp[0] = nums[0]\n  dp[1] = MAX(nums[0], nums[1])\n  FOR i = 2 TO LENGTH(nums)-1\n    dp[i] = MAX(dp[i-1], dp[i-2] + nums[i])\n  ENDFOR\n  RETURN dp[LENGTH(nums)-1]\nENDFUNCTION\nPRINT Rob([2,7,9,3,1])",
-        "options": [
-          "11",
-          "12",
-          "13",
-          "14"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 2,
-        "difficulty": "medium",
-        "explanation": "Maximum amount: 2+9+1=12"
-      },
-      {
-        "question": "What is the output?\nFUNCTION LongestIncreasing(nums)\n  IF LENGTH(nums) = 0 THEN RETURN 0\n  dp = ARRAY(LENGTH(nums), 1)\n  maxLen = 1\n  FOR i = 1 TO LENGTH(nums)-1\n    FOR j = 0 TO i-1\n      IF nums[i] > nums[j] THEN\n        dp[i] = MAX(dp[i], dp[j] + 1)\n      ENDIF\n    ENDFOR\n    maxLen = MAX(maxLen, dp[i])\n  ENDFOR\n  RETURN maxLen\nENDFUNCTION\nPRINT LongestIncreasing([10,9,2,5,3,7,101,18])",
-        "options": [
-          "3",
-          "4",
-          "5",
-          "6"
-        ],
-        "correctOptions": [1],
-        "answerType": "single",
-        "marks": 3,
-        "difficulty": "hard",
-        "explanation": "Longest increasing subsequence length: [2,5,7,101] or [2,5,7,18]"
-      },
-      {
-        "question": "What will this code output?\nFUNCTION MaxProduct(nums)\n  maxSoFar = nums[0]\n  minSoFar = nums[0]\n  result = maxSoFar\n  FOR i = 1 TO LENGTH(nums)-1\n    curr = nums[i]\n    tempMax = MAX(curr, MAX(maxSoFar*curr, minSoFar*curr))\n    minSoFar = MIN(curr, MIN(maxSoFar*curr, minSoFar*curr))\n    maxSoFar = tempMax\n    result = MAX(maxSoFar, result)\n  ENDFOR\n  RETURN result\nENDFUNCTION\nPRINT MaxProduct([2,3,-2,4])",
-        "options": [
-          "4",
-          "6",
-          "8",
-          "12"
-        ],
-        "correctOptions": [2],
-        "answerType": "single",
-        "marks": 3,
-        "difficulty": "hard",
-        "explanation": "Maximum product subarray: [2,3] = 6"
-      }
-    ],
-    "codingChallenges": [
-      {
-        "title": "Special Fibonacci",
-        "description": "Calculate the Nth number in a special series",
-        "problemStatement": "Write a program to find and return an integer value representing the Nth number in this special series where:\nf(N) = f(N-1) + f(N-2) + f(N-3)\nwhere f(1) = 1",
-        "constraints": "1 <= N <= 20",
-        "allowedLanguages": ["python", "java", "javascript", "cpp"],
-        "languageImplementations": {
-          "python": {
-            "visibleCode": "# Write code here",
-            "invisibleCode": "# No additional code needed"
-          },
-          "java": {
-            "visibleCode": "// Write code here",
-            "invisibleCode": "// No additional code needed"
-          }
-        },
-        "testCases": [
-          {
-            "input": "4",
-            "output": "4",
-            "isVisible": true
-          },
-          {
-            "input": "5",
-            "output": "8",
-            "isVisible": true
-          },
-          {
-            "input": "3",
-            "output": "2",
-            "isVisible": true
-          }
-        ],
-        "marks": 10,
-        "difficulty": "easy",
-        "tags": ["functions", "arrays", "loops"],
-        "timeLimit": 1,
-        "memoryLimit": 256,
-        "type": "coding_challenge",
-        "category": "Programming",
-        "instructions": "Write a solution that handles all test cases efficiently"
-      },
+  "title": "Aptitude and Programming Test 7 ",
+  "description": "A comprehensive test for MITS students covering Quantitative Aptitude (R.S. Agarwal), Basic Programming, and Problem Solving skills.",
+  "duration": 120,
+  "proctoring": true,
+  "type": "coding_challenge",
+  "category": "Aptitude and Programming",
+  "difficulty": "beginner",
+  "instructions": "1. Complete all sections: Aptitude MCQs and Programming Questions\n2. Each coding solution must handle basic test cases\n3. Time management is crucial - attempt all questions\n4. Read each question carefully before answering",
+  "mcqs": [
     {
-        "title": "Sum of Digits",
-        "description": "Calculate sum of digits in a number",
-        "problemStatement": "Write a program that takes a positive integer as input and returns the sum of all its digits. For example, if input is 123, output should be 6 (1+2+3).",
-        "constraints": "1 <= number <= 10000",
-        "allowedLanguages": ["python", "java", "javascript", "cpp"],
-        "languageImplementations": {
-          "python": {
-            "visibleCode": "# Write code here",
-            "invisibleCode": "# No additional code needed"
-          },
-          "java": {
-            "visibleCode": "// Write code here",
-            "invisibleCode": "// No additional code needed"
-          }
-        },
-        "testCases": [
-          {
-            "input": "123",
-            "output": "6",
-            "isVisible": true
-          },
-          {
-            "input": "5555",
-            "output": "20",
-            "isVisible": true
-          },
-          {
-            "input": "1000",
-            "output": "1",
-            "isVisible": true
-          },
-          {
-            "input": "1234",
-            "output": "10",
-            "isVisible": true
-          }
-        ],
-        "marks": 10,
-        "difficulty": "easy",
-        "tags": ["loops", "math", "basic"],
-        "timeLimit": 1,
-        "memoryLimit": 256,
-        "type": "coding_challenge",
-        "category": "Programming",
-        "instructions": "Write a solution that handles all test cases efficiently"
-      },
-      {
-        "title": "Reverse Array",
-        "description": "Reverse elements of an array",
-        "problemStatement": "Write a program that takes an array of integers and returns the array with its elements in reverse order. For example, input [1,2,3] should return [3,2,1].",
-        "constraints": "1 <= array length <= 100\n-1000 <= elements <= 1000",
-        "allowedLanguages": ["python", "java", "javascript", "cpp"],
-        "languageImplementations": {
-          "python": {
-            "visibleCode": "# Write code here",
-            "invisibleCode": "# No additional code needed"
-          },
-          "java": {
-            "visibleCode": "// Write code here",
-            "invisibleCode": "// No additional code needed"
-          }
-        },
-        "testCases": [
-          {
-            "input": "[1,2,3]",
-            "output": "[3,2,1]",
-            "isVisible": true
-          },
-          {
-            "input": "[5]",
-            "output": "[5]",
-            "isVisible": true
-          },
-          {
-            "input": "[1,2,3,4,5]",
-            "output": "[5,4,3,2,1]",
-            "isVisible": true
-          },
-          {
-            "input": "[1,1,1]",
-            "output": "[1,1,1]",
-            "isVisible": true
-          }
-        ],
-        "marks": 10,
-        "difficulty": "easy",
-        "tags": ["arrays", "loops", "basic"],
-        "timeLimit": 1,
-        "memoryLimit": 256,
-        "type": "coding_challenge",
-        "category": "Programming",
-        "instructions": "Write a solution that handles all test cases efficiently"
-      },
-      {
-        "title": "Count Words",
-        "description": "Count number of words in a string",
-        "problemStatement": "Write a program that counts the number of words in a given string. Words are separated by single spaces. For example, 'Hello World' has 2 words.",
-        "constraints": "1 <= string length <= 1000\nOnly letters and spaces",
-        "allowedLanguages": ["python", "java", "javascript", "cpp"],
-        "languageImplementations": {
-          "python": {
-            "visibleCode": "# Write code here",
-            "invisibleCode": "# No additional code needed"
-          },
-          "java": {
-            "visibleCode": "// Write code here",
-            "invisibleCode": "// No additional code needed"
-          }
-        },
-        "testCases": [
-          {
-            "input": "Hello World",
-            "output": "2",
-            "isVisible": true
-          },
-          {
-            "input": "One",
-            "output": "1",
-            "isVisible": true
-          },
-          {
-            "input": "This is a test",
-            "output": "4",
-            "isVisible": true
-          },
-          {
-            "input": "Programming is fun",
-            "output": "3",
-            "isVisible": true
-          }
-        ],
-        "marks": 10,
-        "difficulty": "easy",
-        "tags": ["strings", "basic"],
-        "timeLimit": 1,
-        "memoryLimit": 256,
-        "type": "coding_challenge",
-        "category": "Programming",
-        "instructions": "Write a solution that handles all test cases efficiently"
-      },
-      {
-        "title": "List Operations",
-        "description": "Perform basic list manipulations",
-        "problemStatement": "Write a program that takes a list of numbers and performs these operations:\n1. Remove duplicates\n2. Sort in descending order\n3. Return the second largest element\nIf no second largest exists, return the largest element.",
-        "constraints": "1 <= list size <= 100\n-1000 <= elements <= 1000",
-        "allowedLanguages": ["python"],
-        "languageImplementations": {
-          "python": {
-            "visibleCode": "# Write code here",
-            "invisibleCode": "# No additional code needed"
-          }
-        },
-        "testCases": [
-          {
-            "input": "[5,5,4,2,1]",
-            "output": "4",
-            "isVisible": true
-          },
-          {
-            "input": "[1,1,1]",
-            "output": "1",
-            "isVisible": true
-          },
-          {
-            "input": "[3,2,1,2,3]",
-            "output": "2",
-            "isVisible": true
-          }
-        ],
-        "marks": 10,
-        "difficulty": "easy",
-        "tags": ["lists", "sorting", "basic"],
-        "timeLimit": 1,
-        "memoryLimit": 256,
-        "type": "coding_challenge",
-        "category": "Programming",
-        "instructions": "Write a solution that handles all test cases efficiently"
-      },
-      {
-        "title": "Dictionary Counter",
-        "description": "Count character frequencies using dictionary",
-        "problemStatement": "Write a program that takes a string and returns a dictionary containing the frequency of each character. Return the character with maximum frequency. If multiple characters have same maximum frequency, return the one that appears first.",
-        "constraints": "1 <= string length <= 1000\nOnly lowercase letters",
-        "allowedLanguages": ["python"],
-        "languageImplementations": {
-          "python": {
-            "visibleCode": "# Write code here",
-            "invisibleCode": "# No additional code needed"
-          }
-        },
-        "testCases": [
-          {
-            "input": "programming",
-            "output": "g",
-            "isVisible": true
-          },
-          {
-            "input": "hello",
-            "output": "l",
-            "isVisible": true
-          },
-          {
-            "input": "aaa",
-            "output": "a",
-            "isVisible": true
-          }
-        ],
-        "marks": 10,
-        "difficulty": "easy",
-        "tags": ["dictionaries", "strings", "basic"],
-        "timeLimit": 1,
-        "memoryLimit": 256,
-        "type": "coding_challenge",
-        "category": "Programming",
-        "instructions": "Write a solution that handles all test cases efficiently"
-      },
-      {
-        "title": "Map and Filter",
-        "description": "Use map and filter functions",
-        "problemStatement": "Write a program that takes a list of numbers and:\n1. Uses map to square each number\n2. Uses filter to keep only even numbers\n3. Returns the sum of remaining numbers",
-        "constraints": "1 <= list size <= 100\n1 <= elements <= 100",
-        "allowedLanguages": ["python"],
-        "languageImplementations": {
-          "python": {
-            "visibleCode": "# Write code here",
-            "invisibleCode": "# No additional code needed"
-          }
-        },
-        "testCases": [
-          {
-            "input": "[1,2,3,4]",
-            "output": "20",
-            "isVisible": true
-          },
-          {
-            "input": "[1,3,5]",
-            "output": "0",
-            "isVisible": true
-          },
-          {
-            "input": "[2,4]",
-            "output": "20",
-            "isVisible": true
-          }
-        ],
-        "marks": 10,
-        "difficulty": "easy",
-        "tags": ["map", "filter", "functions"],
-        "timeLimit": 1,
-        "memoryLimit": 256,
-        "type": "coding_challenge",
-        "category": "Programming",
-        "instructions": "Write a solution that handles all test cases efficiently"
-      },
-      {
-        "title": "String Methods",
-        "description": "Apply various string methods",
-        "problemStatement": "Write a program that takes a string and performs these operations:\n1. Convert to uppercase\n2. Replace all spaces with '-'\n3. Return the count of vowels in the modified string",
-        "constraints": "1 <= string length <= 100\nOnly letters and spaces",
-        "allowedLanguages": ["python"],
-        "languageImplementations": {
-          "python": {
-            "visibleCode": "# Write code here",
-            "invisibleCode": "# No additional code needed"
-          }
-        },
-        "testCases": [
-          {
-            "input": "Hello World",
-            "output": "3",
-            "isVisible": true
-          },
-          {
-            "input": "Python Programming",
-            "output": "4",
-            "isVisible": true
-          },
-          {
-            "input": "xyz",
-            "output": "0",
-            "isVisible": true
-          }
-        ],
-        "marks": 10,
-        "difficulty": "easy",
-        "tags": ["strings", "string-methods", "basic"],
-        "timeLimit": 1,
-        "memoryLimit": 256,
-        "type": "coding_challenge",
-        "category": "Programming",
-        "instructions": "Write a solution that handles all test cases efficiently"
-      },
-      {
-        "title": "Function Operations",
-        "description": "Create and use multiple functions",
-        "problemStatement": "Write a program with two functions:\n1. isPalindrome: checks if a string is palindrome\n2. processStrings: takes a list of strings and returns count of palindromes\nReturn the final count of palindromes in the list.",
-        "constraints": "1 <= list size <= 100\n1 <= string length <= 50\nOnly lowercase letters",
-        "allowedLanguages": ["python"],
-        "languageImplementations": {
-          "python": {
-            "visibleCode": "# Write code here",
-            "invisibleCode": "# No additional code needed"
-          }
-        },
-        "testCases": [
-          {
-            "input": "['radar', 'hello', 'level']",
-            "output": "2",
-            "isVisible": true
-          },
-          {
-            "input": "['python']",
-            "output": "0",
-            "isVisible": true
-          },
-          {
-            "input": "['madam', 'noon']",
-            "output": "2",
-            "isVisible": true
-          }
-        ],
-        "marks": 10,
-        "difficulty": "easy",
-        "tags": ["functions", "strings", "basic"],
-        "timeLimit": 1,
-        "memoryLimit": 256,
-        "type": "coding_challenge",
-        "category": "Programming",
-        "instructions": "Write a solution that handles all test cases efficiently"
-      },
-      {
-        "title": "Even or Odd Numbers",
-        "description": "Count even and odd numbers in array",
-        "problemStatement": "Write a program that takes an array of integers and returns a string stating how many even and odd numbers are in the array. Format: 'Even: X, Odd: Y'",
-        "constraints": "1 <= array length <= 100\n1 <= elements <= 1000",
-        "allowedLanguages": ["python", "java", "javascript", "cpp"],
-        "languageImplementations": {
-          "python": {
-            "visibleCode": "# Write code here",
-            "invisibleCode": "# No additional code needed"
-          },
-          "java": {
-            "visibleCode": "// Write code here",
-            "invisibleCode": "// No additional code needed"
-          }
-        },
-        "testCases": [
-          {
-            "input": "[1,2,3,4,5]",
-            "output": "Even: 2, Odd: 3",
-            "isVisible": true
-          },
-          {
-            "input": "[2,4,6]",
-            "output": "Even: 3, Odd: 0",
-            "isVisible": true
-          },
-          {
-            "input": "[1,3,5]",
-            "output": "Even: 0, Odd: 3",
-            "isVisible": true
-          },
-          {
-            "input": "[1,2,3,4]",
-            "output": "Even: 2, Odd: 2",
-            "isVisible": true
-          }
-        ],
-        "marks": 10,
-        "difficulty": "easy",
-        "tags": ["arrays", "loops", "conditionals"],
-        "timeLimit": 1,
-        "memoryLimit": 256,
-        "type": "coding_challenge",
-        "category": "Programming",
-        "instructions": "Write a solution that handles all test cases efficiently"
-      },
+      "question": "What will be the output of this pseudocode?\nFUNCTION BinarySearch(arr, target)\n  left = 0\n  right = LENGTH(arr) - 1\n  WHILE left <= right\n    mid = (left + right) / 2\n    IF arr[mid] = target THEN\n      RETURN mid\n    ELSE IF arr[mid] < target THEN\n      left = mid + 1\n    ELSE\n      right = mid - 1\n    ENDIF\n  ENDWHILE\n  RETURN -1\nENDFUNCTION\nPRINT BinarySearch([1,3,5,7,9], 7)",
+      "options": [
+        "3",
+        "4",
+        "7",
+        "-1"
+      ],
+      "correctOptions": [
+        0
+      ],
+      "answerType": "single",
+      "marks": 2,
+      "difficulty": "medium",
+      "explanation": "Binary search finds 7 at index 3"
+    },
     {
-        "title": "List Slicing",
-        "description": "Manipulate lists using slicing",
-        "problemStatement": "Write a program that takes a list and performs:\n1. Reverse every 3 elements\n2. If list length isn't divisible by 3, keep remaining elements as is\n3. Return the modified list",
-        "constraints": "1 <= list size <= 100\n-1000 <= elements <= 1000",
-        "allowedLanguages": ["python"],
-        "languageImplementations": {
-          "python": {
-            "visibleCode": "# Write code here",
-            "invisibleCode": "# No additional code needed"
-          }
-        },
-        "testCases": [
-          {
-            "input": "[1,2,3,4,5,6]",
-            "output": "[3,2,1,6,5,4]",
-            "isVisible": true
-          },
-          {
-            "input": "[1,2,3,4,5]",
-            "output": "[3,2,1,4,5]",
-            "isVisible": true
-          },
-          {
-            "input": "[1,2]",
-            "output": "[1,2]",
-            "isVisible": true
-          }
-        ],
-        "marks": 10,
-        "difficulty": "easy",
-        "tags": ["lists", "slicing", "basic"],
-        "timeLimit": 1,
-        "memoryLimit": 256,
-        "type": "coding_challenge",
-        "category": "Programming",
-        "instructions": "Write a solution that handles all test cases efficiently"
-      },
-      
-      {
-        "title": "List Comprehension",
-        "description": "Use list comprehension to process numbers",
-        "problemStatement": "Write a program that uses list comprehension to:\n1. Create a list of squares of even numbers\n2. Only include numbers divisible by 3\n3. Return the list for numbers from 1 to N",
-        "constraints": "1 <= N <= 50",
-        "allowedLanguages": ["python"],
-        "languageImplementations": {
-          "python": {
-            "visibleCode": "# Write code here",
-            "invisibleCode": "# No additional code needed"
-          }
-        },
-        "testCases": [
-          {
-            "input": "10",
-            "output": "[36]",
-            "isVisible": true
-          },
-          {
-            "input": "20",
-            "output": "[36, 144]",
-            "isVisible": true
-          },
-          {
-            "input": "5",
-            "output": "[]",
-            "isVisible": true
-          }
-        ],
-        "marks": 10,
-        "difficulty": "easy",
-        "tags": ["list-comprehension", "basic"],
-        "timeLimit": 1,
-        "memoryLimit": 256,
-        "type": "coding_challenge",
-        "category": "Programming",
-        "instructions": "Write a solution that handles all test cases efficiently"
-      },
-      {
-        "title": "String Formatting",
-        "description": "Format strings using different methods",
-        "problemStatement": "Write a program that takes name, age, and score and returns formatted strings using:\n1. format() method\n2. f-strings\n3. Return both strings separated by newline",
-        "constraints": "1 <= name length <= 50\n1 <= age <= 100\n0 <= score <= 100",
-        "allowedLanguages": ["python"],
-        "languageImplementations": {
-          "python": {
-            "visibleCode": "# Write code here",
-            "invisibleCode": "# No additional code needed"
-          }
-        },
-        "testCases": [
-          {
-            "input": "'John', 25, 95.5",
-            "output": "John is 25 years old with score 95.5\nJohn scored 95.5 at age 25",
-            "isVisible": true
-          },
-          {
-            "input": "'Alice', 30, 88.0",
-            "output": "Alice is 30 years old with score 88.0\nAlice scored 88.0 at age 30",
-            "isVisible": true
-          }
-        ],
-        "marks": 10,
-        "difficulty": "easy",
-        "tags": ["strings", "formatting", "basic"],
-        "timeLimit": 1,
-        "memoryLimit": 256,
-        "type": "coding_challenge",
-        "category": "Programming",
-        "instructions": "Write a solution that handles all test cases efficiently"
-      },
-      
-      
-      {
-        "title": "String Methods Advanced",
-        "description": "Use advanced string methods",
-        "problemStatement": "Write a program that takes a string and:\n1. Capitalizes first letter of each word\n2. Removes leading/trailing spaces\n3. Replaces multiple spaces with single space\nReturn the processed string",
-        "constraints": "1 <= string length <= 1000",
-        "allowedLanguages": ["python"],
-        "languageImplementations": {
-          "python": {
-            "visibleCode": "# Write code here",
-            "invisibleCode": "# No additional code needed"
-          }
-        },
-        "testCases": [
-          {
-            "input": "  hello   world  python  ",
-            "output": "Hello World Python",
-            "isVisible": true
-          },
-          {
-            "input": "python programming",
-            "output": "Python Programming",
-            "isVisible": true
-          }
-        ],
-        "marks": 10,
-        "difficulty": "easy",
-        "tags": ["strings", "string-methods", "basic"],
-        "timeLimit": 1,
-        "memoryLimit": 256,
-        "type": "coding_challenge",
-        "category": "Programming",
-        "instructions": "Write a solution that handles all test cases efficiently"
-      },
-{
-    "title": "Count Characters",
-    "description": "Count letters and digits in string",
-    "problemStatement": "Write a program that takes a string and returns the count of letters and digits in format: 'Letters: X, Digits: Y'",
-    "constraints": "1 <= string length <= 100",
-    "allowedLanguages": ["python"],
-    "languageImplementations": {
-      "python": {
-        "visibleCode": "# Write code here",
-        "invisibleCode": "# No additional code needed"
-      }
+      "question": "What is the final value of x?\nBEGIN\n  x = 1\n  FOR i = 1 TO 4\n    x = x * 2\n    IF i MOD 2 = 0 THEN\n      x = x + 1\n    ENDIF\n  ENDFOR\nEND",
+      "options": [
+        "17",
+        "16",
+        "15",
+        "18"
+      ],
+      "correctOptions": [
+        0
+      ],
+      "answerType": "single",
+      "marks": 2,
+      "difficulty": "medium",
+      "explanation": "x: 1\u00e2\u2020\u20192\u00e2\u2020\u20195\u00e2\u2020\u201910\u00e2\u2020\u201917"
     },
-    "testCases": [
-      {
-        "input": "Hello123",
-        "output": "Letters: 5, Digits: 3",
-        "isVisible": true
-      },
-      {
-        "input": "Python2023",
-        "output": "Letters: 6, Digits: 4",
-        "isVisible": true
-      }
-    ],
-    "marks": 10,
-    "difficulty": "easy",
-    "tags": ["strings", "basic"],
-    "timeLimit": 1,
-    "memoryLimit": 256,
-    "type": "coding_challenge",
-    "category": "Programming",
-    "instructions": "Write a solution that handles all test cases efficiently"
-  },
-  {
-    "title": "List Elements Sum",
-    "description": "Sum elements at even indices",
-    "problemStatement": "Write a program that takes a list and returns the sum of elements at even indices (0, 2, 4, etc.)",
-    "constraints": "1 <= list size <= 100\n-100 <= elements <= 100",
-    "allowedLanguages": ["python"],
-    "languageImplementations": {
-      "python": {
-        "visibleCode": "# Write code here",
-        "invisibleCode": "# No additional code needed"
-      }
+    {
+      "question": "What will this function return?\nFUNCTION Factorial(n)\n  IF n <= 1 THEN\n    RETURN 1\n  ENDIF\n  RETURN n * Factorial(n-1)\nENDFUNCTION\nPRINT Factorial(4)",
+      "options": [
+        "24",
+        "12",
+        "6",
+        "8"
+      ],
+      "correctOptions": [
+        0
+      ],
+      "answerType": "single",
+      "marks": 2,
+      "difficulty": "medium",
+      "explanation": "4! = 4*3*2*1 = 24"
     },
-    "testCases": [
-      {
-        "input": "[1,2,3,4,5]",
-        "output": "9",
-        "isVisible": true
-      },
-      {
-        "input": "[10,20]",
-        "output": "10",
-        "isVisible": true
-      }
-    ],
-    "marks": 10,
-    "difficulty": "easy",
-    "tags": ["lists", "basic"],
-    "timeLimit": 1,
-    "memoryLimit": 256,
-    "type": "coding_challenge",
-    "category": "Programming",
-    "instructions": "Write a solution that handles all test cases efficiently"
-  },
-  {
-    "title": "Simple Dictionary",
-    "description": "Create dictionary from two lists",
-    "problemStatement": "Write a program that takes two lists of equal length and creates a dictionary using first list as keys and second list as values",
-    "constraints": "1 <= list size <= 100",
-    "allowedLanguages": ["python"],
-    "languageImplementations": {
-      "python": {
-        "visibleCode": "# Write code here",
-        "invisibleCode": "# No additional code needed"
-      }
+    {
+      "question": "What is stored in array A?\nA = [1,2,3,4,5]\nFOR i = 0 TO LENGTH(A)-2\n  A[i] = A[i] + A[i+1]\nENDFOR\nPRINT A",
+      "options": [
+        "[3,5,7,9,5]",
+        "[3,5,7,4,5]",
+        "[3,5,7,4,9]",
+        "[1,2,3,4,5]"
+      ],
+      "correctOptions": [
+        1
+      ],
+      "answerType": "single",
+      "marks": 2,
+      "difficulty": "medium",
+      "explanation": "Each element becomes sum with next element, last element unchanged"
     },
-    "testCases": [
-      {
-        "input": "['a','b'], [1,2]",
-        "output": "{'a':1, 'b':2}",
-        "isVisible": true
-      },
-      {
-        "input": "['x'], [10]",
-        "output": "{'x':10}",
-        "isVisible": true
-      }
-    ],
-    "marks": 10,
-    "difficulty": "easy",
-    "tags": ["dictionaries", "basic"],
-    "timeLimit": 1,
-    "memoryLimit": 256,
-    "type": "coding_challenge",
-    "category": "Programming",
-    "instructions": "Write a solution that handles all test cases efficiently"
-  },
-  {
-    "title": "String Reverse",
-    "description": "Reverse words in a string",
-    "problemStatement": "Write a program that takes a string and reverses each word but keeps the words in same order. Example: 'Hello World' becomes 'olleH dlroW'",
-    "constraints": "1 <= string length <= 100",
-    "allowedLanguages": ["python"],
-    "languageImplementations": {
-      "python": {
-        "visibleCode": "# Write code here",
-        "invisibleCode": "# No additional code needed"
-      }
+    {
+      "question": "What will be output?\nFUNCTION GCD(a, b)\n  WHILE b != 0\n    temp = b\n    b = a MOD b\n    a = temp\n  ENDWHILE\n  RETURN a\nENDFUNCTION\nPRINT GCD(48, 18)",
+      "options": [
+        "6",
+        "9",
+        "3",
+        "2"
+      ],
+      "correctOptions": [
+        0
+      ],
+      "answerType": "single",
+      "marks": 2,
+      "difficulty": "medium",
+      "explanation": "Greatest Common Divisor of 48 and 18 is 6"
     },
-    "testCases": [
-      {
-        "input": "Hello World",
-        "output": "olleH dlroW",
-        "isVisible": true
-      },
-      {
-        "input": "Python",
-        "output": "nohtyP",
-        "isVisible": true
-      }
-    ],
-    "marks": 10,
-    "difficulty": "easy",
-    "tags": ["strings", "basic"],
-    "timeLimit": 1,
-    "memoryLimit": 256,
-    "type": "coding_challenge",
-    "category": "Programming",
-    "instructions": "Write a solution that handles all test cases efficiently"
-  },
-  {
-    "title": "List Filter",
-    "description": "Filter positive numbers",
-    "problemStatement": "Write a program that takes a list of numbers and returns only the positive numbers in ascending order",
-    "constraints": "1 <= list size <= 100\n-100 <= elements <= 100",
-    "allowedLanguages": ["python"],
-    "languageImplementations": {
-      "python": {
-        "visibleCode": "# Write code here",
-        "invisibleCode": "# No additional code needed"
-      }
+    {
+      "question": "What is the output?\nFUNCTION CountDigits(n)\n  count = 0\n  WHILE n > 0\n    count = count + 1\n    n = n DIV 10\n  ENDWHILE\n  RETURN count\nENDFUNCTION\nPRINT CountDigits(12345)",
+      "options": [
+        "5",
+        "4",
+        "6",
+        "3"
+      ],
+      "correctOptions": [
+        0
+      ],
+      "answerType": "single",
+      "marks": 1,
+      "difficulty": "easy",
+      "explanation": "Counts number of digits in 12345"
     },
-    "testCases": [
-      {
-        "input": "[-1,3,1,-2,2]",
-        "output": "[1,2,3]",
-        "isVisible": true
-      },
-      {
-        "input": "[-1,-2,-3]",
-        "output": "[]",
-        "isVisible": true
-      }
-    ],
-    "marks": 10,
-    "difficulty": "easy",
-    "tags": ["lists", "basic"],
-    "timeLimit": 1,
-    "memoryLimit": 256,
-    "type": "coding_challenge",
-    "category": "Programming",
-    "instructions": "Write a solution that handles all test cases efficiently"
-  },
-  {
-    "title": "Simple Calculator",
-    "description": "Basic arithmetic operations",
-    "problemStatement": "Write a program that takes two numbers and an operator (+,-,*,/) and returns the result. Return 'Error' for division by zero",
-    "constraints": "-100 <= numbers <= 100",
-    "allowedLanguages": ["python"],
-    "languageImplementations": {
-      "python": {
-        "visibleCode": "# Write code here",
-        "invisibleCode": "# No additional code needed"
-      }
+    {
+      "question": "What will be returned?\nFUNCTION IsPrime(n)\n  IF n <= 1 THEN RETURN false\n  FOR i = 2 TO SQRT(n)\n    IF n MOD i = 0 THEN\n      RETURN false\n    ENDIF\n  ENDFOR\n  RETURN true\nENDFUNCTION\nPRINT IsPrime(17)",
+      "options": [
+        "true",
+        "false",
+        "error",
+        "undefined"
+      ],
+      "correctOptions": [
+        0
+      ],
+      "answerType": "single",
+      "marks": 2,
+      "difficulty": "medium",
+      "explanation": "17 is prime as no number from 2 to 4 divides it"
     },
-    "testCases": [
-      {
-        "input": "10, '+', 5",
-        "output": "15",
-        "isVisible": true
-      },
-      {
-        "input": "10, '/', 0",
-        "output": "Error",
-        "isVisible": true
-      }
-    ],
-    "marks": 10,
-    "difficulty": "easy",
-    "tags": ["functions", "basic"],
-    "timeLimit": 1,
-    "memoryLimit": 256,
-    "type": "coding_challenge",
-    "category": "Programming",
-    "instructions": "Write a solution that handles all test cases efficiently"
-  },
-  {
-    "title": "List Duplicates",
-    "description": "Find duplicate elements",
-    "problemStatement": "Write a program that takes a list and returns a list of elements that appear more than once. Return empty list if no duplicates found",
-    "constraints": "1 <= list size <= 100",
-    "allowedLanguages": ["python"],
-    "languageImplementations": {
-      "python": {
-        "visibleCode": "# Write code here",
-        "invisibleCode": "# No additional code needed"
-      }
+    {
+      "question": "What is stored in result?\nFUNCTION ReverseNumber(n)\n  result = 0\n  WHILE n > 0\n    digit = n MOD 10\n    result = result * 10 + digit\n    n = n DIV 10\n  ENDWHILE\n  RETURN result\nENDFUNCTION\nPRINT ReverseNumber(1234)",
+      "options": [
+        "4321",
+        "1234",
+        "4312",
+        "3214"
+      ],
+      "correctOptions": [
+        0
+      ],
+      "answerType": "single",
+      "marks": 2,
+      "difficulty": "medium",
+      "explanation": "Reverses digits of number 1234"
     },
-    "testCases": [
-      {
-        "input": "[1,2,2,3,3,4]",
-        "output": "[2,3]",
-        "isVisible": true
-      },
-      {
-        "input": "[1,2,3]",
-        "output": "[]",
-        "isVisible": true
-      }
-    ],
-    "marks": 10,
-    "difficulty": "easy",
-    "tags": ["lists", "sets", "basic"],
-    "timeLimit": 1,
-    "memoryLimit": 256,
-    "type": "coding_challenge",
-    "category": "Programming",
-    "instructions": "Write a solution that handles all test cases efficiently"
-  },
-  {
-    "title": "String Counter",
-    "description": "Count word occurrences",
-    "problemStatement": "Write a program that takes a string and returns the count of each word in a dictionary. Words are case-insensitive",
-    "constraints": "1 <= string length <= 100",
-    "allowedLanguages": ["python"],
-    "languageImplementations": {
-      "python": {
-        "visibleCode": "# Write code here",
-        "invisibleCode": "# No additional code needed"
-      }
+    {
+      "question": "What will this code output?\nFUNCTION Power(base, exp)\n  IF exp = 0 THEN RETURN 1\n  IF exp MOD 2 = 0 THEN\n    half = Power(base, exp/2)\n    RETURN half * half\n  ENDIF\n  RETURN base * Power(base, exp-1)\nENDFUNCTION\nPRINT Power(2, 5)",
+      "options": [
+        "32",
+        "16",
+        "64",
+        "25"
+      ],
+      "correctOptions": [
+        0
+      ],
+      "answerType": "single",
+      "marks": 3,
+      "difficulty": "hard",
+      "explanation": "Calculates 2^5 = 32 using recursive power function"
     },
-    "testCases": [
-      {
-        "input": "hello Hello world",
-        "output": "{'hello': 2, 'world': 1}",
-        "isVisible": true
-      },
-      {
-        "input": "Python python PYTHON",
-        "output": "{'python': 3}",
-        "isVisible": true
-      }
-    ],
-    "marks": 10,
-    "difficulty": "easy",
-    "tags": ["strings", "dictionaries", "basic"],
-    "timeLimit": 1,
-    "memoryLimit": 256,
-    "type": "coding_challenge",
-    "category": "Programming",
-    "instructions": "Write a solution that handles all test cases efficiently"
-  },
-  {
-    "title": "List Operations",
-    "description": "Basic list operations",
-    "problemStatement": "Write a program that takes a list and performs: 1) Add 5 to each element 2) Remove elements less than 10 3) Return modified list",
-    "constraints": "1 <= list size <= 100\n1 <= elements <= 100",
-    "allowedLanguages": ["python"],
-    "languageImplementations": {
-      "python": {
-        "visibleCode": "# Write code here",
-        "invisibleCode": "# No additional code needed"
-      }
+    {
+      "question": "What is the output?\nFUNCTION SumArray(arr, n)\n  IF n <= 0 THEN RETURN 0\n  RETURN arr[n-1] + SumArray(arr, n-1)\nENDFUNCTION\nA = [1,2,3,4,5]\nPRINT SumArray(A, 4)",
+      "options": [
+        "10",
+        "15",
+        "6",
+        "4"
+      ],
+      "correctOptions": [
+        0
+      ],
+      "answerType": "single",
+      "marks": 2,
+      "difficulty": "medium",
+      "explanation": "Recursively sums first 4 elements: 1+2+3+4 = 10"
     },
-    "testCases": [
-      {
-        "input": "[5,6,7]",
-        "output": "[10,11,12]",
-        "isVisible": true
-      },
-      {
-        "input": "[1,2]",
-        "output": "[]",
-        "isVisible": true
-      }
-    ],
-    "marks": 10,
-    "difficulty": "easy",
-    "tags": ["lists", "basic"],
-    "timeLimit": 1,
-    "memoryLimit": 256,
-    "type": "coding_challenge",
-    "category": "Programming",
-    "instructions": "Write a solution that handles all test cases efficiently"
-  },
-  {
-    "title": "String Manipulation",
-    "description": "Basic string operations",
-    "problemStatement": "Write a program that takes a string and: 1) Removes spaces 2) Converts to lowercase 3) Returns first and last 3 characters. If string length < 6, return original string",
-    "constraints": "1 <= string length <= 100",
-    "allowedLanguages": ["python"],
-    "languageImplementations": {
-      "python": {
-        "visibleCode": "# Write code here",
-        "invisibleCode": "# No additional code needed"
-      }
+    {
+      "question": "What does the 'READ' command do in pseudocode?",
+      "options": [
+        "Outputs data to the screen.",
+        "Takes input from the user.",
+        "Executes a function.",
+        "Initializes variables."
+      ],
+      "correctOptions": [
+        1
+      ],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "'READ' is used to take input from the user."
     },
-    "testCases": [
-      {
-        "input": "Hello World",
-        "output": "helrld",
-        "isVisible": true
+    {
+      "question": "What will this function return?\nFUNCTION WordBreak(s, wordDict)\n  n = LENGTH(s)\n  dp = ARRAY(n+1, false)\n  dp[0] = true\n  FOR i = 1 TO n\n    FOR j = 0 TO i-1\n      IF dp[j] AND s[j:i] IN wordDict THEN\n        dp[i] = true\n        BREAK\n      ENDIF\n    ENDFOR\n  ENDFOR\n  RETURN dp[n]\nENDFUNCTION\nPRINT WordBreak('leetcode', ['leet','code'])",
+      "options": [
+        "true",
+        "false",
+        "error",
+        "undefined"
+      ],
+      "correctOptions": [
+        0
+      ],
+      "answerType": "single",
+      "marks": 3,
+      "difficulty": "hard",
+      "explanation": "Dynamic programming to check if string can be segmented into dictionary words"
+    },
+    {
+      "question": "What will be returned?\nFUNCTION Process(str)\n  IF LENGTH(str) <= 1 THEN RETURN str\n  IF str[0] = str[LENGTH(str)-1] THEN\n    RETURN str[0] + Process(str[1:LENGTH(str)-1]) + str[LENGTH(str)-1]\n  ENDIF\n  RETURN Process(str[1:LENGTH(str)-1])\nENDFUNCTION\nPRINT Process('radar')",
+      "options": [
+        "radar",
+        "rdr",
+        "aa",
+        "r"
+      ],
+      "correctOptions": [
+        0
+      ],
+      "answerType": "single",
+      "marks": 3,
+      "difficulty": "hard",
+      "explanation": "Returns palindrome part of string"
+    },
+    {
+      "question": "If 'P' means '\u00c3\u2014', 'Q' means '\u00c3\u00b7', 'R' means '+' and 'S' means '-', then what will be the value of 8 P 6 Q 2 R 4 S 2?",
+      "options": [
+        "26",
+        "24",
+        "28",
+        "22"
+      ],
+      "correctOptions": [
+        0
+      ],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-1",
+      "difficulty": "hard",
+      "explanation": "8 \u00c3\u2014 6 \u00c3\u00b7 2 + 4 - 2 = 48 \u00c3\u00b7 2 + 4 - 2 = 24 + 4 - 2 = 26"
+    },
+    {
+      "question": "In a certain code language, if TERMINAL = 1234567890, then MINERAL = ?",
+      "options": [
+        "45632789",
+        "46532789",
+        "45623789",
+        "46523789"
+      ],
+      "correctOptions": [
+        2
+      ],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-1",
+      "difficulty": "medium",
+      "explanation": "Using the same position values from TERMINAL, MINERAL would be 45623789"
+    },
+    {
+      "question": "In pseudocode, what does the 'MOD' operator represent?",
+      "options": [
+        "Multiplication",
+        "Division",
+        "Modulus (remainder)",
+        "Exponentiation"
+      ],
+      "correctOptions": [
+        2
+      ],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "'MOD' returns the remainder after division."
+    },
+    {
+      "question": "What is stored in array A?\nA = [1,2,3,4,5]\nFOR i = 1 TO LENGTH(A)-1\n  A[i] = A[i-1] + A[i+1]\nENDFOR\nPRINT A",
+      "options": [
+        "[1,5,7,9,5]",
+        "[1,4,6,8,5]",
+        "[1,6,6,8,5]",
+        "[1,3,5,7,5]"
+      ],
+      "correctOptions": [
+        0
+      ],
+      "answerType": "single",
+      "marks": 2,
+      "difficulty": "medium",
+      "explanation": "Each element becomes sum of its neighbors (processed left to right)"
+    },
+    {
+      "question": "What is the value of 'x' after executing the following pseudocode?\n\n```\nBEGIN\n  SET x TO 0\n  FOR i FROM 1 TO 4\n    SET x TO x + i\n  END_FOR\nEND\n```",
+      "options": [
+        "4",
+        "6",
+        "10",
+        "15"
+      ],
+      "correctOptions": [
+        2
+      ],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "x = 1+2+3+4 = 10"
+    },
+    {
+      "question": "What is stored in result?\nFUNCTION CoinChange(coins, amount)\n  dp = ARRAY(amount+1, amount+1)\n  dp[0] = 0\n  FOR i = 1 TO amount\n    FOR EACH coin IN coins\n      IF coin <= i THEN\n        dp[i] = MIN(dp[i], dp[i-coin] + 1)\n      ENDIF\n    ENDFOR\n  ENDFOR\n  RETURN dp[amount] > amount ? -1 : dp[amount]\nENDFUNCTION\nPRINT CoinChange([1,2,5], 11)",
+      "options": [
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "correctOptions": [
+        0
+      ],
+      "answerType": "single",
+      "marks": 3,
+      "difficulty": "hard",
+      "explanation": "Minimum coins needed: 5+5+1=11 (3 coins)"
+    },
+    {
+      "question": "What is the result?\nFUNCTION Process(n)\n  binary = ''\n  WHILE n > 0\n    binary = (n MOD 2) + binary\n    n = n DIV 2\n  ENDWHILE\n  count = 0\n  FOR EACH bit IN binary\n    IF bit = '1' THEN count = count + 1\n  ENDFOR\n  RETURN count\nENDFUNCTION\nPRINT Process(14)",
+      "options": [
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "correctOptions": [
+        1
+      ],
+      "answerType": "single",
+      "marks": 2,
+      "difficulty": "medium",
+      "explanation": "Counts 1s in binary representation of number (14 = 1110)"
+    },
+    {
+      "question": "What will be output?\nFUNCTION Process(str)\n  count = {}\n  max_char = ''\n  max_freq = 0\n  FOR EACH c IN str\n    IF c NOT IN count THEN count[c] = 0\n    count[c] = count[c] + 1\n    IF count[c] > max_freq THEN\n      max_freq = count[c]\n      max_char = c\n    ENDIF\n  ENDFOR\n  RETURN max_char\nENDFUNCTION\nPRINT Process('programming')",
+      "options": [
+        "p",
+        "r",
+        "g",
+        "m"
+      ],
+      "correctOptions": [
+        2
+      ],
+      "answerType": "single",
+      "marks": 2,
+      "difficulty": "medium",
+      "explanation": "Finds most frequent character in string"
+    },
+    {
+      "question": "What will this function return?\nFUNCTION Calculate(str)\n  stack = []\n  FOR EACH c IN str\n    IF c IN '0123456789' THEN\n      PUSH c TO stack\n    ELSE\n      b = POP FROM stack\n      a = POP FROM stack\n      IF c = '+' THEN PUSH (a + b) TO stack\n      IF c = '*' THEN PUSH (a * b) TO stack\n    ENDIF\n  ENDFOR\n  RETURN POP FROM stack\nENDFUNCTION\nPRINT Calculate('23+')",
+      "options": [
+        "5",
+        "6",
+        "8",
+        "10"
+      ],
+      "correctOptions": [
+        0
+      ],
+      "answerType": "single",
+      "marks": 3,
+      "difficulty": "hard",
+      "explanation": "Evaluates postfix expression: 2 3 + = 5"
+    },
+    {
+      "question": "What is the purpose of the 'BEGIN' keyword in pseudocode?",
+      "options": [
+        "To start the pseudocode",
+        "To define a loop",
+        "To declare a variable",
+        "To end the pseudocode"
+      ],
+      "correctOptions": [
+        0
+      ],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "'BEGIN' signifies the start of the pseudocode."
+    },
+    {
+      "question": "What will this code output?\nFUNCTION IsBalanced(str)\n  stack = []\n  FOR EACH c IN str\n    IF c IN '({[' THEN\n      PUSH c TO stack\n    ELSE\n      IF EMPTY(stack) THEN RETURN false\n      top = POP FROM stack\n      IF (c = ')' AND top != '(') OR\n         (c = '}' AND top != '{') OR\n         (c = ']' AND top != '[') THEN\n        RETURN false\n      ENDIF\n    ENDIF\n  ENDFOR\n  RETURN EMPTY(stack)\nENDFUNCTION\nPRINT IsBalanced('({[]})')",
+      "options": [
+        "true",
+        "false",
+        "error",
+        "undefined"
+      ],
+      "correctOptions": [
+        0
+      ],
+      "answerType": "single",
+      "marks": 2,
+      "difficulty": "medium",
+      "explanation": "Checks for balanced parentheses using stack"
+    },
+    {
+      "question": "What will this code output?\nFUNCTION MaxProduct(nums)\n  maxSoFar = nums[0]\n  minSoFar = nums[0]\n  result = maxSoFar\n  FOR i = 1 TO LENGTH(nums)-1\n    curr = nums[i]\n    tempMax = MAX(curr, MAX(maxSoFar*curr, minSoFar*curr))\n    minSoFar = MIN(curr, MIN(maxSoFar*curr, minSoFar*curr))\n    maxSoFar = tempMax\n    result = MAX(maxSoFar, result)\n  ENDFOR\n  RETURN result\nENDFUNCTION\nPRINT MaxProduct([2,3,-2,4])",
+      "options": [
+        "4",
+        "6",
+        "8",
+        "12"
+      ],
+      "correctOptions": [
+        2
+      ],
+      "answerType": "single",
+      "marks": 3,
+      "difficulty": "hard",
+      "explanation": "Maximum product subarray: [2,3] = 6"
+    },
+    {
+      "question": "If MOUSE is written as PRUQC, then how will SHIFT be written in that code?",
+      "options": [
+        "UJKHV",
+        "QFGDV",
+        "UJKDV",
+        "QJKDV"
+      ],
+      "correctOptions": [
+        1
+      ],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-1",
+      "difficulty": "medium",
+      "explanation": "Each letter is replaced by the letter 2 positions before it in the alphabet. Therefore, SHIFT becomes QFGDV"
+    },
+    {
+      "question": "What will be returned?\nFUNCTION KnapSack(W, wt, val, n)\n  IF n = 0 OR W = 0 THEN RETURN 0\n  IF wt[n-1] > W THEN\n    RETURN KnapSack(W, wt, val, n-1)\n  ENDIF\n  RETURN MAX(val[n-1] + KnapSack(W-wt[n-1], wt, val, n-1),\n             KnapSack(W, wt, val, n-1))\nENDFUNCTION\nPRINT KnapSack(4, [2,3,1], [3,4,5], 3)",
+      "options": [
+        "7",
+        "8",
+        "9",
+        "10"
+      ],
+      "correctOptions": [
+        1
+      ],
+      "answerType": "single",
+      "marks": 3,
+      "difficulty": "hard",
+      "explanation": "0-1 Knapsack problem: Maximum value possible is 8 (items with values 3 and 5)"
+    },
+    {
+      "question": "What does the 'ELSE' keyword do in an IF statement in pseudocode?",
+      "options": [
+        "Begins a new IF condition",
+        "Specifies an alternative block if the IF condition is false",
+        "Ends the IF statement",
+        "Repeats the IF condition"
+      ],
+      "correctOptions": [
+        1
+      ],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "medium",
+      "explanation": "'ELSE' provides an alternative block of code if the IF condition is false."
+    },
+    {
+      "question": "In pseudocode, which of the following represents a loop that repeats until a condition is false?",
+      "options": [
+        "IF...THEN...ELSE",
+        "FOR...TO...STEP",
+        "WHILE...DO",
+        "FUNCTION...END_FUNCTION"
+      ],
+      "correctOptions": [
+        2
+      ],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "medium",
+      "explanation": "'WHILE...DO' loop continues to repeat as long as the condition is true."
+    },
+    {
+      "question": "What is the output?\nFUNCTION Decode(str)\n  IF LENGTH(str) = 0 OR str[0] = '0' THEN RETURN 0\n  IF LENGTH(str) = 1 THEN RETURN 1\n  ways = Decode(str[1:])\n  IF INT(str[0:2]) <= 26 THEN\n    ways = ways + Decode(str[2:])\n  ENDIF\n  RETURN ways\nENDFUNCTION\nPRINT Decode('123')",
+      "options": [
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "correctOptions": [
+        1
+      ],
+      "answerType": "single",
+      "marks": 3,
+      "difficulty": "hard",
+      "explanation": "Ways to decode: '1,2,3', '12,3', '1,23' = 3 ways"
+    },
+    {
+      "question": "Which one will replace the question mark? 2, 6, 12, 20, 30, 42, ?",
+      "options": [
+        "56",
+        "54",
+        "58",
+        "60"
+      ],
+      "correctOptions": [
+        0
+      ],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-1",
+      "difficulty": "medium",
+      "explanation": "The pattern is +4, +6, +8, +10, +12, +14. So next number is 42+14=56"
+    },
+    {
+      "question": "What is the output of the following pseudocode snippet?\n\n```\nBEGIN\n  SET sum TO 0\n  FOR i FROM 1 TO 5\n    SET sum TO sum + i\n  END_FOR\n  PRINT sum\nEND\n```",
+      "options": [
+        "5",
+        "10",
+        "15",
+        "20"
+      ],
+      "correctOptions": [
+        2
+      ],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "It calculates the sum 1+2+3+4+5 = 15 and prints the result."
+    },
+    {
+      "question": "What will be returned?\nFUNCTION Jump(arr)\n  n = LENGTH(arr)\n  IF n <= 1 THEN RETURN 0\n  jumps = 1\n  maxReach = arr[0]\n  steps = arr[0]\n  FOR i = 1 TO n-1\n    IF i = n-1 THEN RETURN jumps\n    maxReach = MAX(maxReach, i + arr[i])\n    steps = steps - 1\n    IF steps = 0 THEN\n      jumps = jumps + 1\n      steps = maxReach - i\n    ENDIF\n  ENDFOR\nENDFUNCTION\nPRINT Jump([2,3,1,1,4])",
+      "options": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "correctOptions": [
+        1
+      ],
+      "answerType": "single",
+      "marks": 3,
+      "difficulty": "hard",
+      "explanation": "Minimum jumps needed: index 0\u00e2\u2020\u20191\u00e2\u2020\u20194"
+    },
+    {
+      "question": "What will be returned?\nFUNCTION Mystery(arr, k)\n  IF k = 0 THEN RETURN 0\n  max_sum = 0\n  current_sum = 0\n  FOR i = 0 TO LENGTH(arr)-1\n    current_sum = current_sum + arr[i]\n    IF i >= k THEN\n      current_sum = current_sum - arr[i-k]\n    ENDIF\n    IF i >= k-1 AND current_sum > max_sum THEN\n      max_sum = current_sum\n    ENDIF\n  ENDFOR\n  RETURN max_sum\nENDFUNCTION\nPRINT Mystery([1,4,2,10,2,3,1,0,20], 4)",
+      "options": [
+        "24",
+        "28",
+        "18",
+        "20"
+      ],
+      "correctOptions": [
+        1
+      ],
+      "answerType": "single",
+      "marks": 3,
+      "difficulty": "hard",
+      "explanation": "Finds maximum sum of k consecutive elements"
+    },
+    {
+      "question": "What is the output?\nFUNCTION Partition(arr, low, high)\n  pivot = arr[high]\n  i = low - 1\n  FOR j = low TO high-1\n    IF arr[j] <= pivot THEN\n      i = i + 1\n      SWAP arr[i], arr[j]\n    ENDIF\n  ENDFOR\n  SWAP arr[i+1], arr[high]\n  RETURN i+1\nENDFUNCTION\nA = [4,1,3,2,6,5]\nPartition(A, 0, 5)\nPRINT A[2]",
+      "options": [
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "correctOptions": [
+        1
+      ],
+      "answerType": "single",
+      "marks": 3,
+      "difficulty": "hard",
+      "explanation": "QuickSort partition around pivot 5: [4,1,3,2,5,6], A[2]=3"
+    },
+    {
+      "question": "What is the output?\nFUNCTION LCS(str1, str2)\n  IF LENGTH(str1) = 0 OR LENGTH(str2) = 0 THEN RETURN 0\n  IF str1[0] = str2[0] THEN\n    RETURN 1 + LCS(str1[1:], str2[1:])\n  ENDIF\n  RETURN MAX(LCS(str1[1:], str2), LCS(str1, str2[1:]))\nENDFUNCTION\nPRINT LCS('ABCD', 'ACBD')",
+      "options": [
+        "2",
+        "3",
+        "4",
+        "1"
+      ],
+      "correctOptions": [
+        1
+      ],
+      "answerType": "single",
+      "marks": 3,
+      "difficulty": "hard",
+      "explanation": "Finds length of Longest Common Subsequence: 'ABD' or 'ACD'"
+    },
+    {
+      "question": "What will this code output?\nA = [1,2,3,4,5]\nB = []\nFOR i = 0 TO LENGTH(A)-1\n  product = 1\n  FOR j = 0 TO LENGTH(A)-1\n    IF i != j THEN product = product * A[j]\n  ENDFOR\n  APPEND product TO B\nENDFOR\nPRINT B[2]",
+      "options": [
+        "40",
+        "30",
+        "20",
+        "10"
+      ],
+      "correctOptions": [
+        1
+      ],
+      "answerType": "single",
+      "marks": 2,
+      "difficulty": "medium",
+      "explanation": "Creates array where each element is product of all other elements"
+    },
+    {
+      "question": "What is stored in result?\nFUNCTION LongestPalindrome(str)\n  n = LENGTH(str)\n  start = 0\n  maxLength = 1\n  FOR i = 0 TO n-1\n    left = i - 1\n    right = i + 1\n    WHILE right < n AND str[i] = str[right]\n      right = right + 1\n    ENDWHILE\n    WHILE left >= 0 AND right < n AND str[left] = str[right]\n      left = left - 1\n      right = right + 1\n    ENDWHILE\n    length = right - left - 1\n    IF length > maxLength THEN\n      start = left + 1\n      maxLength = length\n    ENDIF\n  ENDFOR\n  RETURN str[start:start+maxLength]\nENDFUNCTION\nPRINT LongestPalindrome('babad')",
+      "options": [
+        "bab",
+        "aba",
+        "bad",
+        "dab"
+      ],
+      "correctOptions": [
+        0
+      ],
+      "answerType": "single",
+      "marks": 3,
+      "difficulty": "hard",
+      "explanation": "Finds longest palindromic substring"
+    },
+    {
+      "question": "If FRIEND is coded as HUMJTK, how is CANDLE coded?",
+      "options": [
+        "EDRJQG",
+        "DCQIKG",
+        "ECPFNG",
+        "ECOFNG"
+      ],
+      "correctOptions": [
+        1
+      ],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-1",
+      "difficulty": "medium",
+      "explanation": "Each letter is moved 2 positions forward in the alphabet. Therefore, CANDLE becomes DCQIKG"
+    },
+    {
+      "question": "What is the output of this pseudocode?\n\n```\nBEGIN\n  SET a TO 10\n  SET b TO 20\n  IF a > b THEN\n    PRINT \"A is greater\"\n  ELSE\n    PRINT \"B is greater\"\n  END_IF\nEND\n```",
+      "options": [
+        "A is greater",
+        "B is greater",
+        "A and B are equal",
+        "No output"
+      ],
+      "correctOptions": [
+        1
+      ],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "easy",
+      "explanation": "Since 10 < 20, it prints 'B is greater'."
+    },
+    {
+      "question": "What is the output?\nFUNCTION Generate(n)\n  IF n = 1 THEN RETURN [[1]]\n  prev = Generate(n-1)\n  result = []\n  FOR EACH arr IN prev\n    FOR i = 0 TO n\n      new_arr = COPY(arr)\n      INSERT n AT POSITION i IN new_arr\n      APPEND new_arr TO result\n    ENDFOR\n  ENDFOR\n  RETURN result\nENDFUNCTION\nPRINT LENGTH(Generate(3))",
+      "options": [
+        "3",
+        "6",
+        "9",
+        "12"
+      ],
+      "correctOptions": [
+        1
+      ],
+      "answerType": "single",
+      "marks": 3,
+      "difficulty": "hard",
+      "explanation": "Generates all permutations of numbers 1 to n"
+    },
+    {
+      "question": "How would you represent an infinite loop in pseudocode?",
+      "options": [
+        "FOR i FROM 1 TO INFINITY",
+        "WHILE TRUE DO",
+        "REPEAT UNTIL FALSE",
+        "All of the above"
+      ],
+      "correctOptions": [
+        3
+      ],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "hard",
+      "explanation": "All listed options can be used to create infinite loops in pseudocode."
+    },
+    
+    {
+      "question": "What is missing in the following pseudocode to correctly compute the factorial of a number?\n\n```\nBEGIN\n  SET n TO 5\n  SET factorial TO 1\n  FOR i FROM 1 TO n\n    SET factorial TO factorial * i\n  // Missing end\n  PRINT factorial\nEND\n```",
+      "options": [
+        "END_FOR",
+        "END_IF",
+        "END_LOOP",
+        "Nothing, it is correct"
+      ],
+      "correctOptions": [
+        0
+      ],
+      "answerType": "single",
+      "marks": 1,
+      "section": "Sec-3",
+      "difficulty": "hard",
+      "explanation": "Proper closure of the FOR loop is needed with 'END_FOR'."
+    },
+    {
+      "question": "What will be returned?\nFUNCTION Rob(nums)\n  IF LENGTH(nums) = 0 THEN RETURN 0\n  IF LENGTH(nums) = 1 THEN RETURN nums[0]\n  dp = ARRAY(LENGTH(nums))\n  dp[0] = nums[0]\n  dp[1] = MAX(nums[0], nums[1])\n  FOR i = 2 TO LENGTH(nums)-1\n    dp[i] = MAX(dp[i-1], dp[i-2] + nums[i])\n  ENDFOR\n  RETURN dp[LENGTH(nums)-1]\nENDFUNCTION\nPRINT Rob([2,7,9,3,1])",
+      "options": [
+        "11",
+        "12",
+        "13",
+        "14"
+      ],
+      "correctOptions": [
+        1
+      ],
+      "answerType": "single",
+      "marks": 2,
+      "difficulty": "medium",
+      "explanation": "Maximum amount: 2+9+1=12"
+    },
+    {
+      "question": "What will this function return?\nFUNCTION MaxArea(height)\n  maxarea = 0\n  left = 0\n  right = LENGTH(height) - 1\n  WHILE left < right\n    width = right - left\n    maxarea = MAX(maxarea, width * MIN(height[left], height[right]))\n    IF height[left] < height[right] THEN\n      left = left + 1\n    ELSE\n      right = right - 1\n    ENDIF\n  ENDWHILE\n  RETURN maxarea\nENDFUNCTION\nPRINT MaxArea([1,8,6,2,5,4,8,3,7])",
+      "options": [
+        "36",
+        "42",
+        "49",
+        "56"
+      ],
+      "correctOptions": [
+        2
+      ],
+      "answerType": "single",
+      "marks": 3,
+      "difficulty": "hard",
+      "explanation": "Container with most water: height=7, width=7, area=49"
+    },
+    {
+      "question": "What is stored in result?\nFUNCTION Subsets(nums)\n  result = [[]]\n  FOR EACH num IN nums\n    n = LENGTH(result)\n    FOR i = 0 TO n-1\n      subset = COPY(result[i])\n      APPEND num TO subset\n      APPEND subset TO result\n    ENDFOR\n  ENDFOR\n  RETURN result\nENDFUNCTION\nPRINT LENGTH(Subsets([1,2,3]))",
+      "options": [
+        "6",
+        "8",
+        "9",
+        "12"
+      ],
+      "correctOptions": [
+        1
+      ],
+      "answerType": "single",
+      "marks": 2,
+      "difficulty": "medium",
+      "explanation": "Generates all possible subsets: [], [1], [2], [3], [1,2], [1,3], [2,3], [1,2,3]"
+    },
+    {
+      "question": "What will this function return?\nFUNCTION CountPaths(grid, m, n)\n  IF m = 1 OR n = 1 THEN RETURN 1\n  RETURN CountPaths(grid, m-1, n) + CountPaths(grid, m, n-1)\nENDFUNCTION\nPRINT CountPaths(grid, 3, 3)",
+      "options": [
+        "4",
+        "6",
+        "8",
+        "9"
+      ],
+      "correctOptions": [
+        1
+      ],
+      "answerType": "single",
+      "marks": 2,
+      "difficulty": "medium",
+      "explanation": "Counts paths from top-left to bottom-right moving only right and down"
+    },
+    {
+      "question": "What is the output?\nFUNCTION UniquePaths(m, n, memo={})\n  IF m = 1 OR n = 1 THEN RETURN 1\n  key = m + ',' + n\n  IF key IN memo THEN RETURN memo[key]\n  memo[key] = UniquePaths(m-1, n, memo) + UniquePaths(m, n-1, memo)\n  RETURN memo[key]\nENDFUNCTION\nPRINT UniquePaths(3, 3)",
+      "options": [
+        "4",
+        "6",
+        "8",
+        "9"
+      ],
+      "correctOptions": [
+        1
+      ],
+      "answerType": "single",
+      "marks": 2,
+      "difficulty": "medium",
+      "explanation": "Counts unique paths with memoization"
+    },
+    {
+      "question": "What is the output?\nFUNCTION Rotate(matrix)\n  n = LENGTH(matrix)\n  FOR i = 0 TO n/2-1\n    FOR j = i TO n-i-2\n      temp = matrix[i][j]\n      matrix[i][j] = matrix[n-1-j][i]\n      matrix[n-1-j][i] = matrix[n-1-i][n-1-j]\n      matrix[n-1-i][n-1-j] = matrix[j][n-1-i]\n      matrix[j][n-1-i] = temp\n    ENDFOR\n  ENDFOR\nENDFUNCTION\nmatrix = [[1,2],[3,4]]\nRotate(matrix)\nPRINT matrix[0][0]",
+      "options": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "correctOptions": [
+        2
+      ],
+      "answerType": "single",
+      "marks": 3,
+      "difficulty": "hard",
+      "explanation": "Rotates matrix 90 degrees clockwise"
+    },
+    {
+      "question": "What is the output?\nFUNCTION Generate(n)\n  IF n = 0 THEN RETURN ['0']\n  IF n = 1 THEN RETURN ['0','1']\n  prev = Generate(n-1)\n  result = []\n  FOR EACH x IN prev\n    APPEND '0'+x TO result\n  ENDFOR\n  FOR EACH x IN REVERSE(prev)\n    APPEND '1'+x TO result\n  ENDFOR\n  RETURN result\nENDFUNCTION\nPRINT LENGTH(Generate(2))",
+      "options": [
+        "2",
+        "4",
+        "6",
+        "8"
+      ],
+      "correctOptions": [
+        1
+      ],
+      "answerType": "single",
+      "marks": 3,
+      "difficulty": "hard",
+      "explanation": "Generates Gray code sequences of length n"
+    }
+  ],
+  "codingChallenges": [
+    {
+      "title": "List Operations",
+      "description": "Perform basic list manipulations",
+      "problemStatement": "Write a program that takes a list of numbers and performs these operations:\n1. Remove duplicates\n2. Sort in descending order\n3. Return the second largest element\nIf no second largest exists, return the largest element.",
+      "constraints": "1 <= list size <= 100\n-1000 <= elements <= 1000",
+      "allowedLanguages": [
+        "python"
+      ],
+      "languageImplementations": {
+        "python": {
+          "visibleCode": "# Write code here",
+          "invisibleCode": "# No additional code needed"
+        }
       },
-      {
-        "input": "Hi",
-        "output": "hi",
-        "isVisible": true
-      }
-    ],
-    "marks": 10,
-    "difficulty": "easy",
-    "tags": ["strings", "basic"],
-    "timeLimit": 1,
-    "memoryLimit": 256,
-    "type": "coding_challenge",
-    "category": "Programming",
-    "instructions": "Write a solution that handles all test cases efficiently"
-  },
-
-      {
-        "title": "Dictionary Comprehension",
-        "description": "Create dictionary using comprehension",
-        "problemStatement": "Write a program that takes a string and creates a dictionary where:\n1. Keys are characters\n2. Values are their ASCII values\n3. Only include letters\nReturn the dictionary",
-        "constraints": "1 <= string length <= 100\nOnly letters and spaces",
-        "allowedLanguages": ["python"],
-        "languageImplementations": {
-          "python": {
-            "visibleCode": "# Write code here",
-            "invisibleCode": "# No additional code needed"
-          }
+      "testCases": [
+        {
+          "input": "[5,5,4,2,1]",
+          "output": "4",
+          "isVisible": true
         },
-        "testCases": [
-          {
-            "input": "Hello 123",
-            "output": "{'H':72,'e':101,'l':108,'l':108,'o':111}",
-            "isVisible": true
-          },
-          {
-            "input": "Python",
-            "output": "{'P':80,'y':121,'t':116,'h':104,'o':111,'n':110}",
-            "isVisible": true
-          }
-        ],
-        "marks": 10,
-        "difficulty": "easy",
-        "tags": ["dictionaries", "comprehension", "basic"],
-        "timeLimit": 1,
-        "memoryLimit": 256,
-        "type": "coding_challenge",
-        "category": "Programming",
-        "instructions": "Write a solution that handles all test cases efficiently"
-      },
-      {
-        "title": "List Methods",
-        "description": "Use various list methods",
-        "problemStatement": "Write a program that implements a queue using list methods:\n1. enqueue: add element to end\n2. dequeue: remove first element\n3. peek: return first element without removing\nReturn list of operations results",
-        "constraints": "1 <= operations <= 100\n-1000 <= elements <= 1000",
-        "allowedLanguages": ["python"],
-        "languageImplementations": {
-          "python": {
-            "visibleCode": "# Write code here",
-            "invisibleCode": "# No additional code needed"
-          }
+        {
+          "input": "[1,1,1]",
+          "output": "1",
+          "isVisible": true
         },
-        "testCases": [
-          {
-            "input": "enqueue(1),enqueue(2),peek(),dequeue(),peek()",
-            "output": "[1,2,1,1,2]",
-            "isVisible": true
-          },
-          {
-            "input": "enqueue(5),dequeue(),peek()",
-            "output": "[1,5,None]",
-            "isVisible": true
-          }
-        ],
-        "marks": 10,
-        "difficulty": "easy",
-        "tags": ["lists", "methods", "basic"],
-        "timeLimit": 1,
-        "memoryLimit": 256,
-        "type": "coding_challenge",
-        "category": "Programming",
-        "instructions": "Write a solution that handles all test cases efficiently"
+        {
+          "input": "[3,2,1,2,3]",
+          "output": "2",
+          "isVisible": false
+        }
+      ],
+      "marks": 10,
+      "difficulty": "easy",
+      "tags": [
+        "lists",
+        "sorting",
+        "basic"
+      ],
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "type": "coding_challenge",
+      "category": "Programming",
+      "instructions": "Write a solution that handles all test cases efficiently"
+    },
+    {
+      "title": "String Reverse",
+      "description": "Reverse words in a string",
+      "problemStatement": "Write a program that takes a string and reverses each word but keeps the words in same order. Example: 'Hello World' becomes 'olleH dlroW'",
+      "constraints": "1 <= string length <= 100",
+      "allowedLanguages": [
+        "python"
+      ],
+      "languageImplementations": {
+        "python": {
+          "visibleCode": "# Write code here",
+          "invisibleCode": "# No additional code needed"
+        }
       },
-      {
-        "title": "Function Arguments",
-        "description": "Work with different types of arguments",
-        "problemStatement": "Write a function that accepts:\n1. Required argument: base number\n2. Optional argument: power (default=2)\n3. Arbitrary arguments: additional numbers\nReturn base^power + sum of additional numbers",
-        "constraints": "1 <= base <= 10\n0 <= power <= 5\n-100 <= additional numbers <= 100",
-        "allowedLanguages": ["python"],
-        "languageImplementations": {
-          "python": {
-            "visibleCode": "# Write code here",
-            "invisibleCode": "# No additional code needed"
-          }
+      "testCases": [
+        {
+          "input": "Hello World",
+          "output": "olleH dlroW",
+          "isVisible": true
         },
-        "testCases": [
-          {
-            "input": "2, 3, 1, 2, 3",
-            "output": "14",
-            "isVisible": true
-          },
-          {
-            "input": "3",
-            "output": "9",
-            "isVisible": true
-          },
-          {
-            "input": "2, 2, 5",
-            "output": "9",
-            "isVisible": true
-          }
-        ],
-        "marks": 10,
-        "difficulty": "easy",
-        "tags": ["functions", "arguments", "basic"],
-        "timeLimit": 1,
-        "memoryLimit": 256,
-        "type": "coding_challenge",
-        "category": "Programming",
-        "instructions": "Write a solution that handles all test cases efficiently"
+        {
+          "input": "Python",
+          "output": "nohtyP",
+          "isVisible": false
+        },
+        {
+          "input": "Hello",
+          "output": "olleH",
+          "isVisible": true
+        },
+        {
+          "input": "Python",
+          "output": "nohtyP",
+          "isVisible": false
+        }
+      ],
+      "marks": 10,
+      "difficulty": "easy",
+      "tags": [
+        "strings",
+        "basic"
+      ],
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "type": "coding_challenge",
+      "category": "Programming",
+      "instructions": "Write a solution that handles all test cases efficiently"
+    },
+    {
+      "title": "List Duplicates",
+      "description": "Find duplicate elements",
+      "problemStatement": "Write a program that takes a list and returns a list of elements that appear more than once. Return empty list if no duplicates found",
+      "constraints": "1 <= list size <= 100",
+      "allowedLanguages": [
+        "python"
+      ],
+      "languageImplementations": {
+        "python": {
+          "visibleCode": "# Write code here",
+          "invisibleCode": "# No additional code needed"
+        }
       },
-      {
-        "title": "Find Maximum",
-        "description": "Find maximum element in array",
-        "problemStatement": "Write a program that finds the largest number in an array of integers. For example, in array [1,4,2,7,3], the largest number is 7.",
-        "constraints": "1 <= array length <= 100\n-1000 <= elements <= 1000",
-        "allowedLanguages": ["python", "java", "javascript", "cpp"],
-        "languageImplementations": {
-          "python": {
-            "visibleCode": "# Write code here",
-            "invisibleCode": "# No additional code needed"
-          },
-          "java": {
-            "visibleCode": "// Write code here",
-            "invisibleCode": "// No additional code needed"
-          }
+      "testCases": [
+        {
+          "input": "[1,2,2,3,3,4]",
+          "output": "[2,3]",
+          "isVisible": true
         },
-        "testCases": [
-          {
-            "input": "[1,4,2,7,3]",
-            "output": "7",
-            "isVisible": true
-          },
-          {
-            "input": "[1,1,1]",
-            "output": "1",
-            "isVisible": true
-          },
-          {
-            "input": "[-1,-5,2,-10]",
-            "output": "2",
-            "isVisible": true
-          },
-          {
-            "input": "[5]",
-            "output": "5",
-            "isVisible": true
-          }
-        ],
-        "marks": 10,
-        "difficulty": "easy",
-        "tags": ["arrays", "loops", "basic"],
-        "timeLimit": 1,
-        "memoryLimit": 256,
-        "type": "coding_challenge",
-        "category": "Programming",
-        "instructions": "Write a solution that handles all test cases efficiently"
+        {
+          "input": "[1,2,3]",
+          "output": "[]",
+          "isVisible": true
+        },
+        {
+          "input": "[1,1,1,2,2,3,3,4,4]",
+          "output": "[1,2,3,4]",
+          "isVisible": false
+        }
+      ],
+      "marks": 10,
+      "difficulty": "easy",
+      "tags": [
+        "lists",
+        "sets",
+        "basic"
+      ],
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "type": "coding_challenge",
+      "category": "Programming",
+      "instructions": "Write a solution that handles all test cases efficiently"
+    },
+    {
+      "title": "Number Pattern",
+      "description": "Generate a number pattern",
+      "problemStatement": "Write a program that generates a number pattern. For input N, generate N rows where each row i contains numbers from 1 to i. Return the pattern as a string with rows separated by newlines.",
+      "constraints": "1 <= N <= 9",
+      "allowedLanguages": [
+        "python",
+        "java",
+        "javascript",
+        "cpp"
+      ],
+      "languageImplementations": {
+        "python": {
+          "visibleCode": "# Write code here",
+          "invisibleCode": "# No additional code needed"
+        },
+        "java": {
+          "visibleCode": "// Write code here",
+          "invisibleCode": "// No additional code needed"
+        }
       },
-      {
-        "title": "List Operations",
-        "description": "Perform basic list operations",
-        "problemStatement": "Write a program that takes a list of numbers and performs the following operations:\n1. Add 1 to each element\n2. Remove all even numbers\n3. Return the sum of remaining numbers",
-        "constraints": "1 <= list size <= 100\n1 <= elements <= 1000",
-        "allowedLanguages": ["python", "java", "javascript", "cpp"],
-        "languageImplementations": {
-          "python": {
-            "visibleCode": "# Write code here",
-            "invisibleCode": "# No additional code needed"
-          },
-          "java": {
-            "visibleCode": "// Write code here",
-            "invisibleCode": "// No additional code needed"
-          }
+      "testCases": [
+        {
+          "input": "3",
+          "output": "1\n1 2\n1 2 3",
+          "isVisible": true
         },
-        "testCases": [
-          {
-            "input": "[1,2,3,4]",
-            "output": "8",
-            "isVisible": true
-          },
-          {
-            "input": "[2,4,6]",
-            "output": "15",
-            "isVisible": true
-          },
-          {
-            "input": "[1]",
-            "output": "2",
-            "isVisible": true
-          }
-        ],
-        "marks": 10,
-        "difficulty": "easy",
-        "tags": ["lists", "loops", "conditionals"],
-        "timeLimit": 1,
-        "memoryLimit": 256,
-        "type": "coding_challenge",
-        "category": "Programming",
-        "instructions": "Write a solution that handles all test cases efficiently"
+        {
+          "input": "1",
+          "output": "1",
+          "isVisible": true
+        },
+        {
+          "input": "4",
+          "output": "1\n1 2\n1 2 3\n1 2 3 4",
+          "isVisible": true
+        },
+        {
+          "input": "5",
+          "output": "1\n1 2\n1 2 3\n1 2 3 4\n1 2 3 4 5",
+          "isVisible": false
+        }
+      ],
+      "marks": 10,
+      "difficulty": "easy",
+      "tags": [
+        "patterns",
+        "loops",
+        "string-formatting"
+      ],
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "type": "coding_challenge",
+      "category": "Programming",
+      "instructions": "Write a solution that handles all test cases efficiently"
+    },
+    {
+      "title": "Map and Filter",
+      "description": "Use map and filter functions",
+      "problemStatement": "Write a program that takes a list of numbers and:\n1. Uses map to square each number\n2. Uses filter to keep only even numbers\n3. Returns the sum of remaining numbers",
+      "constraints": "1 <= list size <= 100\n1 <= elements <= 100",
+      "allowedLanguages": [
+        "python"
+      ],
+      "languageImplementations": {
+        "python": {
+          "visibleCode": "# Write code here",
+          "invisibleCode": "# No additional code needed"
+        }
       },
-      {
-        "title": "String Counter",
-        "description": "Count specific characters in a string",
-        "problemStatement": "Write a program that counts the number of vowels and consonants in a given string. Return them as a string in format: 'Vowels: X, Consonants: Y'",
-        "constraints": "1 <= string length <= 100\nOnly lowercase letters",
-        "allowedLanguages": ["python", "java", "javascript", "cpp"],
-        "languageImplementations": {
-          "python": {
-            "visibleCode": "# Write code here",
-            "invisibleCode": "# No additional code needed"
-          },
-          "java": {
-            "visibleCode": "// Write code here",
-            "invisibleCode": "// No additional code needed"
-          }
+      "testCases": [
+        {
+          "input": "[1,2,3,4]",
+          "output": "20",
+          "isVisible": true
         },
-        "testCases": [
-          {
-            "input": "hello",
-            "output": "Vowels: 2, Consonants: 3",
-            "isVisible": true
-          },
-          {
-            "input": "aeiou",
-            "output": "Vowels: 5, Consonants: 0",
-            "isVisible": true
-          },
-          {
-            "input": "xyz",
-            "output": "Vowels: 0, Consonants: 3",
-            "isVisible": true
-          }
-        ],
-        "marks": 10,
-        "difficulty": "easy",
-        "tags": ["strings", "loops", "counting"],
-        "timeLimit": 1,
-        "memoryLimit": 256,
-        "type": "coding_challenge",
-        "category": "Programming",
-        "instructions": "Write a solution that handles all test cases efficiently"
+        {
+          "input": "[1,3,5]",
+          "output": "0",
+          "isVisible": true
+        },
+        {
+          "input": "[2,4]",
+          "output": "20",
+          "isVisible": false
+        },
+        {
+          "input": "[1,3,5]",
+          "output": "0",
+          "isVisible": false
+        }
+      ],
+      "marks": 10,
+      "difficulty": "easy",
+      "tags": [
+        "map",
+        "filter",
+        "functions"
+      ],
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "type": "coding_challenge",
+      "category": "Programming",
+      "instructions": "Write a solution that handles all test cases efficiently"
+    },
+    {
+      "title": "List Slicing",
+      "description": "Manipulate lists using slicing",
+      "problemStatement": "Write a program that takes a list and performs:\n1. Reverse every 3 elements\n2. If list length isn't divisible by 3, keep remaining elements as is\n3. Return the modified list",
+      "constraints": "1 <= list size <= 100\n-1000 <= elements <= 1000",
+      "allowedLanguages": [
+        "python"
+      ],
+      "languageImplementations": {
+        "python": {
+          "visibleCode": "# Write code here",
+          "invisibleCode": "# No additional code needed"
+        }
       },
-      {
-        "title": "Temperature Converter",
-        "description": "Convert between temperature scales",
-        "problemStatement": "Write a program that converts temperatures between Celsius and Fahrenheit. Input will be a string like '32F' or '0C'. Return the converted temperature with 2 decimal places and the appropriate suffix.",
-        "constraints": "-100 <= temperature <= 100",
-        "allowedLanguages": ["python", "java", "javascript", "cpp"],
-        "languageImplementations": {
-          "python": {
-            "visibleCode": "# Write code here",
-            "invisibleCode": "# No additional code needed"
-          },
-          "java": {
-            "visibleCode": "// Write code here",
-            "invisibleCode": "// No additional code needed"
-          }
+      "testCases": [
+        {
+          "input": "[1,2,3,4,5,6]",
+          "output": "[3,2,1,6,5,4]",
+          "isVisible": true
         },
-        "testCases": [
-          {
-            "input": "32F",
-            "output": "0.00C",
-            "isVisible": true
-          },
-          {
-            "input": "0C",
-            "output": "32.00F",
-            "isVisible": true
-          },
-          {
-            "input": "100C",
-            "output": "212.00F",
-            "isVisible": true
-          }
-        ],
-        "marks": 10,
-        "difficulty": "easy",
-        "tags": ["functions", "string-manipulation", "math"],
-        "timeLimit": 1,
-        "memoryLimit": 256,
-        "type": "coding_challenge",
-        "category": "Programming",
-        "instructions": "Write a solution that handles all test cases efficiently"
+        {
+          "input": "[1,2,3,4,5]",
+          "output": "[3,2,1,4,5]",
+          "isVisible": true
+        },
+        {
+          "input": "[1,2]",
+          "output": "[1,2]",
+          "isVisible": true
+        },
+        {
+          "input": "[1,2,3,4,5,6]",
+          "output": "[3,2,1,6,5,4]",
+          "isVisible": false
+        }
+      ],
+      "marks": 10,
+      "difficulty": "easy",
+      "tags": [
+        "lists",
+        "slicing",
+        "basic"
+      ],
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "type": "coding_challenge",
+      "category": "Programming",
+      "instructions": "Write a solution that handles all test cases efficiently"
+    },
+    {
+      "title": "List Comprehension",
+      "description": "Use list comprehension to process numbers",
+      "problemStatement": "Write a program that uses list comprehension to:\n1. Create a list of squares of even numbers\n2. Only include numbers divisible by 3\n3. Return the list for numbers from 1 to N",
+      "constraints": "1 <= N <= 50",
+      "allowedLanguages": [
+        "python"
+      ],
+      "languageImplementations": {
+        "python": {
+          "visibleCode": "# Write code here",
+          "invisibleCode": "# No additional code needed"
+        }
       },
-      {
-        "title": "Number Pattern",
-        "description": "Generate a number pattern",
-        "problemStatement": "Write a program that generates a number pattern. For input N, generate N rows where each row i contains numbers from 1 to i. Return the pattern as a string with rows separated by newlines.",
-        "constraints": "1 <= N <= 9",
-        "allowedLanguages": ["python", "java", "javascript", "cpp"],
-        "languageImplementations": {
-          "python": {
-            "visibleCode": "# Write code here",
-            "invisibleCode": "# No additional code needed"
-          },
-          "java": {
-            "visibleCode": "// Write code here",
-            "invisibleCode": "// No additional code needed"
-          }
+      "testCases": [
+        {
+          "input": "10",
+          "output": "[36]",
+          "isVisible": true
         },
-        "testCases": [
-          {
-            "input": "3",
-            "output": "1\n1 2\n1 2 3",
-            "isVisible": true
+        {
+          "input": "20",
+          "output": "[36, 144]",
+          "isVisible": true
+        },
+        {
+          "input": "5",
+          "output": "[]",
+          "isVisible": true
+        },
+        {
+          "input": "10",
+          "output": "[36, 144]",
+          "isVisible": false
+        }
+      ],
+      "marks": 10,
+      "difficulty": "easy",
+      "tags": [
+        "list-comprehension",
+        "basic"
+      ],
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "type": "coding_challenge",
+      "category": "Programming",
+      "instructions": "Write a solution that handles all test cases efficiently"
+    },
+    {
+      "title": "Count Characters",
+      "description": "Count letters and digits in string",
+      "problemStatement": "Write a program that takes a string and returns the count of letters and digits in format: 'Letters: X, Digits: Y'",
+      "constraints": "1 <= string length <= 100",
+      "allowedLanguages": [
+        "python"
+      ],
+      "languageImplementations": {
+        "python": {
+          "visibleCode": "# Write code here",
+          "invisibleCode": "# No additional code needed"
+        }
+      },
+      "testCases": [
+        {
+          "input": "Hello123",
+          "output": "Letters: 5, Digits: 3",
+          "isVisible": true
+        },
+        {
+          "input": "Python2023",
+          "output": "Letters: 6, Digits: 4",
+          "isVisible": true
+        },
+        {
+          "input": "Hello123",
+          "output": "Letters: 5, Digits: 3",
+          "isVisible": false
+        }
+      ],
+      "marks": 10,
+      "difficulty": "easy",
+      "tags": [
+        "strings",
+        "basic"
+      ],
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "type": "coding_challenge",
+      "category": "Programming",
+      "instructions": "Write a solution that handles all test cases efficiently"
+    },
+    {
+      "title": "List Operations",
+      "description": "Basic list operations",
+      "problemStatement": "Write a program that takes a list and performs: 1) Add 5 to each element 2) Remove elements less than 10 3) Return modified list",
+      "constraints": "1 <= list size <= 100\n1 <= elements <= 100",
+      "allowedLanguages": [
+        "python"
+      ],
+      "languageImplementations": {
+        "python": {
+          "visibleCode": "# Write code here",
+          "invisibleCode": "# No additional code needed"
+        }
+      },
+      "testCases": [
+        {
+          "input": "[5,6,7]",
+          "output": "[10,11,12]",
+          "isVisible": true
+        },
+        {
+          "input": "[1,2]",
+          "output": "[]",
+          "isVisible": true
+        },
+        {
+          "input": "[1,2,3,4,5,6]",
+          "output": "[11,12,13,14,15,16]",
+          "isVisible": false
+        }
+      ],
+      "marks": 10,
+      "difficulty": "easy",
+      "tags": [
+        "lists",
+        "basic"
+      ],
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "type": "coding_challenge",
+      "category": "Programming",
+      "instructions": "Write a solution that handles all test cases efficiently"
+    },
+    {
+      "title": "List Methods",
+      "description": "Use various list methods",
+      "problemStatement": "Write a program that implements a queue using list methods:\n1. enqueue: add element to end\n2. dequeue: remove first element\n3. peek: return first element without removing\nReturn list of operations results",
+      "constraints": "1 <= operations <= 100\n-1000 <= elements <= 1000",
+      "allowedLanguages": [
+        "python"
+      ],
+      "languageImplementations": {
+        "python": {
+          "visibleCode": "# Write code here",
+          "invisibleCode": "# No additional code needed"
+        }
+      },
+      "testCases": [
+        {
+          "input": "enqueue(1),enqueue(2),peek(),dequeue(),peek()",
+          "output": "[1,2,1,1,2]",
+          "isVisible": true
+        },
+        {
+          "input": "enqueue(5),dequeue(),peek()",
+          "output": "[1,5,None]",
+          "isVisible": true
           },
-          {
-            "input": "1",
-            "output": "1",
-            "isVisible": true
-          },
-          {
-            "input": "4",
-            "output": "1\n1 2\n1 2 3\n1 2 3 4",
-            "isVisible": true
-          }
-        ],
-        "marks": 10,
-        "difficulty": "easy",
-        "tags": ["patterns", "loops", "string-formatting"],
-        "timeLimit": 1,
-        "memoryLimit": 256,
-        "type": "coding_challenge",
-        "category": "Programming",
-        "instructions": "Write a solution that handles all test cases efficiently"
-      }
-    ]
-  }
+        {
+          "input": "enqueue(6),dequeue(),peek()",
+          "output": "[1,6,None]",
+          "isVisible": false
+        }
+      ],
+      "marks": 10,
+      "difficulty": "easy",
+      "tags": [
+        "lists",
+        "methods",
+        "basic"
+      ],
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "type": "coding_challenge",
+      "category": "Programming",
+      "instructions": "Write a solution that handles all test cases efficiently"
+    },
+    {
+      "title": "Function Arguments",
+      "description": "Work with different types of arguments",
+      "problemStatement": "Write a function that accepts:\n1. Required argument: base number\n2. Optional argument: power (default=2)\n3. Arbitrary arguments: additional numbers\nReturn base^power + sum of additional numbers",
+      "constraints": "1 <= base <= 10\n0 <= power <= 5\n-100 <= additional numbers <= 100",
+      "allowedLanguages": [
+        "python"
+      ],
+      "languageImplementations": {
+        "python": {
+          "visibleCode": "# Write code here",
+          "invisibleCode": "# No additional code needed"
+        }
+      },
+      "testCases": [
+        {
+          "input": "2, 3, 1, 2, 3",
+          "output": "14",
+          "isVisible": true
+        },
+        {
+          "input": "3",
+          "output": "9",
+          "isVisible": true
+        },
+        {
+          "input": "2, 2, 5",
+          "output": "9",
+          "isVisible": true
+        },
+        {
+          "input": "4, 2, 5",
+          "output": "11",
+          "isVisible": false
+        }
+      ],
+      "marks": 10,
+      "difficulty": "easy",
+      "tags": [
+        "functions",
+        "arguments",
+        "basic"
+      ],
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "type": "coding_challenge",
+      "category": "Programming",
+      "instructions": "Write a solution that handles all test cases efficiently"
+    },
+  
+    {
+      "title": "Simple Calculator",
+      "description": "Basic arithmetic operations",
+      "problemStatement": "Write a program that takes two numbers and an operator (+,-,*,/) and returns the result. Return 'Error' for division by zero",
+      "constraints": "-100 <= numbers <= 100",
+      "allowedLanguages": [
+        "python"
+      ],
+      "languageImplementations": {
+        "python": {
+          "visibleCode": "# Write code here",
+          "invisibleCode": "# No additional code needed"
+        }
+      },
+      "testCases": [
+        {
+          "input": "10, '+', 5",
+          "output": "15",
+          "isVisible": true
+        },
+        {
+          "input": "10, '/', 0",
+          "output": "Error",
+          "isVisible": true
+        },
+        {
+          "input": "10, '/', 2",
+          "output": "5",
+          "isVisible": false
+        }
+      ],
+      "marks": 10,
+      "difficulty": "easy",
+      "tags": [
+        "functions",
+        "basic"
+      ],
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "type": "coding_challenge",
+      "category": "Programming",
+      "instructions": "Write a solution that handles all test cases efficiently"
+    },
+    {
+      "title": "Dictionary Comprehension",
+      "description": "Create dictionary using comprehension",
+      "problemStatement": "Write a program that takes a string and creates a dictionary where:\n1. Keys are characters\n2. Values are their ASCII values\n3. Only include letters\nReturn the dictionary",
+      "constraints": "1 <= string length <= 100\nOnly letters and spaces",
+      "allowedLanguages": [
+        "python"
+      ],
+      "languageImplementations": {
+        "python": {
+          "visibleCode": "# Write code here",
+          "invisibleCode": "# No additional code needed"
+        }
+      },
+      "testCases": [
+        {
+          "input": "Hello 123",
+          "output": "{'H':72,'e':101,'l':108,'l':108,'o':111}",
+          "isVisible": true
+        },
+        {
+          "input": "Python",
+          "output": "{'P':80,'y':121,'t':116,'h':104,'o':111,'n':110}",
+          "isVisible": true
+        },
+        {
+          "input": "Hello World",
+          "output": "{'H':72,'e':101,'l':108,'l':108,'o':111,' ':32,'W':87,'o':111,'r':114,'l':108,'d':100}",
+          "isVisible": false
+        }
+      ],
+      "marks": 10,
+      "difficulty": "easy",
+      "tags": [
+        "dictionaries",
+        "comprehension",
+        "basic"
+      ],
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "type": "coding_challenge",
+      "category": "Programming",
+      "instructions": "Write a solution that handles all test cases efficiently"
+    },
+   
+    {
+      "title": "String Counter",
+      "description": "Count specific characters in a string",
+      "problemStatement": "Write a program that counts the number of vowels and consonants in a given string. Return them as a string in format: 'Vowels: X, Consonants: Y'",
+      "constraints": "1 <= string length <= 100\nOnly lowercase letters",
+      "allowedLanguages": [
+        "python",
+        "java",
+        "javascript",
+        "cpp"
+      ],
+      "languageImplementations": {
+        "python": {
+          "visibleCode": "# Write code here",
+          "invisibleCode": "# No additional code needed"
+        },
+        "java": {
+          "visibleCode": "// Write code here",
+          "invisibleCode": "// No additional code needed"
+        }
+      },
+      "testCases": [
+        {
+          "input": "hello",
+          "output": "Vowels: 2, Consonants: 3",
+          "isVisible": true
+        },
+        {
+          "input": "aeiou",
+          "output": "Vowels: 5, Consonants: 0",
+          "isVisible": true
+        },
+        {
+          "input": "xyz",
+          "output": "Vowels: 0, Consonants: 3",
+          "isVisible": false
+        }
+      ],
+      "marks": 10,
+      "difficulty": "easy",
+      "tags": [
+        "strings",
+        "loops",
+        "counting"
+      ],
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "type": "coding_challenge",
+      "category": "Programming",
+      "instructions": "Write a solution that handles all test cases efficiently"
+    },
+    
+    
+    {
+      "title": "Find Maximum",
+      "description": "Find maximum element in array",
+      "problemStatement": "Write a program that finds the largest number in an array of integers. For example, in array [1,4,2,7,3], the largest number is 7.",
+      "constraints": "1 <= array length <= 100\n-1000 <= elements <= 1000",
+      "allowedLanguages": [
+        "python",
+        "java",
+        "javascript",
+        "cpp"
+      ],
+      "languageImplementations": {
+        "python": {
+          "visibleCode": "# Write code here",
+          "invisibleCode": "# No additional code needed"
+        },
+        "java": {
+          "visibleCode": "// Write code here",
+          "invisibleCode": "// No additional code needed"
+        }
+      },
+      "testCases": [
+        {
+          "input": "[1,4,2,7,3]",
+          "output": "7",
+          "isVisible": true
+        },
+        {
+          "input": "[1,1,1]",
+          "output": "1",
+          "isVisible": true
+        },
+        {
+          "input": "[-1,-5,2,-10]",
+          "output": "2",
+          "isVisible": false
+        },
+        {
+          "input": "[5]",
+          "output": "5",
+          "isVisible": false
+        }
+      ],
+      "marks": 10,
+      "difficulty": "easy",
+      "tags": [
+        "arrays",
+        "loops",
+        "basic"
+      ],
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "type": "coding_challenge",
+      "category": "Programming",
+      "instructions": "Write a solution that handles all test cases efficiently"
+    },
+    {
+      "title": "List Filter",
+      "description": "Filter positive numbers",
+      "problemStatement": "Write a program that takes a list of numbers and returns only the positive numbers in ascending order",
+      "constraints": "1 <= list size <= 100\n-100 <= elements <= 100",
+      "allowedLanguages": [
+        "python"
+      ],
+      "languageImplementations": {
+        "python": {
+          "visibleCode": "# Write code here",
+          "invisibleCode": "# No additional code needed"
+        }
+      },
+      "testCases": [
+        {
+          "input": "[-1,3,1,-2,2]",
+          "output": "[1,2,3]",
+          "isVisible": true
+        },
+        {
+          "input": "[-1,-2,-3]",
+          "output": "[]",
+          "isVisible": true
+        },
+        {
+          "input": "[1,2,3,4,5,6]",
+          "output": "[1,2,3,4,5,6]",
+          "isVisible": false
+        },
+        {
+          "input": "[1,2,3,8,5,6]",
+          "output": "[1,2,3,5,6,8]",
+          "isVisible": false
+        }
+      ],
+      "marks": 10,
+      "difficulty": "easy",
+      "tags": [
+        "lists",
+        "basic"
+      ],
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "type": "coding_challenge",
+      "category": "Programming",
+      "instructions": "Write a solution that handles all test cases efficiently"
+    },
+    {
+      "title": "Special Fibonacci",
+      "description": "Calculate the Nth number in a special series",
+      "problemStatement": "Write a program to find and return an integer value representing the Nth number in this special series where:\nf(N) = f(N-1) + f(N-2) + f(N-3)\nwhere f(1) = 1",
+      "constraints": "1 <= N <= 20",
+      "allowedLanguages": [
+        "python",
+        "java",
+        "javascript",
+        "cpp"
+      ],
+      "languageImplementations": {
+        "python": {
+          "visibleCode": "# Write code here",
+          "invisibleCode": "# No additional code needed"
+        },
+        "java": {
+          "visibleCode": "// Write code here",
+          "invisibleCode": "// No additional code needed"
+        }
+      },
+      "testCases": [
+        {
+          "input": "4",
+          "output": "4",
+          "isVisible": true
+        },
+        {
+          "input": "5",
+          "output": "8",
+          "isVisible": false
+        },
+        {
+          "input": "3",
+          "output": "2",
+          "isVisible": true
+        }
+      ],
+      "marks": 10,
+      "difficulty": "easy",
+      "tags": [
+        "functions",
+        "arrays",
+        "loops"
+      ],
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "type": "coding_challenge",
+      "category": "Programming",
+      "instructions": "Write a solution that handles all test cases efficiently"
+    },
+    {
+      "title": "Reverse Array",
+      "description": "Reverse elements of an array",
+      "problemStatement": "Write a program that takes an array of integers and returns the array with its elements in reverse order. For example, input [1,2,3] should return [3,2,1].",
+      "constraints": "1 <= array length <= 100\n-1000 <= elements <= 1000",
+      "allowedLanguages": [
+        "python",
+        "java",
+        "javascript",
+        "cpp"
+      ],
+      "languageImplementations": {
+        "python": {
+          "visibleCode": "# Write code here",
+          "invisibleCode": "# No additional code needed"
+        },
+        "java": {
+          "visibleCode": "// Write code here",
+          "invisibleCode": "// No additional code needed"
+        }
+      },
+      "testCases": [
+        {
+          "input": "[1,2,3]",
+          "output": "[3,2,1]",
+          "isVisible": true
+        },
+        {
+          "input": "[5]",
+          "output": "[5]",
+          "isVisible": true
+        },
+        {
+          "input": "[1,2,3,4,5]",
+          "output": "[5,4,3,2,1]",
+          "isVisible": false
+        },
+        {
+          "input": "[1,1,1]",
+          "output": "[1,1,1]",
+          "isVisible": true
+        }
+      ],
+      "marks": 10,
+      "difficulty": "easy",
+      "tags": [
+        "arrays",
+        "loops",
+        "basic"
+      ],
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "type": "coding_challenge",
+      "category": "Programming",
+      "instructions": "Write a solution that handles all test cases efficiently"
+    },
+   
+   
+    {
+      "title": "String Formatting",
+      "description": "Format strings using different methods",
+      "problemStatement": "Write a program that takes name, age, and score and returns formatted strings using:\n1. format() method\n2. f-strings\n3. Return both strings separated by newline",
+      "constraints": "1 <= name length <= 50\n1 <= age <= 100\n0 <= score <= 100",
+      "allowedLanguages": [
+        "python"
+      ],
+      "languageImplementations": {
+        "python": {
+          "visibleCode": "# Write code here",
+          "invisibleCode": "# No additional code needed"
+        }
+      },
+      "testCases": [
+        {
+          "input": "'John', 25, 95.5",
+          "output": "John is 25 years old with score 95.5\nJohn scored 95.5 at age 25",
+          "isVisible": true
+        },
+        {
+          "input": "'Alice', 30, 88.0",
+          "output": "Alice is 30 years old with score 88.0\nAlice scored 88.0 at age 30",
+          "isVisible": true
+        },
+        {
+          "input": "'Bob', 25, 75.0",
+          "output": "Bob is 25 years old with score 75.0\nBob scored 75.0 at age 25",
+          "isVisible": false
+        }
+      ],
+      "marks": 10,
+      "difficulty": "easy",
+      "tags": [
+        "strings",
+        "formatting",
+        "basic"
+      ],
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "type": "coding_challenge",
+      "category": "Programming",
+      "instructions": "Write a solution that handles all test cases efficiently"
+    },
+    {
+      "title": "Sum of Digits",
+      "description": "Calculate sum of digits in a number",
+      "problemStatement": "Write a program that takes a positive integer as input and returns the sum of all its digits. For example, if input is 123, output should be 6 (1+2+3).",
+      "constraints": "1 <= number <= 10000",
+      "allowedLanguages": [
+        "python",
+        "java",
+        "javascript",
+        "cpp"
+      ],
+      "languageImplementations": {
+        "python": {
+          "visibleCode": "# Write code here",
+          "invisibleCode": "# No additional code needed"
+        },
+        "java": {
+          "visibleCode": "// Write code here",
+          "invisibleCode": "// No additional code needed"
+        }
+      },
+      "testCases": [
+        {
+          "input": "123",
+          "output": "6",
+          "isVisible": true
+        },
+        {
+          "input": "5555",
+          "output": "20",
+          "isVisible": true
+        },
+        {
+          "input": "1000",
+          "output": "1",
+          "isVisible": false
+        },
+        {
+          "input": "1234",
+          "output": "10",
+          "isVisible": true
+        }
+      ],
+      "marks": 10,
+      "difficulty": "easy",
+      "tags": [
+        "loops",
+        "math",
+        "basic"
+      ],
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "type": "coding_challenge",
+      "category": "Programming",
+      "instructions": "Write a solution that handles all test cases efficiently"
+    },
+    {
+      "title": "Even or Odd Numbers",
+      "description": "Count even and odd numbers in array",
+      "problemStatement": "Write a program that takes an array of integers and returns a string stating how many even and odd numbers are in the array. Format: 'Even: X, Odd: Y'",
+      "constraints": "1 <= array length <= 100\n1 <= elements <= 1000",
+      "allowedLanguages": [
+        "python",
+        "java",
+        "javascript",
+        "cpp"
+      ],
+      "languageImplementations": {
+        "python": {
+          "visibleCode": "# Write code here",
+          "invisibleCode": "# No additional code needed"
+        },
+        "java": {
+          "visibleCode": "// Write code here",
+          "invisibleCode": "// No additional code needed"
+        }
+      },
+      "testCases": [
+        {
+          "input": "[1,2,3,4,5]",
+          "output": "Even: 2, Odd: 3",
+          "isVisible": true
+        },
+        {
+          "input": "[2,4,6]",
+          "output": "Even: 3, Odd: 0",
+          "isVisible": true
+        },
+        {
+          "input": "[1,3,5]",
+          "output": "Even: 0, Odd: 3",
+          "isVisible": false
+        },
+        {
+          "input": "[1,2,3,4]",
+          "output": "Even: 2, Odd: 2",
+          "isVisible": true
+        }
+      ],
+      "marks": 10,
+      "difficulty": "easy",
+      "tags": [
+        "arrays",
+        "loops",
+        "conditionals"
+      ],
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "type": "coding_challenge",
+      "category": "Programming",
+      "instructions": "Write a solution that handles all test cases efficiently"
+    },
+    {
+      "title": "String Counter",
+      "description": "Count word occurrences",
+      "problemStatement": "Write a program that takes a string and returns the count of each word in a dictionary. Words are case-insensitive",
+      "constraints": "1 <= string length <= 100",
+      "allowedLanguages": [
+        "python"
+      ],
+      "languageImplementations": {
+        "python": {
+          "visibleCode": "# Write code here",
+          "invisibleCode": "# No additional code needed"
+        }
+      },
+      "testCases": [
+        {
+          "input": "hello Hello world",
+          "output": "{'hello': 2, 'world': 1}",
+          "isVisible": true
+        },
+        {
+          "input": "Python python PYTHON",
+          "output": "{'python': 3}",
+          "isVisible": true
+        },
+        {
+          "input": "Hello World",
+          "output": "{'hello': 1, 'world': 1}",
+          "isVisible": false
+        }
+      ],
+      "marks": 10,
+      "difficulty": "easy",
+      "tags": [
+        "strings",
+        "dictionaries",
+        "basic"
+      ],
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "type": "coding_challenge",
+      "category": "Programming",
+      "instructions": "Write a solution that handles all test cases efficiently"
+    },
+    {
+      "title": "String Methods",
+      "description": "Apply various string methods",
+      "problemStatement": "Write a program that takes a string and performs these operations:\n1. Convert to uppercase\n2. Replace all spaces with '-'\n3. Return the count of vowels in the modified string",
+      "constraints": "1 <= string length <= 100\nOnly letters and spaces",
+      "allowedLanguages": [
+        "python"
+      ],
+      "languageImplementations": {
+        "python": {
+          "visibleCode": "# Write code here",
+          "invisibleCode": "# No additional code needed"
+        }
+      },
+      "testCases": [
+        {
+          "input": "Hello World",
+          "output": "3",
+          "isVisible": true
+        },
+        {
+          "input": "Python Programming",
+          "output": "4",
+          "isVisible": true
+        },
+        {
+          "input": "xyz",
+          "output": "0",
+          "isVisible": false
+        }
+      ],
+      "marks": 10,
+      "difficulty": "easy",
+      "tags": [
+        "strings",
+        "string-methods",
+        "basic"
+      ],
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "type": "coding_challenge",
+      "category": "Programming",
+      "instructions": "Write a solution that handles all test cases efficiently"
+    },
+    {
+      "title": "String Methods Advanced",
+      "description": "Use advanced string methods",
+      "problemStatement": "Write a program that takes a string and:\n1. Capitalizes first letter of each word\n2. Removes leading/trailing spaces\n3. Replaces multiple spaces with single space\nReturn the processed string",
+      "constraints": "1 <= string length <= 1000",
+      "allowedLanguages": [
+        "python"
+      ],
+      "languageImplementations": {
+        "python": {
+          "visibleCode": "# Write code here",
+          "invisibleCode": "# No additional code needed"
+        }
+      },
+      "testCases": [
+        {
+          "input": "  hello   world  python  ",
+          "output": "Hello World Python",
+          "isVisible": true
+        },
+        {
+          "input": "python programming",
+          "output": "Python Programming",
+          "isVisible": true
+        },
+        {
+          "input": "Hello World",
+          "output": "Hello World",
+          "isVisible": false
+        }
+      ],
+      "marks": 10,
+      "difficulty": "easy",
+      "tags": [
+        "strings",
+        "string-methods",
+        "basic"
+      ],
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "type": "coding_challenge",
+      "category": "Programming",
+      "instructions": "Write a solution that handles all test cases efficiently"
+    },
+    {
+      "title": "List Elements Sum",
+      "description": "Sum elements at even indices",
+      "problemStatement": "Write a program that takes a list and returns the sum of elements at even indices (0, 2, 4, etc.)",
+      "constraints": "1 <= list size <= 100\n-100 <= elements <= 100",
+      "allowedLanguages": [
+        "python"
+      ],
+      "languageImplementations": {
+        "python": {
+          "visibleCode": "# Write code here",
+          "invisibleCode": "# No additional code needed"
+        }
+      },
+      "testCases": [
+        {
+          "input": "[1,2,3,4,5]",
+          "output": "9",
+          "isVisible": true
+        },
+        {
+          "input": "[10,20]",
+          "output": "10",
+          "isVisible": true
+        },
+        {
+          "input": "[1,2,3,4,5,6]",
+          "output": "9",
+          "isVisible": false
+        }
+      ],
+      "marks": 10,
+      "difficulty": "easy",
+      "tags": [
+        "lists",
+        "basic"
+      ],
+      "timeLimit": 1,
+      "memoryLimit": 256,
+      "type": "coding_challenge",
+      "category": "Programming",
+      "instructions": "Write a solution that handles all test cases efficiently"
+    }
+  ]
+}
