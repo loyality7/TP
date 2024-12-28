@@ -664,23 +664,6 @@ export default function CodingSection({
                       <span className="text-gray-300">Running Test Case {index + 1}</span>
                     </div>
                   </div>
-                  
-                  <div className="space-y-3">
-                    <div className="bg-[#2d2d2d] p-3 rounded">
-                      <div className="text-gray-400 text-xs mb-1">Input:</div>
-                      <div className="h-4 bg-[#3c3c3c] rounded w-3/4 animate-pulse"></div>
-                    </div>
-
-                    <div className="bg-[#2d2d2d] p-3 rounded">
-                      <div className="text-gray-400 text-xs mb-1">Expected Output:</div>
-                      <div className="h-4 bg-[#3c3c3c] rounded w-1/2 animate-pulse"></div>
-                    </div>
-
-                    <div className="bg-[#2d2d2d] p-3 rounded">
-                      <div className="text-gray-400 text-xs mb-1">Your Output:</div>
-                      <div className="h-4 bg-[#3c3c3c] rounded w-2/3 animate-pulse"></div>
-                    </div>
-                  </div>
                 </div>
               ))}
           </div>
@@ -697,34 +680,34 @@ export default function CodingSection({
 
     return (
       <div className="space-y-4">
-        {challenge?.testCases
-          ?.filter(testCase => !testCase.isHidden)
-          ?.map((testCase, index) => {
-            const result = currentResults?.testCaseResults?.[index];
-            const isExecuting = executingTests.has(testCase.id);
+        {challenge?.testCases?.map((testCase, index) => {
+          const result = currentResults?.testCaseResults?.[index];
+          const isExecuting = executingTests.has(testCase.id);
+          const isHidden = testCase.isHidden;
 
-            if (isExecuting) {
-              return (
-                <div key={index} className="bg-[#1e1e1e] p-4 rounded-lg border border-[#333333]">
-                  <div className="flex items-center gap-2">
-                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-500 border-t-transparent"></div>
-                    <span className="text-gray-300">Executing Test Case {index + 1}...</span>
-                  </div>
-                </div>
-              );
-            }
-
+          if (isExecuting) {
             return (
-              <div key={index} className="bg-[#1e1e1e] rounded-lg border border-[#333333] overflow-hidden">
-                {/* Header */}
-                <div className="flex items-center justify-between p-3 border-b border-[#333333] bg-[#2d2d2d]">
-                  <span className="text-gray-300 font-medium">Test Case {index + 1}</span>
+              <div key={index} className="bg-[#1e1e1e] p-4 rounded-lg border border-[#333333]">
+                <div className="flex items-center gap-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-500 border-t-transparent"></div>
+                  <span className="text-gray-300">Executing Test Case {index + 1}...</span>
+                </div>
+              </div>
+            );
+          }
+
+          // For hidden test cases, only show pass/fail status
+          if (isHidden) {
+            return (
+              <div key={index} className="bg-[#1e1e1e] p-4 rounded-lg border border-[#333333]">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-300">Hidden Test Case {index + 1}</span>
                   <span className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm
-                    ${result.passed 
+                    ${result?.passed 
                       ? 'bg-green-500/10 text-green-400' 
                       : 'bg-red-500/10 text-red-400'}`}
                   >
-                    {result.passed ? (
+                    {result?.passed ? (
                       <>
                         <Check className="w-3.5 h-3.5" />
                         Passed
@@ -737,55 +720,83 @@ export default function CodingSection({
                     )}
                   </span>
                 </div>
+              </div>
+            );
+          }
 
-                {/* Content */}
-                <div className="p-4 space-y-3">
-                  <div className="bg-[#2d2d2d] p-3 rounded">
-                    <div className="text-gray-400 text-xs mb-1.5">Input:</div>
-                    <pre className="text-gray-200 font-mono text-sm">{result.input}</pre>
-                  </div>
+          // For visible test cases, show full details
+          return (
+            <div key={index} className="bg-[#1e1e1e] rounded-lg border border-[#333333] overflow-hidden">
+              {/* Header */}
+              <div className="flex items-center justify-between p-3 border-b border-[#333333] bg-[#2d2d2d]">
+                <span className="text-gray-300 font-medium">Test Case {index + 1}</span>
+                <span className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm
+                  ${result.passed 
+                    ? 'bg-green-500/10 text-green-400' 
+                    : 'bg-red-500/10 text-red-400'}`}
+                >
+                  {result.passed ? (
+                    <>
+                      <Check className="w-3.5 h-3.5" />
+                      Passed
+                    </>
+                  ) : (
+                    <>
+                      <X className="w-3.5 h-3.5" />
+                      Failed
+                    </>
+                  )}
+                </span>
+              </div>
 
-                  <div className="bg-[#2d2d2d] p-3 rounded">
-                    <div className="text-gray-400 text-xs mb-1.5">Expected Output:</div>
-                    <pre className="text-gray-200 font-mono text-sm">{result.expectedOutput}</pre>
-                  </div>
+              {/* Content */}
+              <div className="p-4 space-y-3">
+                <div className="bg-[#2d2d2d] p-3 rounded">
+                  <div className="text-gray-400 text-xs mb-1.5">Input:</div>
+                  <pre className="text-gray-200 font-mono text-sm">{result.input}</pre>
+                </div>
 
-                  <div className="bg-[#2d2d2d] p-3 rounded">
-                    <div className="text-gray-400 text-xs mb-1.5">Your Output:</div>
-                    {result.error ? (
-                      <pre className="text-red-400 font-mono text-sm whitespace-pre-wrap bg-[#1e1e1e] p-2 rounded border border-red-500/20">
-                        {result.error}
-                      </pre>
-                    ) : (
-                      <>
-                        <pre className="text-gray-200 font-mono text-sm">{result.actualOutput}</pre>
-                        {!result.passed && (
-                          <div className="mt-2 text-xs">
-                            <span className="text-red-400">Raw output: </span>
-                            <span className="text-gray-300 font-mono">"{result.actualOutput}"</span>
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </div>
+                <div className="bg-[#2d2d2d] p-3 rounded">
+                  <div className="text-gray-400 text-xs mb-1.5">Expected Output:</div>
+                  <pre className="text-gray-200 font-mono text-sm">{result.expectedOutput}</pre>
+                </div>
 
-                  {/* Status Bar */}
-                  <div className="flex items-center justify-between text-xs text-gray-400 pt-2">
-                    <div className="flex items-center gap-3">
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-3.5 h-3.5" />
-                        {result.executionTime > 0 ? `${result.executionTime.toFixed(3)}s` : 'N/A'}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Database className="w-3.5 h-3.5" />
-                        {result.memory > 0 ? `${result.memory.toFixed(2)}KB` : 'N/A'}
-                      </span>
-                    </div>
+                <div className="bg-[#2d2d2d] p-3 rounded">
+                  <div className="text-gray-400 text-xs mb-1.5">Your Output:</div>
+                  {result.error ? (
+                    <pre className="text-red-400 font-mono text-sm whitespace-pre-wrap bg-[#1e1e1e] p-2 rounded border border-red-500/20">
+                      {result.error}
+                    </pre>
+                  ) : (
+                    <>
+                      <pre className="text-gray-200 font-mono text-sm">{result.actualOutput}</pre>
+                      {!result.passed && (
+                        <div className="mt-2 text-xs">
+                          <span className="text-red-400">Raw output: </span>
+                          <span className="text-gray-300 font-mono">"{result.actualOutput}"</span>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+
+                {/* Status Bar */}
+                <div className="flex items-center justify-between text-xs text-gray-400 pt-2">
+                  <div className="flex items-center gap-3">
+                    <span className="flex items-center gap-1">
+                      <Clock className="w-3.5 h-3.5" />
+                      {result.executionTime > 0 ? `${result.executionTime.toFixed(3)}s` : 'N/A'}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Database className="w-3.5 h-3.5" />
+                      {result.memory > 0 ? `${result.memory.toFixed(2)}KB` : 'N/A'}
+                    </span>
                   </div>
                 </div>
               </div>
-            );
-          })}
+            </div>
+          );
+        })}
       </div>
     );
   };
