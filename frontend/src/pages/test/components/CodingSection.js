@@ -470,22 +470,22 @@ export default function CodingSection({
         return null;
       }
 
-      // Get test cases based on whether this is a submission or not
-      const testCases = isSubmission 
-        ? challenge.testCases // For submission, run ALL test cases
-        : challenge.testCases?.filter(test => !test.isHidden); // For normal execution, only visible tests
+      // IMPORTANT: Only get visible test cases for normal execution
+      const visibleTestCases = challenge.testCases?.filter(test => !test.isHidden);
+      const testCasesToRun = isSubmission ? challenge.testCases : visibleTestCases;
 
-      if (!testCases?.length) {
+      if (!testCasesToRun?.length) {
         toast.error('No test cases available');
         return null;
       }
 
       const results = [];
       const loadingToast = toast.loading(
-        isSubmission ? 'Running all test cases...' : 'Running visible test cases...'
+        isSubmission ? 'Running all test cases...' : 'Running test cases...'
       );
 
-      for (const testCase of testCases) {
+      // Only run the filtered test cases
+      for (const testCase of testCasesToRun) {
         setExecutingTests(prev => new Set(prev).add(testCase.id));
         
         try {
@@ -497,7 +497,6 @@ export default function CodingSection({
           
           const data = response.data;
           
-          // Process test case result
           const executionTime = parseFloat(data?.executionTime) || 0;
           const memory = parseFloat(data?.memory) || 0;
           const actualOutput = (data?.output || '').trim();
@@ -539,20 +538,22 @@ export default function CodingSection({
 
       toast.dismiss(loadingToast);
 
-      // Update test results only for visible test cases
-      const visibleResults = results.filter(r => !r.isHidden);
+      // For normal execution, we're already working with only visible results
+      // For submission, we still need to filter for the UI
+      const resultsToShow = isSubmission ? results.filter(r => !r.isHidden) : results;
+      
       setTestResults(prev => ({
         ...prev,
         [challenge._id]: {
-          status: visibleResults.every(r => r.passed) ? 'Passed' : 'Failed',
-          executionTime: visibleResults.reduce((sum, r) => sum + r.executionTime, 0),
-          memory: Math.max(...visibleResults.map(r => r.memory)),
-          testCaseResults: visibleResults // Only show visible results in UI
+          status: resultsToShow.every(r => r.passed) ? 'Passed' : 'Failed',
+          executionTime: resultsToShow.reduce((sum, r) => sum + r.executionTime, 0),
+          memory: Math.max(...resultsToShow.map(r => r.memory)),
+          testCaseResults: resultsToShow
         }
       }));
 
-      // Return all results (including hidden) for submission
-      return results;
+      // Return all results for submission, or just visible results for normal execution
+      return isSubmission ? results : resultsToShow;
 
     } catch (error) {
       console.error('Code execution error:', error);
