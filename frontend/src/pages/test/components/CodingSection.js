@@ -470,9 +470,10 @@ export default function CodingSection({
         return null;
       }
 
-      // IMPORTANT: Only get visible test cases for normal execution
-      const visibleTestCases = challenge.testCases?.filter(test => test.isVisible !== false);
-      const testCasesToRun = isSubmission ? challenge.testCases : visibleTestCases;
+      // IMPORTANT: Get all test cases for submission, only visible ones for normal run
+      const testCasesToRun = isSubmission 
+        ? challenge.testCases // Get ALL test cases for submission
+        : challenge.testCases?.filter(test => test.isVisible !== false); // Only visible for normal run
 
       if (!testCasesToRun?.length) {
         toast.error('No test cases available');
@@ -481,10 +482,10 @@ export default function CodingSection({
 
       const results = [];
       const loadingToast = toast.loading(
-        isSubmission ? 'Running all test cases...' : 'Running test cases...'
+        isSubmission ? 'Running all test cases (including hidden)...' : 'Running test cases...'
       );
 
-      // Only run the filtered test cases
+      // Run ALL test cases for submission, only visible ones for normal run
       for (const testCase of testCasesToRun) {
         setExecutingTests(prev => new Set(prev).add(testCase.id));
         
@@ -538,23 +539,22 @@ export default function CodingSection({
 
       toast.dismiss(loadingToast);
 
-      // For normal execution, we're already working with only visible results
-      // For submission, we still need to filter for the UI
+      // For UI: Show only visible results in normal run, all results in submission
       const resultsToShow = isSubmission 
-        ? results.filter(r => r.isVisible !== false) 
-        : results;
+        ? results  // Show all results including hidden for submission
+        : results.filter(r => !r.isHidden); // Only show visible results for normal run
       
       setTestResults(prev => ({
         ...prev,
         [challenge._id]: {
-          status: resultsToShow.every(r => r.passed) ? 'Passed' : 'Failed',
-          executionTime: resultsToShow.reduce((sum, r) => sum + r.executionTime, 0),
-          memory: Math.max(...resultsToShow.map(r => r.memory)),
-          testCaseResults: resultsToShow
+          status: results.every(r => r.passed) ? 'Passed' : 'Failed', // Check ALL results for status
+          executionTime: results.reduce((sum, r) => sum + r.executionTime, 0),
+          memory: Math.max(...results.map(r => r.memory)),
+          testCaseResults: resultsToShow // Store filtered results for UI
         }
       }));
 
-      // Return all results for submission, or just visible results for normal execution
+      // Return all results for submission, visible only for normal run
       return isSubmission ? results : resultsToShow;
 
     } catch (error) {
@@ -656,18 +656,20 @@ export default function CodingSection({
       if (isExecuting) {
         return (
           <div className="space-y-4">
-            {challenge?.testCases
-              ?.filter(testCase => testCase.isVisible !== false)
-              ?.map((_, index) => (
-                <div key={index} className="bg-[#1e1e1e] p-4 rounded-lg border border-[#333333]">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-500 border-t-transparent"></div>
-                      <span className="text-gray-300">Running Test Case {index + 1}</span>
-                    </div>
+            {challenge?.testCases?.map((testCase, index) => (
+              <div key={index} className="bg-[#1e1e1e] p-4 rounded-lg border border-[#333333]">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-500 border-t-transparent"></div>
+                    <span className="text-gray-300">
+                      {testCase.isVisible === false 
+                        ? `Running Hidden Test Case ${index + 1}`
+                        : `Running Test Case ${index + 1}`}
+                    </span>
                   </div>
                 </div>
-              ))}
+              </div>
+            ))}
           </div>
         );
       }
@@ -680,10 +682,38 @@ export default function CodingSection({
       );
     }
 
+    // Get all test cases when submitting, only visible ones when running
+    const testCasesToShow = submissionStatus[challenge?._id] === 'submitting' 
+      ? challenge?.testCases 
+      : challenge?.testCases?.filter(testCase => testCase.isVisible !== false);
+
     return (
       <div className="space-y-4">
-        {challenge?.testCases?.map((testCase, index) => {
-          const result = currentResults?.testCaseResults?.[index];
+        {/* Summary of hidden test cases when submitting */}
+        {submissionStatus[challenge?._id] === 'submitting' && (
+          <div className="bg-blue-500/10 text-blue-400 p-4 rounded-lg border border-blue-500/20 mb-4">
+            <div className="flex items-center gap-2 mb-2">
+              <Database className="w-4 h-4" />
+              <span className="font-medium">Running All Test Cases (Including Hidden)</span>
+            </div>
+            <div className="text-sm opacity-80">
+              Your code will be tested against both visible and hidden test cases
+            </div>
+          </div>
+        )}
+
+        {testCasesToShow?.map((testCase, index) => {
+          const result = currentResults?.testCaseResults?.[index] || {
+            input: '',
+            expectedOutput: '',
+            actualOutput: '',
+            error: '',
+            passed: false,
+            executionTime: 0,
+            memory: 0,
+            status: 'Error'
+          };
+
           const isExecuting = executingTests.has(testCase.id);
           const isHidden = testCase.isVisible === false;
 
@@ -692,26 +722,31 @@ export default function CodingSection({
               <div key={index} className="bg-[#1e1e1e] p-4 rounded-lg border border-[#333333]">
                 <div className="flex items-center gap-2">
                   <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-500 border-t-transparent"></div>
-                  <span className="text-gray-300">Executing Test Case {index + 1}...</span>
+                  <span className="text-gray-300">
+                    {isHidden ? 'Executing Hidden Test Case...' : 'Executing Test Case...'}
+                  </span>
                 </div>
               </div>
             );
           }
 
-          // For hidden test cases, only show pass/fail status
+          // For hidden test cases, show minimal info
           if (isHidden) {
             return (
               <div key={index} className="bg-[#1e1e1e] p-4 rounded-lg border border-[#333333]">
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-300">Hidden Test Case {index + 1}</span>
+                  <div className="flex items-center gap-2">
+                    <Eye className="w-4 h-4 text-gray-400" />
+                    <span className="text-gray-300">Hidden Test Case {index + 1}</span>
+                  </div>
                   <span className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm
-                    ${result?.passed 
+                    ${result.passed 
                       ? 'bg-green-500/10 text-green-400' 
                       : 'bg-red-500/10 text-red-400'}`}
                   >
-                    {result?.passed ? (
+                    {result.passed ? (
                       <>
-                        <Check className="w-3.5 h-3.5" />
+                        <CheckCircle className="w-3.5 h-3.5" />
                         Passed
                       </>
                     ) : (
@@ -722,6 +757,18 @@ export default function CodingSection({
                     )}
                   </span>
                 </div>
+                {result.executionTime > 0 && (
+                  <div className="mt-2 text-xs text-gray-400 flex items-center gap-3">
+                    <span className="flex items-center gap-1">
+                      <Clock className="w-3.5 h-3.5" />
+                      {result.executionTime.toFixed(3)}s
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Database className="w-3.5 h-3.5" />
+                      {result.memory.toFixed(2)}KB
+                    </span>
+                  </div>
+                )}
               </div>
             );
           }
@@ -729,7 +776,6 @@ export default function CodingSection({
           // For visible test cases, show full details
           return (
             <div key={index} className="bg-[#1e1e1e] rounded-lg border border-[#333333] overflow-hidden">
-              {/* Header */}
               <div className="flex items-center justify-between p-3 border-b border-[#333333] bg-[#2d2d2d]">
                 <span className="text-gray-300 font-medium">Test Case {index + 1}</span>
                 <span className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm
@@ -751,7 +797,6 @@ export default function CodingSection({
                 </span>
               </div>
 
-              {/* Content */}
               <div className="p-4 space-y-3">
                 <div className="bg-[#2d2d2d] p-3 rounded">
                   <div className="text-gray-400 text-xs mb-1.5">Input:</div>
@@ -782,7 +827,6 @@ export default function CodingSection({
                   )}
                 </div>
 
-                {/* Status Bar */}
                 <div className="flex items-center justify-between text-xs text-gray-400 pt-2">
                   <div className="flex items-center gap-3">
                     <span className="flex items-center gap-1">

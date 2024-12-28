@@ -1393,4 +1393,89 @@ function styleSheet(sheet) {
         .map(v => v?.toString().length || 10)
     ) + 2, 50);
   });
-} 
+}
+
+// Add this new function to your submission.controller.js file
+export const downloadTestReport = async (req, res) => {
+  try {
+    const { testId } = req.params;
+
+    if (!testId) {
+      return res.status(400).json({
+        success: false,
+        error: 'Test ID is required'
+      });
+    }
+
+    // Get all submissions for this test
+    const submissions = await TestSubmission.find({ testId })
+      .populate('userId', 'name email')
+      .populate('testId')
+      .populate('mcqSubmission')
+      .populate('codingSubmission');
+
+    if (!submissions || submissions.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'No submissions found for this test'
+      });
+    }
+
+    // Set headers for Excel download
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    );
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename=test-report-${testId}.xlsx`
+    );
+
+    // Create workbook and worksheet
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Test Results');
+
+    // Define columns
+    worksheet.columns = [
+      { header: 'User Name', key: 'userName', width: 20 },
+      { header: 'Email', key: 'email', width: 30 },
+      { header: 'MCQ Score', key: 'mcqScore', width: 15 },
+      { header: 'Coding Score', key: 'codingScore', width: 15 },
+      { header: 'Total Score', key: 'totalScore', width: 15 },
+      { header: 'Status', key: 'status', width: 15 },
+      { header: 'Submission Date', key: 'submissionDate', width: 20 }
+    ];
+
+    // Add data rows
+    submissions.forEach(submission => {
+      worksheet.addRow({
+        userName: submission.userId.name,
+        email: submission.userId.email,
+        mcqScore: submission.mcqSubmission?.score || 0,
+        codingScore: submission.codingSubmission?.score || 0,
+        totalScore: (submission.mcqSubmission?.score || 0) + (submission.codingSubmission?.score || 0),
+        status: submission.status,
+        submissionDate: submission.submittedAt?.toLocaleString()
+      });
+    });
+
+    // Style the header row
+    worksheet.getRow(1).font = { bold: true };
+    worksheet.getRow(1).fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FF999999' }
+    };
+
+    // Write to response
+    await workbook.xlsx.write(res);
+
+  } catch (error) {
+    console.error('Error generating test report:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to generate test report',
+      message: error.message
+    });
+  }
+}; 
