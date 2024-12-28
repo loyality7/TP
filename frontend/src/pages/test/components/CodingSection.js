@@ -471,7 +471,7 @@ export default function CodingSection({
       }
 
       // IMPORTANT: Only get visible test cases for normal execution
-      const visibleTestCases = challenge.testCases?.filter(test => !test.isHidden);
+      const visibleTestCases = challenge.testCases?.filter(test => test.isVisible !== false);
       const testCasesToRun = isSubmission ? challenge.testCases : visibleTestCases;
 
       if (!testCasesToRun?.length) {
@@ -512,7 +512,7 @@ export default function CodingSection({
             executionTime: executionTime,
             memory: memory,
             status: data?.status || 'Error',
-            isHidden: testCase.isHidden || false
+            isHidden: testCase.isVisible === false
           });
 
         } catch (error) {
@@ -525,7 +525,7 @@ export default function CodingSection({
             executionTime: 0,
             memory: 0,
             status: 'Error',
-            isHidden: testCase.isHidden || false
+            isHidden: testCase.isVisible === false
           });
         } finally {
           setExecutingTests(prev => {
@@ -540,7 +540,9 @@ export default function CodingSection({
 
       // For normal execution, we're already working with only visible results
       // For submission, we still need to filter for the UI
-      const resultsToShow = isSubmission ? results.filter(r => !r.isHidden) : results;
+      const resultsToShow = isSubmission 
+        ? results.filter(r => r.isVisible !== false) 
+        : results;
       
       setTestResults(prev => ({
         ...prev,
@@ -655,7 +657,7 @@ export default function CodingSection({
         return (
           <div className="space-y-4">
             {challenge?.testCases
-              ?.filter(testCase => !testCase.isHidden)
+              ?.filter(testCase => testCase.isVisible !== false)
               ?.map((_, index) => (
                 <div key={index} className="bg-[#1e1e1e] p-4 rounded-lg border border-[#333333]">
                   <div className="flex items-center justify-between mb-3">
@@ -683,7 +685,7 @@ export default function CodingSection({
         {challenge?.testCases?.map((testCase, index) => {
           const result = currentResults?.testCaseResults?.[index];
           const isExecuting = executingTests.has(testCase.id);
-          const isHidden = testCase.isHidden;
+          const isHidden = testCase.isVisible === false;
 
           if (isExecuting) {
             return (
