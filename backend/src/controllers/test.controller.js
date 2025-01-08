@@ -67,21 +67,67 @@ export const createTest = async (req, res) => {
     }
 
     // Validate coding challenges without language ID conversion
-    for (const challenge of codingChallenges) {
+    for (const [challengeIndex, challenge] of codingChallenges.entries()) {
       // Basic validation
       if (!challenge.title || !challenge.description || !challenge.problemStatement || 
           !challenge.constraints || !challenge.allowedLanguages || 
           !challenge.languageImplementations || !challenge.marks || 
           !challenge.timeLimit || !challenge.memoryLimit || !challenge.difficulty) {
         return res.status(400).json({
-          error: "Missing required fields in coding challenge"
+          error: "Missing required fields in coding challenge",
+          location: {
+            path: `codingChallenges[${challengeIndex}]`,
+            challengeTitle: challenge.title,
+            missingFields: {
+              title: !challenge.title,
+              description: !challenge.description,
+              problemStatement: !challenge.problemStatement,
+              constraints: !challenge.constraints,
+              allowedLanguages: !challenge.allowedLanguages,
+              languageImplementations: !challenge.languageImplementations,
+              marks: !challenge.marks,
+              timeLimit: !challenge.timeLimit,
+              memoryLimit: !challenge.memoryLimit,
+              difficulty: !challenge.difficulty
+            }
+          },
+          receivedData: {
+            title: challenge.title,
+            description: challenge.description,
+            problemStatement: challenge.problemStatement,
+            constraints: challenge.constraints,
+            allowedLanguages: challenge.allowedLanguages,
+            languageImplementations: challenge.languageImplementations,
+            marks: challenge.marks,
+            timeLimit: challenge.timeLimit,
+            memoryLimit: challenge.memoryLimit,
+            difficulty: challenge.difficulty
+          },
+          example: {
+            input: "Example: '5 3'",
+            output: "Example: '8'"
+          }
         });
       }
 
       // Validate allowed languages array exists
       if (!Array.isArray(challenge.allowedLanguages) || challenge.allowedLanguages.length === 0) {
         return res.status(400).json({
-          error: "At least one programming language must be allowed"
+          error: "At least one programming language must be allowed",
+          location: {
+            path: `codingChallenges[${challengeIndex}].allowedLanguages`,
+            challengeTitle: challenge.title,
+            missingFields: {
+              allowedLanguages: !Array.isArray(challenge.allowedLanguages) || challenge.allowedLanguages.length === 0
+            }
+          },
+          receivedData: {
+            allowedLanguages: challenge.allowedLanguages
+          },
+          example: {
+            input: "Example: ['Java', 'Python']",
+            output: "Example: ['Java', 'Python']"
+          }
         });
       }
 
@@ -89,17 +135,49 @@ export const createTest = async (req, res) => {
       for (const [lang, impl] of Object.entries(challenge.languageImplementations)) {
         if (!impl.visibleCode || !impl.invisibleCode) {
           return res.status(400).json({
-            error: `Both visibleCode and invisibleCode are required for language: ${lang}`
+            error: `Both visibleCode and invisibleCode are required for language: ${lang}`,
+            location: {
+              path: `codingChallenges[${challengeIndex}].languageImplementations.${lang}`,
+              challengeTitle: challenge.title,
+              missingFields: {
+                visibleCode: !impl.visibleCode,
+                invisibleCode: !impl.invisibleCode
+              }
+            },
+            receivedData: {
+              visibleCode: impl.visibleCode,
+              invisibleCode: impl.invisibleCode
+            },
+            example: {
+              input: "Example: 'public class Main { public static void main(String[] args) { System.out.println(\"Hello, World!\"); } }'",
+              output: "Example: 'Hello, World!'"
+            }
           });
         }
       }
 
       // Validate test cases if provided
       if (challenge.testCases) {
-        for (const testCase of challenge.testCases) {
+        for (const [testCaseIndex, testCase] of challenge.testCases.entries()) {
           if (!testCase.input || !testCase.output) {
             return res.status(400).json({
-              error: "Each test case must have input and output"
+              error: "Each test case must have input and output",
+              location: {
+                path: `codingChallenges[${challengeIndex}].testCases[${testCaseIndex}]`,
+                challengeTitle: challenge.title,
+                missingFields: {
+                  input: !testCase.input,
+                  output: !testCase.output
+                }
+              },
+              receivedData: {
+                input: testCase.input,
+                output: testCase.output
+              },
+              example: {
+                input: "Example: '5 3'",
+                output: "Example: '8'"
+              }
             });
           }
         }
@@ -139,19 +217,26 @@ export const createTest = async (req, res) => {
   } catch (error) {
     console.error('Error in createTest:', error);
     
-    // Mongoose validation error
+    // Enhanced Mongoose validation error handling
     if (error.name === 'ValidationError') {
-      console.error('Validation error details:', error.errors);
       return res.status(400).json({
         error: "Validation failed",
-        details: Object.keys(error.errors).reduce((acc, key) => {
-          acc[key] = error.errors[key].message;
+        details: Object.entries(error.errors).reduce((acc, [path, error]) => {
+          acc[path] = {
+            message: error.message,
+            value: error.value,
+            path: error.path,
+            type: error.kind
+          };
           return acc;
         }, {})
       });
     }
 
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ 
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 };
 
