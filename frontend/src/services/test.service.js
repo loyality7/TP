@@ -7,32 +7,55 @@ export const testService = {
     return await apiService.get(`tests?${queryString}`);
   },
 
-  // Create new test
+  // Create test - handles both manual form data and JSON upload
   createTest: async (testData) => {
     try {
-      // Transform the data if needed
-      const formattedData = {
-        ...testData,
-        duration: parseInt(testData.duration),
-        proctoring: testData.proctoring === 'true',
-        mcqs: testData.mcqs.map(mcq => ({
-          ...mcq,
-          marks: parseInt(mcq.marks),
-          correctOptions: mcq.correctOptions.map(Number)
-        })),
-        codingChallenges: testData.codingChallenges.map(challenge => ({
-          ...challenge,
-          marks: parseInt(challenge.marks),
-          timeLimit: parseInt(challenge.timeLimit),
-          memoryLimit: parseInt(challenge.memoryLimit)
-        }))
-      };
+      // Transform the data if it's from the form
+      let formattedData = testData;
+
+      // Check if data is from form (has specific form fields) and needs transformation
+      if (testData.duration && !testData.isJsonUpload) {
+        formattedData = {
+          ...testData,
+          duration: parseInt(testData.duration),
+          proctoring: testData.proctoring === 'true',
+          mcqs: testData.mcqs.map(mcq => ({
+            ...mcq,
+            marks: parseInt(mcq.marks),
+            correctOptions: mcq.correctOptions.map(Number)
+          })),
+          codingChallenges: testData.codingChallenges.map(challenge => ({
+            ...challenge,
+            marks: parseInt(challenge.marks),
+            timeLimit: parseInt(challenge.timeLimit),
+            memoryLimit: parseInt(challenge.memoryLimit)
+          }))
+        };
+      }
 
       const response = await apiService.post('/tests', formattedData);
-      return response.data;
+      
+      if (response.status === 201) {
+        return {
+          status: 201,
+          data: response.data,
+          message: 'Test created successfully'
+        };
+      }
+      
+      return response;
     } catch (error) {
       console.error('Error in createTest:', error);
-      throw error;
+      
+      // Enhanced error handling with proper Error object
+      const errorMessage = error.response?.data?.error || 'Failed to create test';
+      const errorDetails = error.response?.data?.details || {};
+      
+      throw new Error(JSON.stringify({
+        message: errorMessage,
+        details: errorDetails,
+        status: error.response?.status || 500
+      }));
     }
   },
   

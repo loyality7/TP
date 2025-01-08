@@ -8,10 +8,11 @@ import { Card,  CardContent } from '../../common/Card';
 import { 
   Search, Filter, Plus, MoreVertical, Clock, Users, Calendar, Download,
   Edit, Trash2, Eye, TrendingUp, Brain, Target, 
-  BarChart2, Settings, MessageCircle,  TrendingDown
+  BarChart2, Settings, MessageCircle,  TrendingDown, Upload
 } from 'lucide-react';
 import { testService } from '../../../services/test.service';
 import { apiService } from '../../../services/api';
+import JsonUploadModal from './JsonUploadModal';
 
 const AllTests = () => {
   const navigate = useNavigate();
@@ -35,6 +36,8 @@ const AllTests = () => {
     { label: 'Active', count: 0 },
     { label: 'Draft', count: 0 }
   ]);
+
+  const [isJsonModalOpen, setIsJsonModalOpen] = useState(false);
 
   // 1. Add search handler
   const handleSearch = (e) => {
@@ -331,9 +334,31 @@ const AllTests = () => {
     }
   };
 
-  // Add this function to handle navigation
+  // Update handleCreateTest to remove unused createOptions
   const handleCreateTest = () => {
-    navigate('/vendor/tests/create');
+    return (
+      <div className="relative">
+        <button 
+          onClick={() => navigate('/vendor/tests/create')}
+          className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 flex items-center gap-2"
+        >
+          <Plus className="h-4 w-4" />
+          Create Test
+        </button>
+        <button
+          onClick={() => setIsJsonModalOpen(true)}
+          className="px-4 py-2 border rounded-lg hover:bg-gray-50 flex items-center gap-2 ml-2"
+        >
+          <Upload className="h-4 w-4" />
+          Upload JSON
+        </button>
+      </div>
+    );
+  };
+
+  // Add success handler
+  const handleTestCreated = (newTest) => {
+    setTests(prevTests => [newTest, ...prevTests]);
   };
 
   // Function to sort and get the latest six tests
@@ -478,13 +503,7 @@ const AllTests = () => {
                 <Download className="h-4 w-4" />
                 Export Data
               </button>
-              <button 
-                onClick={handleCreateTest}
-                className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 flex items-center gap-2"
-              >
-                <Plus className="h-4 w-4" />
-                Create Test
-              </button>
+              {handleCreateTest()}
             </div>
           </div>
           
@@ -655,6 +674,13 @@ const AllTests = () => {
           </Card>
         )}
       </div>
+      
+      {/* Add Modal */}
+      <JsonUploadModal
+        isOpen={isJsonModalOpen}
+        onClose={() => setIsJsonModalOpen(false)}
+        onSuccess={handleTestCreated}
+      />
     </Layout>
   );
 };
