@@ -34,6 +34,8 @@ const SESSION_STATUS = {
 
 export const createTest = async (req, res) => {
   try {
+    console.log('Creating test with body:', JSON.stringify(req.body, null, 2));
+
     const { 
       title, 
       description, 
@@ -127,7 +129,7 @@ export const createTest = async (req, res) => {
       mcqs,
       codingChallenges,
       accessControl,
-      uuid: uuidv4(),
+      uuid: crypto.randomUUID(),
       sharingToken: crypto.randomBytes(32).toString('hex'),
       testStatus: TEST_STATUS.NOT_STARTED,
       sessionStatus: SESSION_STATUS.CREATED
@@ -135,10 +137,21 @@ export const createTest = async (req, res) => {
 
     res.status(201).json(test);
   } catch (error) {
-    res.status(500).json({ 
-      error: error.message,
-      details: "Failed to create test"
-    });
+    console.error('Error in createTest:', error);
+    
+    // Mongoose validation error
+    if (error.name === 'ValidationError') {
+      console.error('Validation error details:', error.errors);
+      return res.status(400).json({
+        error: "Validation failed",
+        details: Object.keys(error.errors).reduce((acc, key) => {
+          acc[key] = error.errors[key].message;
+          return acc;
+        }, {})
+      });
+    }
+
+    res.status(500).json({ error: error.message });
   }
 };
 
